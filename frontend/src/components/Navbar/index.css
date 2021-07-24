@@ -1,0 +1,18 @@
+.navbar {
+    background-color: #55befc;
+}
+
+.navbar .navbar-brand {
+    color: #ffffff;
+}
+
+.navbar .navbar-brand:hover,
+.navbar .navbar-brand:visited,
+.navbar .navbar-brand:focus {
+    color: #ffffff;
+}
+
+.navbar .navbar-nav .nav-link:not(.disabled):hover,
+.navbar .navbar-nav .nav-link:not(.disabled):focus {
+    color: #ffffff;
+}

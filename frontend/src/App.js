@@ -1,22 +1,30 @@
-import logo from './logo.svg';
+import { Route, Switch } from 'react-router-dom';
 import './App.css';
-import GuestNav from './components/Navbar/GuestNav';
-import Footer from './components/Footer';
+import Error from './components/Error';
+import RedirectPage from './components/Redirect';
+import AdminPage from './pages/Admin';
+import CoordinatorPage from './pages/Coordinator';
+import HomePage from './pages/Home';
+import ChangePassword from './pages/Home/ChangePass';
 import LoginPage from './pages/Login';
-import Timer from './components/Timer';
+import ForgotPassword from './pages/Login/ForgotPass';
+import ManagerPage from './pages/Manager';
+import StudentPage from './pages/Student';
 
 function App() {
   return (
-    <div className="page-container">
-      <div className="content-wrap">
-        <GuestNav />
-        <br />
-        <div className="col-12">
-          <Timer />
-        </div>
-      </div>
-      <Footer />
-    </div>
+    <Switch>
+      <Route path='/' exact component={LoginPage} />
+      <Route path='/forgot' component={ForgotPassword} />
+      <Route path='/home' component={HomePage} />
+      <Route path='/changepass' component={ChangePassword} />
+      <Route path='/admindashboard' component={AdminPage} />
+      <Route path='/manager' component={ManagerPage} />
+      <Route path='/coordinator' component={CoordinatorPage} />
+      <Route path='/student' component={StudentPage} />
+      <Route path='/error' component={Error} />
+      <Route path='/redirect' component={RedirectPage} />
+    </Switch >
   );
 }
 

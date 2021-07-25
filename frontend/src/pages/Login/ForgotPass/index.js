@@ -1,7 +1,7 @@
 import React from 'react'
-import './index.css'
+import '../index.css'
 
-function LoginPage() {
+function ForgotPassword() {
     return (
         <div class="container-fluid">
             <div class="row no-gutter">
@@ -12,24 +12,15 @@ function LoginPage() {
                             <div class="row">
                                 <div class="col-md-9 col-lg-8 mx-auto">
                                     <h3 class="login-heading mb-4">Welcome to Greenwich Magazine System!</h3>
+                                    <h4 class="login-heading mb-4">Recovery your password</h4>
                                     <form>
                                         <div class="form-label-group">
                                             <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus />
                                             <label for="inputEmail">Email address</label>
                                         </div>
-
-                                        <div class="form-label-group">
-                                            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required />
-                                            <label for="inputPassword">Password</label>
-                                        </div>
-
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" class="custom-control-input" id="customCheck1" />
-                                            <label class="custom-control-label" for="customCheck1">Remember password</label>
-                                        </div>
-                                        <button class="btn btn-lg btn-signin btn-block btn-login text-uppercase font-weight-bold mb-2" type="submit">Sign in</button>
+                                        <button class="btn btn-lg btn-signin btn-block btn-login text-uppercase font-weight-bold mb-2" type="submit">Send Email</button>
                                         <div class="text-center">
-                                            <a class="small" href="/forgot">Forgot password?</a></div>
+                                            <a class="small" href="/">Return to Sign In</a></div>
                                     </form>
                                 </div>
                             </div>
@@ -41,4 +32,4 @@ function LoginPage() {
     )
 }
 
-export default LoginPage
+export default ForgotPassword

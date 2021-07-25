@@ -1,7 +1,7 @@
 import moment from 'moment';
 import 'moment/locale/vi';
 import React, { useEffect, useState } from 'react';
-moment.locale('vi');
+moment.locale('en');
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);

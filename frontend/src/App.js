@@ -1,4 +1,4 @@
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import './App.css';
 import Error from './components/Error';
 import RedirectPage from './components/Redirect';
@@ -10,10 +10,11 @@ import LoginPage from './pages/Login';
 import ForgotPassword from './pages/Login/ForgotPass';
 import ManagerPage from './pages/Manager';
 import StudentPage from './pages/Student';
+import ViewDetails from './pages/ViewDetails';
 
 function App() {
   return (
-    <Switch>
+    <Switch initial='/'>
       <Route path='/' exact component={LoginPage} />
       <Route path='/forgot' component={ForgotPassword} />
       <Route path='/home' component={HomePage} />
@@ -22,6 +23,7 @@ function App() {
       <Route path='/manager' component={ManagerPage} />
       <Route path='/coordinator' component={CoordinatorPage} />
       <Route path='/student' component={StudentPage} />
+      <Route path='/viewdetails' component={ViewDetails} />
       <Route path='/error' component={Error} />
       <Route path='/redirect' component={RedirectPage} />
     </Switch >

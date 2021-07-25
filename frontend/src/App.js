@@ -1,30 +1,24 @@
-import { Route, Switch } from 'react-router-dom';
+import logo from './logo.svg';
 import './App.css';
-import Error from './components/Error';
-import RedirectPage from './components/Redirect';
-import AdminPage from './pages/Admin';
-import CoordinatorPage from './pages/Coordinator';
-import HomePage from './pages/Home';
-import ChangePassword from './pages/Home/ChangePass';
-import LoginPage from './pages/Login';
-import ForgotPassword from './pages/Login/ForgotPass';
-import ManagerPage from './pages/Manager';
-import StudentPage from './pages/Student';
 
 function App() {
   return (
-    <Switch>
-      <Route path='/' exact component={LoginPage} />
-      <Route path='/forgot' component={ForgotPassword} />
-      <Route path='/home' component={HomePage} />
-      <Route path='/changepass' component={ChangePassword} />
-      <Route path='/admindashboard' component={AdminPage} />
-      <Route path='/manager' component={ManagerPage} />
-      <Route path='/coordinator' component={CoordinatorPage} />
-      <Route path='/student' component={StudentPage} />
-      <Route path='/error' component={Error} />
-      <Route path='/redirect' component={RedirectPage} />
-    </Switch >
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
   );
 }
 

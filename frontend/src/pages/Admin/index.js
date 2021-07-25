@@ -1,5 +1,4 @@
 import React from 'react'
-import Footer from '../../components/Footer'
 import AdminNav from '../../components/Navbar/AdminNav'
 import Timer from '../../components/Timer'
 
@@ -12,7 +11,10 @@ function AdminPage() {
                 <div className="col-12">
                     <Timer />
                 </div>
-                <div className="text-center">AdminPage</div>
+                <h4 className="text-center">Admin Page</h4>
+                <div className="col-12">
+
+                </div>
             </div>
         </div>
     )

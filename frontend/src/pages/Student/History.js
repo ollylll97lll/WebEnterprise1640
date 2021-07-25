@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
-import { Button, Table } from 'reactstrap'
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { Button, Table } from 'reactstrap';
 
 function History() {
     const [data, setData] = useState([
@@ -33,14 +33,14 @@ function History() {
 
     return (
         <div style={{ paddingTop: '2%' }} >
-            <Table responsive hover style={{ tableLayout: 'fixed' }}>
+            <Table responsive hover>
                 <thead>
                     <tr>
-                        <th className="text-center col-1">ID</th>
-                        <th className="col-1">Date</th>
-                        <th className="col-2">Title</th>
-                        <th className="col-8">Description</th>
-                        <th className="col-2 text-center">Function</th>
+                        <th className="text-center">ID</th>
+                        <th>Date</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th className="text-center">Function</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,7 +48,7 @@ function History() {
                         <tr key={data.id}>
                             <td className='text-center'>{data.id}</td>
                             <td>{data.submittedAt}</td>
-                            <td>{data.title}</td>
+                            <td className='cell'>{data.title}</td>
                             <td className='cell'>{data.description}</td>
                             <td className="text-center"><Button outline color="primary" onClick={viewDetail}>View Details</Button></td>
                         </tr>

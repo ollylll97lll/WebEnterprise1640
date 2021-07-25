@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
-import { Button, Form, FormGroup, Label, Input, FormText, Col, Row } from 'reactstrap';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import React, { useState } from 'react';
+import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap';
 
 function SubmitForm(props) {
     const {
@@ -11,6 +10,7 @@ function SubmitForm(props) {
     const [modal, setModal] = useState(false);
 
     const toggle = () => setModal(!modal);
+
     return (
         <div style={{ paddingTop: '2%' }} >
             <Form>
@@ -51,14 +51,14 @@ function SubmitForm(props) {
                         <FormGroup check >
                             <Label>
                                 <Input type="checkbox" required />{' '}
-                                I have read and agree to the <a onClick={toggle} style={{ color: 'blue' }}> Terms and Conditions </a><span className='text-danger'>*</span>
+                                I have read and agreed to the <a onClick={toggle} style={{ color: 'blue' }}> Terms and Conditions </a><span className='text-danger'>*</span>
                                 <Modal isOpen={modal} toggle={toggle} className={className}>
                                     <ModalHeader toggle={toggle}>Terms and Conditions</ModalHeader>
                                     <ModalBody>
-                                        <p>1. You are responsible to your uploads.</p>
-                                        <p>2. You can upload one by one Image or Doc file at the same time.</p>
-                                        <p>3. If you want to upload more than 1 file, ZIP it.</p>
-                                        <p>4. Read carefully before close.</p>
+                                        <p>1. You are responsible for your uploads.</p>
+                                        <p>2. You can upload Image or Doc file one by one at the same time.</p>
+                                        <p>3. ZIP your files, if you want to upload more than 1 file.</p>
+                                        <p>4. Read the note carefully before moving on.</p>
                                     </ModalBody>
                                     <ModalFooter>
                                         <Button outline color="primary" onClick={toggle}>Agree and Close</Button>{' '}

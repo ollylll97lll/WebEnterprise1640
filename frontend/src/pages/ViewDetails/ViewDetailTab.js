@@ -1,10 +1,9 @@
 import classnames from 'classnames';
 import React, { useState } from 'react';
 import { Col, Nav, NavItem, NavLink, Row, TabContent, TabPane } from 'reactstrap';
-import History from './History';
-import SubmitForm from './SubmitForm';
+import ViewDetailContent from './ViewDetailContent';
 
-function StudentTab() {
+function ViewDetailTab() {
     const [activeTab, setActiveTab] = useState('1');
 
     const toggle = tab => {
@@ -18,15 +17,7 @@ function StudentTab() {
                         className={classnames({ active: activeTab === '1' })}
                         onClick={() => { toggle('1'); }}
                     >
-                        Submit Form
-                    </NavLink>
-                </NavItem>
-                <NavItem>
-                    <NavLink
-                        className={classnames({ active: activeTab === '2' })}
-                        onClick={() => { toggle('2'); }}
-                    >
-                        History
+                        View Details
                     </NavLink>
                 </NavItem>
             </Nav>
@@ -34,14 +25,7 @@ function StudentTab() {
                 <TabPane tabId="1">
                     <Row>
                         <Col sm="12">
-                            <SubmitForm />
-                        </Col>
-                    </Row>
-                </TabPane>
-                <TabPane tabId="2">
-                    <Row>
-                        <Col sm="12">
-                            <History />
+                            <ViewDetailContent />   
                         </Col>
                     </Row>
                 </TabPane>
@@ -50,4 +34,4 @@ function StudentTab() {
     )
 }
 
-export default StudentTab
+export default ViewDetailTab

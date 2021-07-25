@@ -12,9 +12,9 @@ function HomePage() {
                 <div className="col-12">
                     <Timer />
                 </div>
-                <br />
-                <div className="container">
-                    <div className="text-center">HomePage</div>
+                <h4 className="text-center">Home Page</h4>
+                <div className="col-12">
+
                 </div>
             </div>
             <Footer />

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Col, CustomInput, Form, FormGroup, Label, Row, Table } from 'reactstrap'
+import React, { useEffect, useState } from 'react';
+import { Col, CustomInput, Form, FormGroup, Label, Row, Table } from 'reactstrap';
 
 function Statistic() {
     const [data, setData] = useState([]);
@@ -69,7 +69,7 @@ function Statistic() {
     }, [faculty])
 
     return (
-        <div div div style={{ paddingTop: '2%' }} >
+        <div style={{ paddingTop: '2%' }} >
             <Form>
                 <FormGroup>
                     <Label for='facultySelect'>Select Faculty</Label>

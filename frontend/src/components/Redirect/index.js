@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import { useHistory } from 'react-router'
 import Footer from '../Footer'
 import GuestNav from '../Navbar/GuestNav'
-import { useHistory } from 'react-router'
 import Timer from '../Timer'
 
 function RedirectPage() {

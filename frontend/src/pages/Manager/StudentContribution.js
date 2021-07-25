@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Button, CustomInput, FormGroup, Input, Label, Table } from 'reactstrap'
+import React, { useEffect, useState } from 'react';
+import { Button, CustomInput, FormGroup, Label, Table } from 'reactstrap';
 
 function StudentContribution() {
     const [data, setData] = useState([]);
@@ -125,16 +125,16 @@ function StudentContribution() {
                     <option value="Public Relations">Public Relations & Communications</option>
                 </CustomInput>
             </FormGroup>
-            <Table responsive hover bordered >
+            <Table responsive hover>
                 <thead>
                     <tr>
-                        <th className="text-center col-1">Select</th>
-                        <th className="col-1">Faculty</th>
-                        <th className="col-1">Date</th>
-                        <th className="col-1">Title</th>
-                        <th className="col-1">Type</th>
-                        <th className="col-5">Description</th>
-                        <th className="col-2">Document download</th>
+                        <th className="text-center">Select</th>
+                        <th>Faculty</th>
+                        <th>Date</th>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Document download</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -143,7 +143,7 @@ function StudentContribution() {
                             <td className="text-center"><input type="checkbox" /></td>
                             <td>{data.faculty}</td>
                             <td>{data.submittedAt}</td>
-                            <td>{data.title}</td>
+                            <td className='cell'>{data.title}</td>
                             <td>{data.type}</td>
                             <td className='cell'>{data.description}</td>
                             <td>{data.document}</td>

@@ -16,7 +16,6 @@ function CoordinatorPage() {
                     <div className="text-center">CoordinatorPage</div>
                 </div>
             </div>
-            <Footer />
         </div>
     )
 }

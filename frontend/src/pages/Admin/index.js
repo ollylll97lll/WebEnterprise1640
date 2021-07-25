@@ -14,7 +14,6 @@ function AdminPage() {
                 </div>
                 <div className="text-center">AdminPage</div>
             </div>
-            <Footer />
         </div>
     )
 }

@@ -9,7 +9,7 @@
 }
 
 .bg-image {
-    background-image: url('https://www.gre.ac.uk/__data/assets/image/0025/119653/gre.jpg');
+    background-image: url('../../assets/images/gre.jpg');
     background-size: cover;
     background-position: center;
 }

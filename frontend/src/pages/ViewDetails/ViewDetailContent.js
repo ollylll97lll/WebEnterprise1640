@@ -18,7 +18,6 @@ function ViewDetailContent() {
                     {
                         coordinator: 'Your subbmission should have some brief description',
                         student: 'I got it',
-                        student: 'Please double check'
                     },
                     {
                         coordinator: 'It seems good',

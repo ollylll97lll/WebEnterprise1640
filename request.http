@@ -1,0 +1,26 @@
+GET http://localhost:5001/api/auth/register
+
+################################
+
+//register a new user for admin
+POST http://localhost:5001/api/auth/register
+Content-Type: application/json
+
+{
+    "email" : "ltv.9a2.21@gmail.com",
+    "password" : "Longdeptrai123",
+    "faculty" : "IT"
+}
+
+################################
+
+//User Login
+POST http://localhost:5001/api/auth/login
+Content-Type: application/json
+
+{
+    "email" : "ltv.9a2.21@gmail.com",
+    "password" : "Longdeptrai123"
+}
+
+################################

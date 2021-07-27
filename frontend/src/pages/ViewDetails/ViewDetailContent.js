@@ -41,8 +41,6 @@ function ViewDetailContent() {
 
     const toggleModalEdit = () => setModal(!modal);
 
-
-
     return (
         <div style={{ paddingTop: '2%' }} >
             <div className="col-12">

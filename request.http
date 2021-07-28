@@ -25,3 +25,43 @@ Content-Type: application/json
 }
 
 ################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//For testing
+POST http://localhost:5001/api/test/createtestuser
+Content-Type: application/json
+
+{
+    "username" : "ltv.9a2.21@gmail.com",
+    "password" : "Longdeptrai123"
+}
+
+################################
+
+POST http://localhost:5001/api/test/createpost
+Content-Type: application/json
+
+{
+    "title" : "Covid 19 is down 2",
+    "message" : "The covid is no longer existed 2"
+}
+
+################################

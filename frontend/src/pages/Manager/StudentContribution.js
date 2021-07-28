@@ -127,6 +127,7 @@ function StudentContribution() {
                     <option value="Public Relations">Public Relations & Communications</option>
                 </CustomInput>
             </FormGroup>
+            <Button outline color="primary" className="mb-2">Download selected file</Button>
             <Table responsive hover>
                 <thead>
                     <tr>
@@ -154,12 +155,11 @@ function StudentContribution() {
                 </tbody>
             </Table>
             <Pagination
-                className='text-center mt-4'
+                className='text-center mt-4 mb-4'
                 total={100}
                 defaultPageSize={9}
                 pageSize={9}
             />
-            <Button outline color="primary">Download selected file</Button>
         </div>
     )
 }

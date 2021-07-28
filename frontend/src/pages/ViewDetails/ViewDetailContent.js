@@ -4,6 +4,11 @@ import './index.css'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, Form, Row, Col, FormGroup, Label } from 'reactstrap';
 
 function ViewDetailContent() {
+
+    const [dueDate, setDueDate] = useState(moment('28/07/2021 18:37:00', 'DD/MM/YYYY HH:mm:ss'));
+
+    const deadline = moment(dueDate, 'DD/MM/YYYY HH:mm:ss').fromNow();
+
     const [data, setData] = useState([
         {
             title: 'Submission 1',
@@ -106,7 +111,10 @@ function ViewDetailContent() {
                 </div>
             </div>
             <div className="text-center mt-4">
-                <Button outline color="primary mr-2" onClick={toggleModalEdit}>Edit submission</Button>
+                {deadline.includes('ago') ?
+                    <Button disabled outline color="primary mr-2">Edit submission</Button>
+                    :
+                    <Button outline color="primary mr-2" onClick={toggleModalEdit}>Edit submission</Button>}
                 <Modal isOpen={modal} toggle={toggleModalEdit}>
                     <ModalHeader toggle={toggleModalEdit}>Editing submission</ModalHeader>
                     <ModalBody>
@@ -150,7 +158,11 @@ function ViewDetailContent() {
                         <Button color="secondary" onClick={toggleModalEdit}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
-                <Button outline color="primary">Remove submission</Button>
+                {deadline.includes('ago') ?
+                    <Button disabled outline color="primary mr-2">Remove submission</Button>
+                    :
+                    <Button outline color="primary mr-2" onClick={toggleModalEdit}>Remove submission</Button>}
+                {deadline.includes('ago') ? <div className='text-danger mt-4'>You're late</div> : null}
             </div>
         </div>
     )

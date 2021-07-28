@@ -1,7 +1,6 @@
+import moment from 'moment';
 import React, { useState } from 'react';
 import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap';
-import moment from 'moment';
-import Timer from '../../components/Timer';
 
 function SubmitForm(props) {
     const {
@@ -16,8 +15,6 @@ function SubmitForm(props) {
     const [dueDate, setDueDate] = useState(moment('28/07/2021 18:37:00', 'DD/MM/YYYY HH:mm:ss'));
 
     const deadline = moment(dueDate, 'DD/MM/YYYY HH:mm:ss').fromNow();
-
-    console.log(deadline)
 
     return (
         <div style={{ paddingTop: '2%' }} >

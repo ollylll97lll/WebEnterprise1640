@@ -20,6 +20,10 @@ const UserSchema = new Schema({
 
     faculty: {
         type: String,
+    },
+
+    role: {
+        type: String,
     }
 },
 {

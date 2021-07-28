@@ -1,11 +1,18 @@
 import Pagination from 'rc-pagination';
-import React, { useEffect, useState } from 'react'
-import { Button, Col, CustomInput, Form, FormGroup, Label, Progress, Row, Table } from 'reactstrap';
+import React, { useEffect, useState } from 'react';
+import { Button, CustomInput, Form, FormGroup, Label, Table } from 'reactstrap';
 
 function AccountManagement() {
+    //Tất cả các faculty được phân loại sau khi chọn selectbox rồi set vào data
     const [data, setData] = useState([]);
+
+    //để phân loại faculty để lọc ra set lên Data
     const [faculty, setFaculty] = useState('');
+
+    //lấy role để gắn vào ?link filter
     const [role, setRole] = useState('');
+
+    //lấy tất cả account (mọi role, mọi faculty), initialState khi load trang
     const [total, setTotal] = useState([
         {
             faculty: 'Graphic and Digital Design',
@@ -116,6 +123,8 @@ function AccountManagement() {
             password: '9915ln001Student@gmail.com'
         },
     ]);
+
+    //lấy data từng faculty
     const [design, setDesign] = useState([]);
     const [marketing, setMarketing] = useState([]);
     const [computing, setComputing] = useState([]);
@@ -123,44 +132,42 @@ function AccountManagement() {
     const [eventManage, setEventManage] = useState([]);
     const [communication, setCommunication] = useState([]);
 
+    //lấy faculty để phân loại selectbox
     const handleChange = (e) => {
         const value = e.target.value;
         setFaculty(value);
     }
 
+    //lấy role để gắn vào link filter api
     const handleRoleChange = (e) => {
         const value = e.target.value;
         setRole(value);
     }
 
+    //phân loại role
     const roleSelector = () => {
         switch (role) {
             case '':
-                setData(total);
+                setRole(total);
                 break;
-            case 'Graphic and Digital Design':
-                setData(design);
+            case 'Manager':
+                setRole('Manager');
                 break;
-            case 'Marketing':
-                setData(marketing);
+            case 'Coordinator':
+                setRole('Coordinator');
                 break;
-            case 'Computing':
-                setData(computing);
+            case 'Student':
+                setRole('Student');
                 break;
-            case 'Business Management':
-                setData(business);
-                break;
-            case 'Event Management':
-                setData(eventManage);
-                break;
-            case 'Public Relations':
-                setData(communication);
+            case 'Guest':
+                setRole('Guest');
                 break;
             default:
-                return data;
+                return role;
         }
     }
 
+    //phân loại data theo faculty
     const dataSelector = () => {
         switch (faculty) {
             case '':
@@ -189,9 +196,11 @@ function AccountManagement() {
         }
     }
 
+    //thay đổi data, role theo selectbox
     useEffect(() => {
         dataSelector();
-    }, [faculty])
+        roleSelector();
+    }, [faculty, role])
 
     return (
         <div style={{ paddingTop: '2%' }} >
@@ -239,6 +248,7 @@ function AccountManagement() {
                     ))}
                 </tbody>
             </Table>
+            {/* Lấy total bằng cách lấy data.length, pageSize là lượng data mỗi trang */}
             <Pagination
                 className='text-center mt-4 mb-4'
                 total={100}

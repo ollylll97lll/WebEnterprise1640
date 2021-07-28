@@ -5,6 +5,7 @@ import Pagination from 'rc-pagination'
 import "rc-pagination/assets/index.css"
 
 function History() {
+    //Student thì chỉ xem bài của bản thân, nên ko có select
     const [data, setData] = useState([
         {
             id: 1,
@@ -24,6 +25,7 @@ function History() {
         },
     ])
 
+    //Đá data qua View Details
     const history = useHistory();
 
     const viewDetail = () => {
@@ -52,11 +54,13 @@ function History() {
                             <td>{data.submittedAt}</td>
                             <td className='cell'>{data.title}</td>
                             <td className='cell'>{data.description}</td>
+                            {/* Đẩy qua trang ViewDetail, đá data qua kia để hiện form bên kia */}
                             <td className="text-center"><Button outline color="primary" onClick={viewDetail}>View Details</Button></td>
                         </tr>
                     ))}
                 </tbody>
             </Table>
+            {/* Lấy total bằng cách lấy data.length, pageSize là lượng data mỗi trang */}
             <Pagination
                 className='text-center mt-4'
                 total={100}

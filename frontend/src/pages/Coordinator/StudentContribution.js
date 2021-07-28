@@ -5,6 +5,7 @@ import "rc-pagination/assets/index.css"
 import { useHistory } from 'react-router-dom';
 
 function StudentContributionCoordinator() {
+    //Coordinator thì chỉ quản lí từng Faculty riêng biệt, nên ko có select
     const [data, setData] = useState([
         {
             faculty: 'Marketing',
@@ -26,6 +27,7 @@ function StudentContributionCoordinator() {
         }
     ]);
 
+    //Đá data qua trang ViewDetail
     const history = useHistory();
 
     const viewDetail = () => {
@@ -41,9 +43,9 @@ function StudentContributionCoordinator() {
 
     return (
         <div style={{ paddingTop: '2%' }} >
-            <div className="mb-4"><span style={{textDecorationLine: 'underline'}}>Your Faculty</span>: <span className='font-weight-bold'>{data[0].faculty}</span></div>
-            
-            {/* Change Status */}
+            <div className="mb-4"><span style={{ textDecorationLine: 'underline' }}>Your Faculty</span>: <span className='font-weight-bold'>{data[0].faculty}</span></div>
+
+            {/*Đổi status của submission thành true thì coi như là nó được public thì được get ngoài Home*/}
             <Button outline color="primary" className='mb-2'>Public selected file</Button>
             <Table responsive hover>
                 <thead>
@@ -68,11 +70,13 @@ function StudentContributionCoordinator() {
                             <td>{data.type}</td>
                             <td className='cell'>{data.description}</td>
                             <td>{data.document}</td>
+                            {/* Đẩy qua trang ViewDetail, đá data qua kia để hiện form bên kia */}
                             <td className="text-center"><Button outline color="primary" onClick={viewDetail}>View Details</Button></td>
                         </tr>
                     ))}
                 </tbody>
             </Table>
+            {/* Lấy total bằng cách lấy data.length, pageSize là lượng data mỗi trang */}
             <Pagination
                 className='text-center mt-4'
                 total={100}

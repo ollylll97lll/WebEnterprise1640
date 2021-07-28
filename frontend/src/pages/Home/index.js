@@ -11,15 +11,15 @@ import Timer from '../../components/Timer'
 function HomePage() {
     const [data, setData] = useState([]);
 
+    //này để lấy session hiển thị
     const [startDate, setStartDate] = useState(new Date());
 
     const dateFormatted = startDate.getMonth() + 1 + '/' + startDate.getFullYear();
 
-    console.log(`StartDate: ${startDate}`);
-    console.log(`DateFormatted: ${dateFormatted}`);
-
+    //để phân loại role để lọc ra set lên Data
     const [faculty, setFaculty] = useState('');
 
+    //để lấy bài mới nhất hiển thị nổi bật
     const [highlight, setHighlight] = useState(
         {
             id: 1,
@@ -35,6 +35,7 @@ function HomePage() {
         }
     );
 
+    //lấy tất cả account (mọi role, mọi faculty), initialState khi load trang
     const [total, setTotal] = useState([
         {
             id: 1,
@@ -86,6 +87,7 @@ function HomePage() {
         }
     ]);
 
+    //lấy data từng faculty
     const [design, setDesign] = useState([
         {
             id: 3,
@@ -147,11 +149,13 @@ function HomePage() {
     const [eventManage, setEventManage] = useState([]);
     const [communication, setCommunication] = useState([]);
 
+    //lấy faculty để phân loại selectbox
     const handleChange = (e) => {
         const value = e.target.value;
         setFaculty(value);
     }
 
+    //phân loại data theo faculty
     const dataSelector = () => {
         switch (faculty) {
             case '':
@@ -180,6 +184,7 @@ function HomePage() {
         }
     }
 
+    //thay đổi data theo faculty select box
     useEffect(() => {
         dataSelector();
     }, [faculty])
@@ -195,7 +200,7 @@ function HomePage() {
                 <br />
                 <div className='col-12' style={{ display: 'flex', flexWrap: 'nowrap' }}>
                     <div className="align-items-center" style={{ height: '40%', width: '0%', backgroundColor: 'cyan' }}>
-
+                        {/* Lấy Session theo quý */}
                         <DatePicker
                             selected={startDate}
                             onChange={(dateFormatted) => setStartDate(dateFormatted)}
@@ -244,6 +249,7 @@ function HomePage() {
                                 </Col>
                             )}
                         </Row>
+                        {/* Lấy total bằng cách lấy data.length, pageSize là lượng data mỗi trang */}
                         <Pagination
                             className='text-center'
                             total={100}

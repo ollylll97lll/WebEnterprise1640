@@ -26,7 +26,7 @@ function AdminTab() {
                         className={classnames({ active: activeTab === '2' })}
                         onClick={() => { toggle('2'); }}
                     >
-                        SessionSettings
+                        Session Settings
                     </NavLink>
                 </NavItem>
             </Nav>

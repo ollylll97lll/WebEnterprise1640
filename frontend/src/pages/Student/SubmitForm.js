@@ -8,10 +8,12 @@ function SubmitForm(props) {
         className
     } = props;
 
+    //Mở modal Terms and Conditions
     const [modal, setModal] = useState(false);
 
     const toggle = () => setModal(!modal);
 
+    //set Deadline là duedate, biến deadline để check coi có trễ giờ deadline ko, thiếu cái update liên tục
     const [dueDate, setDueDate] = useState(moment('28/07/2021 18:37:00', 'DD/MM/YYYY HH:mm:ss'));
 
     const deadline = moment(dueDate, 'DD/MM/YYYY HH:mm:ss').fromNow();

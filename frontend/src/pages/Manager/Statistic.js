@@ -2,8 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Col, CustomInput, Form, FormGroup, Label, Progress, Row, Table } from 'reactstrap';
 
 function Statistic() {
+    //Tất cả các faculty được phân loại sau khi chọn selectbox rồi set vào data
     const [data, setData] = useState([]);
+
+    //để phân loại faculty để lọc ra set lên Data
     const [faculty, setFaculty] = useState('');
+
+    //lấy tất cả account (mọi role, mọi faculty), initialState khi load trang
     const [total, setTotal] = useState([
         {
             coordinatorName: 'Manager',
@@ -14,6 +19,7 @@ function Statistic() {
         }
     ])
 
+    //lấy data từng faculty
     const [design, setDesign] = useState([]);
 
     const [marketing, setMarketing] = useState([
@@ -31,11 +37,13 @@ function Statistic() {
     const [eventManage, setEventManage] = useState([]);
     const [communication, setCommunication] = useState([]);
 
+    //lấy faculty để phân loại selectbox
     const handleChange = (e) => {
         const value = e.target.value;
         setFaculty(value);
     }
 
+    //phân loại data theo faculty
     const dataSelector = () => {
         switch (faculty) {
             case '':
@@ -64,6 +72,7 @@ function Statistic() {
         }
     }
 
+    //thay đổi data theo faculty selectbox
     useEffect(() => {
         dataSelector();
     }, [faculty])
@@ -123,7 +132,6 @@ function Statistic() {
                         value={data.contributionTotalPercent} />
                 </div>
             )) : null}
-
         </div>
     )
 }

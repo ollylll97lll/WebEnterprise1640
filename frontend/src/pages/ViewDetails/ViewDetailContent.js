@@ -5,10 +5,12 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, Form, Row, C
 
 function ViewDetailContent() {
 
+    //set Deadline là duedate, biến deadline để check coi có trễ giờ deadline ko, thiếu cái update liên tục
     const [dueDate, setDueDate] = useState(moment('28/07/2021 18:37:00', 'DD/MM/YYYY HH:mm:ss'));
 
     const deadline = moment(dueDate, 'DD/MM/YYYY HH:mm:ss').fromNow();
 
+    //Lấy data đá từ trang Coordinator (StudentContribution) hoặc History của Student để đá qua đây hiển thị, chưa sửa được chỗ call comments
     const [data, setData] = useState([
         {
             title: 'Submission 1',
@@ -35,6 +37,7 @@ function ViewDetailContent() {
 
     const conversation = data[0].comments.content;
 
+    //Toggle của Comment (Show/Hide)
     const [toggle, setToggle] = useState(false);
 
     const toggleComment = (e) => {
@@ -42,6 +45,7 @@ function ViewDetailContent() {
         setToggle(!toggle);
     }
 
+    //Toggle của Edit Form Modal
     const [modal, setModal] = useState(false);
 
     const toggleModalEdit = () => setModal(!modal);
@@ -114,6 +118,7 @@ function ViewDetailContent() {
                 {deadline.includes('ago') ?
                     <Button disabled outline color="primary mr-2">Edit submission</Button>
                     :
+                    // Nhớ sửa cái vụ phải check validation rồi mới cho submit
                     <Button outline color="primary mr-2" onClick={toggleModalEdit}>Edit submission</Button>}
                 <Modal isOpen={modal} toggle={toggleModalEdit}>
                     <ModalHeader toggle={toggleModalEdit}>Editing submission</ModalHeader>

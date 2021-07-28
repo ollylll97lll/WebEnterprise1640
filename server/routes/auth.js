@@ -9,7 +9,7 @@ const User = require('../models/User')
 //route Post api/auth/register
 //Register for user
 router.post('/register', async (req, res) => {
-    const {email, password, faculty} = req.body
+    const {email, password, faculty, role} = req.body
 
     //validation for inputs
     if (!email || !password) 
@@ -17,6 +17,9 @@ router.post('/register', async (req, res) => {
 
     if (!faculty)
     return res.status(400).json({success: false, message: 'Please enter a Faculty for the User'})
+
+    if (!role)
+    return res.status(400).json({success: false, message: 'Please enter a Role for the User'})
 
     try {
         //Check if the user existed in DB
@@ -32,11 +35,12 @@ router.post('/register', async (req, res) => {
             password: hashedPassword,
             status: false,
             faculty,
+            role
         })
 
         await newUser.save()
 
-        const accessToken = jwt.sign({ userId: newUser._id, email, faculty }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30m' })
+        const accessToken = jwt.sign({ userId: newUser._id, email, faculty, role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30m' })
 
         res.json({success:true, message: "User created successfully", accessToken: accessToken, userInfo: newUser})
     } catch (err) {

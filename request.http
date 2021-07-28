@@ -7,9 +7,10 @@ POST http://localhost:5001/api/auth/register
 Content-Type: application/json
 
 {
-    "email" : "ltv.9a2.21@gmail.com",
+    "email" : "longnh20072000@gmail.com",
     "password" : "Longdeptrai123",
-    "faculty" : "IT"
+    "faculty" : "IT",
+    "role" : "admin"
 }
 
 ################################

@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Button, CustomInput, FormGroup, Label, Table } from 'reactstrap';
+import Pagination from 'rc-pagination'
+import "rc-pagination/assets/index.css"
 
 function StudentContribution() {
+    //Tất cả các faculty được phân loại sau khi chọn selectbox rồi set vào data
     const [data, setData] = useState([]);
 
+    //để phân loại faculty để lọc ra set lên Data
     const [faculty, setFaculty] = useState('');
 
+    //lấy tất cả account (mọi role, mọi faculty), initialState khi load trang
     const [total, setTotal] = useState([
         {
             faculty: 'Marketing',
@@ -36,6 +41,7 @@ function StudentContribution() {
         }
     ]);
 
+    //lấy data từng faculty
     const [design, setDesign] = useState([
         {
             faculty: 'Design',
@@ -74,11 +80,13 @@ function StudentContribution() {
     const [eventManage, setEventManage] = useState([]);
     const [communication, setCommunication] = useState([]);
 
+    //lấy faculty để phân loại selectbox
     const handleChange = (e) => {
         const value = e.target.value;
         setFaculty(value);
     }
 
+    //phân loại data theo faculty
     const dataSelector = () => {
         switch (faculty) {
             case '':
@@ -107,6 +115,7 @@ function StudentContribution() {
         }
     }
 
+    //thay đổi data, role theo selectbox
     useEffect(() => {
         dataSelector();
     }, [faculty])
@@ -125,6 +134,7 @@ function StudentContribution() {
                     <option value="Public Relations">Public Relations & Communications</option>
                 </CustomInput>
             </FormGroup>
+            <Button outline color="primary" className="mb-2">Download selected file</Button>
             <Table responsive hover>
                 <thead>
                     <tr>
@@ -151,7 +161,13 @@ function StudentContribution() {
                     ))}
                 </tbody>
             </Table>
-            <Button outline color="primary">Download selected file</Button>
+            {/* Lấy total bằng cách lấy data.length, pageSize là lượng data mỗi trang */}
+            <Pagination
+                className='text-center mt-4 mb-4'
+                total={100}
+                defaultPageSize={9}
+                pageSize={9}
+            />
         </div>
     )
 }

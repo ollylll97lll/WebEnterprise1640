@@ -1,26 +1,25 @@
-import axios from 'axios'
+import Pagination from 'rc-pagination'
+import "rc-pagination/assets/index.css"
 import React, { useEffect, useState } from 'react'
-import { Card, CardBody, CardImg, CardText, CardTitle, Col, Container, CustomInput, Form, FormGroup, Label, Media, Row } from 'reactstrap'
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
+import { Card, CardBody, CardImg, CardText, CardTitle, Col, CustomInput, Form, FormGroup, Label, Media, Row } from 'reactstrap'
 import Footer from '../../components/Footer'
 import GuestNav from '../../components/Navbar/GuestNav'
 import Timer from '../../components/Timer'
-import DatePicker from "react-datepicker";
-import moment from "moment"
-
-import "react-datepicker/dist/react-datepicker.css";
 
 function HomePage() {
     const [data, setData] = useState([]);
 
+    //này để lấy session hiển thị
     const [startDate, setStartDate] = useState(new Date());
 
     const dateFormatted = startDate.getMonth() + 1 + '/' + startDate.getFullYear();
 
-    console.log(`StartDate: ${startDate}`);
-    console.log(`DateFormatted: ${dateFormatted}`);
-
+    //để phân loại role để lọc ra set lên Data
     const [faculty, setFaculty] = useState('');
 
+    //để lấy bài mới nhất hiển thị nổi bật
     const [highlight, setHighlight] = useState(
         {
             id: 1,
@@ -36,6 +35,7 @@ function HomePage() {
         }
     );
 
+    //lấy tất cả account (mọi role, mọi faculty), initialState khi load trang
     const [total, setTotal] = useState([
         {
             id: 1,
@@ -87,6 +87,7 @@ function HomePage() {
         }
     ]);
 
+    //lấy data từng faculty
     const [design, setDesign] = useState([
         {
             id: 3,
@@ -148,11 +149,13 @@ function HomePage() {
     const [eventManage, setEventManage] = useState([]);
     const [communication, setCommunication] = useState([]);
 
+    //lấy faculty để phân loại selectbox
     const handleChange = (e) => {
         const value = e.target.value;
         setFaculty(value);
     }
 
+    //phân loại data theo faculty
     const dataSelector = () => {
         switch (faculty) {
             case '':
@@ -181,6 +184,7 @@ function HomePage() {
         }
     }
 
+    //thay đổi data theo faculty select box
     useEffect(() => {
         dataSelector();
     }, [faculty])
@@ -196,14 +200,14 @@ function HomePage() {
                 <br />
                 <div className='col-12' style={{ display: 'flex', flexWrap: 'nowrap' }}>
                     <div className="align-items-center" style={{ height: '40%', width: '0%', backgroundColor: 'cyan' }}>
-                        
-                            <DatePicker
-                                selected={startDate}
-                                onChange={(dateFormatted) => setStartDate(dateFormatted)}
-                                dateFormat="yyyy, QQQ"
-                                showQuarterYearPicker
-                                wrapperClassName="a"
-                            />
+                        {/* Lấy Session theo quý */}
+                        <DatePicker
+                            selected={startDate}
+                            onChange={(dateFormatted) => setStartDate(dateFormatted)}
+                            dateFormat="yyyy, QQQ"
+                            showQuarterYearPicker
+                            wrapperClassName="a"
+                        />
                     </div>
                     <div className="container">
                         <div className="mb-4">
@@ -245,6 +249,13 @@ function HomePage() {
                                 </Col>
                             )}
                         </Row>
+                        {/* Lấy total bằng cách lấy data.length, pageSize là lượng data mỗi trang */}
+                        <Pagination
+                            className='text-center'
+                            total={100}
+                            defaultPageSize={9}
+                            pageSize={9}
+                        />
                     </div>
                 </div>
             </div>

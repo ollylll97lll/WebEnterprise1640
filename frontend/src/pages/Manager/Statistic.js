@@ -1,19 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { Col, CustomInput, Form, FormGroup, Label, Row, Table } from 'reactstrap';
+import { Col, CustomInput, Form, FormGroup, Label, Progress, Row, Table } from 'reactstrap';
 
 function Statistic() {
+    //Tất cả các faculty được phân loại sau khi chọn selectbox rồi set vào data
     const [data, setData] = useState([]);
+
+    //để phân loại faculty để lọc ra set lên Data
     const [faculty, setFaculty] = useState('');
+
+    //lấy tất cả account (mọi role, mọi faculty), initialState khi load trang
     const [total, setTotal] = useState([
         {
             coordinatorName: 'Manager',
             totalContributions: 15,
             totalContributors: 25,
-            contributorPercent: 15 / 25 * 100 + '%',
-            contributionTotalPercent: 100 + '%',
+            contributorPercent: 15 / 25 * 100,
+            contributionTotalPercent: 100,
         }
     ])
 
+    //lấy data từng faculty
     const [design, setDesign] = useState([]);
 
     const [marketing, setMarketing] = useState([
@@ -21,8 +27,8 @@ function Statistic() {
             coordinatorName: 'LongNH69',
             totalContributions: 4,
             totalContributors: 6,
-            contributorPercent: (4 / 6 * 100).toFixed(2) + '%',
-            contributionTotalPercent: (4 / 15 * 100).toFixed(2) + '%',
+            contributorPercent: (4 / 6 * 100).toFixed(2),
+            contributionTotalPercent: (4 / 15 * 100).toFixed(2),
         }
     ])
 
@@ -31,11 +37,13 @@ function Statistic() {
     const [eventManage, setEventManage] = useState([]);
     const [communication, setCommunication] = useState([]);
 
+    //lấy faculty để phân loại selectbox
     const handleChange = (e) => {
         const value = e.target.value;
         setFaculty(value);
     }
 
+    //phân loại data theo faculty
     const dataSelector = () => {
         switch (faculty) {
             case '':
@@ -64,6 +72,7 @@ function Statistic() {
         }
     }
 
+    //thay đổi data theo faculty selectbox
     useEffect(() => {
         dataSelector();
     }, [faculty])
@@ -106,12 +115,23 @@ function Statistic() {
                             <td>{data.coordinatorName}</td>
                             <td>{data.totalContributions}</td>
                             <td>{data.totalContributors}</td>
-                            <td>{data.contributorPercent}</td>
-                            <td>{data.contributionTotalPercent}</td>
+                            <td>{data.contributorPercent}%</td>
+                            <td>{data.contributionTotalPercent}%</td>
                         </tr>
                     ))}
                 </tbody>
             </Table>
+            <div>Progress Bar: </div>
+            {data ? data.map((data) => (
+                <div>
+                    <div className="text-center">Contributors/Contributions: {data.contributorPercent}%</div>
+                    <Progress
+                        value={data.contributorPercent} />
+                    <div className="text-center mt-4">Faculty's Contribution/TotalContributions: {data.contributionTotalPercent}%</div>
+                    <Progress
+                        value={data.contributionTotalPercent} />
+                </div>
+            )) : null}
         </div>
     )
 }

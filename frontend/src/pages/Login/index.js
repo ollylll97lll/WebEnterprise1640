@@ -1,7 +1,29 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../../redux folder/actions/useractions';
 import './index.css'
 
-function LoginPage() {
+function LoginPage(props) {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    const dispatch = useDispatch();
+    const redirect = props.location.search ? props.location.search.split('=')[1] : '/home'
+
+    const userLogin = useSelector(state => state.userLogin)
+    const {userInfo, loading, error} = userLogin;
+
+    const SubmitHandler = (e) => {
+        e.preventDefault();
+        dispatch(login(email, password))
+    }
+
+    useEffect(() => {
+        if(userInfo){
+            props.history.push(redirect);
+        }
+    }, [props.history, redirect, userInfo]);
     return (
         <div className="container-fluid">
             <div className="row no-gutter">
@@ -12,14 +34,14 @@ function LoginPage() {
                             <div className="row">
                                 <div className="col-md-9 col-lg-8 mx-auto">
                                     <h3 className="login-heading mb-4">Welcome to Greenwich Magazine System!</h3>
-                                    <form>
+                                    <form onSubmit={SubmitHandler}>
                                         <div className="form-label-group">
-                                            <input type="email" id="inputEmail" className="form-control" placeholder="Email address" required />
+                                            <input type="email" id="inputEmail" className="form-control" placeholder="Email address" required onChange={(e) => setEmail(e.target.value)}/>
                                             <label htmlFor="inputEmail">Email address</label>
                                         </div>
 
                                         <div className="form-label-group">
-                                            <input type="password" id="inputPassword" className="form-control" placeholder="Password" required />
+                                            <input type="password" id="inputPassword" className="form-control" placeholder="Password" required onChange={(e) => setPassword(e.target.value)}/>
                                             <label htmlFor="inputPassword">Password</label>
                                         </div>
 

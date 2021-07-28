@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap';
+import moment from 'moment';
+import Timer from '../../components/Timer';
 
 function SubmitForm(props) {
     const {
@@ -10,6 +12,12 @@ function SubmitForm(props) {
     const [modal, setModal] = useState(false);
 
     const toggle = () => setModal(!modal);
+
+    const [dueDate, setDueDate] = useState(moment('28/07/2021 18:37:00', 'DD/MM/YYYY HH:mm:ss'));
+
+    const deadline = moment(dueDate, 'DD/MM/YYYY HH:mm:ss').fromNow();
+
+    console.log(deadline)
 
     return (
         <div style={{ paddingTop: '2%' }} >
@@ -71,7 +79,12 @@ function SubmitForm(props) {
                 &nbsp;
                 <Row form>
                     <Col md={12} className="text-center">
-                        <Button outline color="primary">Submit</Button>
+                        {deadline.includes('ago') ?
+                            <div>
+                                <Button disabled outline color="primary">Submit</Button>
+                                <p className="text-danger mt-2">Season closed. You cannot submit anymore</p>
+                            </div>
+                            : <Button outline color="primary">Submit</Button>}
                     </Col>
                 </Row>
             </Form>

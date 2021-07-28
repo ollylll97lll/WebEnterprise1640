@@ -8,7 +8,7 @@ const Test = require('./routes/test')
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@webenterprise1640.bhuwa.mongodb.net/webenterprise1640?retryWrites=true&w=majority` , {
+        await mongoose.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@webenterprise1640.1vlbz.mongodb.net/webenterprise1640?retryWrites=true&w=majority` , {
             useCreateIndex: true,
             useNewUrlParser: true,
             useUnifiedTopology: true,

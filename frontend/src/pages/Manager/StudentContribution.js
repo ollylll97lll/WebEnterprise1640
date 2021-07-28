@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, CustomInput, FormGroup, Label, Table } from 'reactstrap';
+import Pagination from 'rc-pagination'
+import "rc-pagination/assets/index.css"
 
 function StudentContribution() {
     const [data, setData] = useState([]);
@@ -151,6 +153,12 @@ function StudentContribution() {
                     ))}
                 </tbody>
             </Table>
+            <Pagination
+                className='text-center mt-4'
+                total={100}
+                defaultPageSize={9}
+                pageSize={9}
+            />
             <Button outline color="primary">Download selected file</Button>
         </div>
     )

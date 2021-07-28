@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Table } from 'reactstrap';
+import Pagination from 'rc-pagination'
+import "rc-pagination/assets/index.css"
 
 function History() {
     const [data, setData] = useState([
@@ -55,6 +57,12 @@ function History() {
                     ))}
                 </tbody>
             </Table>
+            <Pagination
+                className='text-center mt-4'
+                total={100}
+                defaultPageSize={9}
+                pageSize={9}
+            />
         </div >
     )
 }

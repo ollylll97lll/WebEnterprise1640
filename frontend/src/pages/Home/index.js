@@ -1,13 +1,12 @@
-import axios from 'axios'
+import Pagination from 'rc-pagination'
+import "rc-pagination/assets/index.css"
 import React, { useEffect, useState } from 'react'
-import { Card, CardBody, CardImg, CardText, CardTitle, Col, Container, CustomInput, Form, FormGroup, Label, Media, Row } from 'reactstrap'
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
+import { Card, CardBody, CardImg, CardText, CardTitle, Col, CustomInput, Form, FormGroup, Label, Media, Row } from 'reactstrap'
 import Footer from '../../components/Footer'
 import GuestNav from '../../components/Navbar/GuestNav'
 import Timer from '../../components/Timer'
-import DatePicker from "react-datepicker";
-import moment from "moment"
-
-import "react-datepicker/dist/react-datepicker.css";
 
 function HomePage() {
     const [data, setData] = useState([]);
@@ -196,14 +195,14 @@ function HomePage() {
                 <br />
                 <div className='col-12' style={{ display: 'flex', flexWrap: 'nowrap' }}>
                     <div className="align-items-center" style={{ height: '40%', width: '0%', backgroundColor: 'cyan' }}>
-                        
-                            <DatePicker
-                                selected={startDate}
-                                onChange={(dateFormatted) => setStartDate(dateFormatted)}
-                                dateFormat="yyyy, QQQ"
-                                showQuarterYearPicker
-                                wrapperClassName="a"
-                            />
+
+                        <DatePicker
+                            selected={startDate}
+                            onChange={(dateFormatted) => setStartDate(dateFormatted)}
+                            dateFormat="yyyy, QQQ"
+                            showQuarterYearPicker
+                            wrapperClassName="a"
+                        />
                     </div>
                     <div className="container">
                         <div className="mb-4">
@@ -245,6 +244,12 @@ function HomePage() {
                                 </Col>
                             )}
                         </Row>
+                        <Pagination
+                            className='text-center'
+                            total={100}
+                            defaultPageSize={9}
+                            pageSize={9}
+                        />
                     </div>
                 </div>
             </div>

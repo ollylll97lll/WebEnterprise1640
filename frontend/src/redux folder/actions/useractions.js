@@ -10,7 +10,7 @@ export const login = (email, password) => async (dispatch) => {
         }
     });
     try {
-        const { data } = await Axios.post(`https://jsonplaceholder.typicode.com/users`, { email, password });
+        const { data } = await Axios.post(`http://localhost:5001/api/auth/login`, { email, password });
             dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
             localStorage.setItem("userInfo", JSON.stringify(data));
     } catch (error) {

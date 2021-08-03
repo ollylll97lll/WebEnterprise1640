@@ -104,7 +104,7 @@ function SessionSettings() {
                 </thead>
                 <tbody>
                     {data.map((data) => (
-                        <tr>
+                        <tr key={data.name}>
                             <td>{data.name}</td>
                             <td>{data.start}</td>
                             <td>{data.end}</td>

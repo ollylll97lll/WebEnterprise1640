@@ -1,4 +1,5 @@
 import Pagination from 'rc-pagination';
+import "rc-pagination/assets/index.css";
 import React, { useEffect, useState } from 'react';
 import { Button, CustomInput, Form, FormGroup, Label, Table } from 'reactstrap';
 
@@ -124,6 +125,25 @@ function AccountManagement() {
         },
     ]);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [contentsPerPage, setContentsPerPage] = useState(9);
+
+    const indexOfLastContent = currentPage * contentsPerPage;
+    const indexOfFirstContent = indexOfLastContent - contentsPerPage;
+    const [currentData, setCurrentData] = useState([]);
+    const hienthicainayne = data.slice(indexOfFirstContent, indexOfLastContent);
+
+    console.log(currentPage);
+    console.log(contentsPerPage);
+    console.log(indexOfLastContent);
+    console.log(indexOfFirstContent);
+    console.log(currentData);
+
+    const updatePage = p => {
+        setCurrentPage(p);
+        setCurrentData(hienthicainayne);
+    };
+
     //lấy data từng faculty
     const [design, setDesign] = useState([]);
     const [marketing, setMarketing] = useState([]);
@@ -239,7 +259,7 @@ function AccountManagement() {
                 </thead>
                 <tbody>
                     {data.map((data) => (
-                        <tr>
+                        <tr key={data.email}>
                             <td>{data.email}</td>
                             <td>{data.faculty}</td>
                             <td>{data.role}</td>
@@ -251,9 +271,10 @@ function AccountManagement() {
             {/* Lấy total bằng cách lấy data.length, pageSize là lượng data mỗi trang */}
             <Pagination
                 className='text-center mt-4 mb-4'
-                total={100}
-                defaultPageSize={9}
+                total={data.length}
                 pageSize={9}
+                onChange={updatePage}
+                current={currentPage}
             />
         </div>
     )

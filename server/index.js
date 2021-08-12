@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors')
 
 const UserAuth = require('./routes/auth')
+const Article = require('./routes/article')
 
 const connectDB = async () => {
     try {
@@ -16,7 +17,7 @@ const connectDB = async () => {
 
         console.log('MongoDB connected')
     } catch (err) {
-        console.log(error.message)
+        console.log(err.message)
         process.exit(1)
     }
 }
@@ -30,6 +31,7 @@ app.use(express.json())
 app.use(cors())
 
 app.use('/api/auth', UserAuth)
+app.use('/api/article', Article)
 
 app.get('/', (req, res) => res.send("Hello"))
 

@@ -15,6 +15,11 @@ router.post('/register', async (req, res) => {
     if (!email || !password) 
     return res.status(400).json({success: false, message: 'Please enter your email or password'})
 
+    
+    //check if mail actual valid
+    if (!validateEmail(email))
+    return res.status(400).json({ success: false, message: 'Email not valid' })
+
     if (!faculty)
     return res.status(400).json({success: false, message: 'Please enter a Faculty for the User'})
 
@@ -35,7 +40,8 @@ router.post('/register', async (req, res) => {
             password: hashedPassword,
             status: false,
             faculty,
-            role
+            role,
+            article: []
         })
 
         await newUser.save()
@@ -80,5 +86,10 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ success: false, message: 'Something wrongs' })
     }
 })
+
+function validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
 
 module.exports = router

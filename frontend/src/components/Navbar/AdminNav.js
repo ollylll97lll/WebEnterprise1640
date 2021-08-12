@@ -5,7 +5,7 @@ import {
 } from 'reactstrap';
 import './index.css';
 
-const GuestNav = (props) => {
+const AdminNav = (props) => {
     const { buttonLabel } = props;
 
     const [isOpen, setIsOpen] = useState(false);
@@ -70,4 +70,4 @@ const GuestNav = (props) => {
     )
 };
 
-export default GuestNav
+export default AdminNav

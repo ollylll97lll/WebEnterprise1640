@@ -24,7 +24,38 @@ const UserSchema = new Schema({
 
     role: {
         type: String,
-    }
+    },
+    article: [{
+        id: {
+            type: Schema.Types.ObjectId,
+            ref: 'articles',
+        },
+
+        title: {
+            type: String,
+            ref: 'articles',
+        },
+    
+        description: {
+          type: String,
+          ref: 'articles',
+        },
+    
+        type: {
+            type: String,
+            ref: 'articles',
+        },
+    
+        topic: {
+            type: String,
+            ref: 'articles',
+        },
+
+        sessionName: {
+            type: String,
+            ref: 'articles',
+        },
+    }]
 },
 {
     timestamps: true

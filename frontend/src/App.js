@@ -1,5 +1,6 @@
 import { Route, Switch } from 'react-router-dom';
 import './App.css';
+import PrivateRoute from './components/ConfigRoutes/PrivateRoutes';
 import Error from './components/Error';
 import RedirectPage from './components/Redirect';
 import AdminPage from './pages/Admin';
@@ -17,7 +18,7 @@ function App() {
     <Switch initial='/'>
       <Route path='/' exact component={LoginPage} />
       <Route path='/forgot' component={ForgotPassword} />
-      <Route path='/home' component={HomePage} />
+      <PrivateRoute path='/home' component={HomePage} />
       <Route path='/changepass' component={ChangePassword} />
       <Route path='/admindashboard' component={AdminPage} />
       <Route path='/manager' component={ManagerPage} />

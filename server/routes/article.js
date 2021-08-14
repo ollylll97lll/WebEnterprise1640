@@ -1,11 +1,13 @@
 require('dotenv').config()
 const express = require('express')
 const router = express.Router()
+const moment = require('moment-timezone')
 
 const Article = require('../models/Article')
 const verifyUserToken = require('../middleware/userToken')
 const User = require('../models/User')
 const Comment = require('../models/Comment')
+const Session = require('../models/Session')
 
 //route api/article/create
 //Create Article for Student role
@@ -19,16 +21,18 @@ router.post('/create', verifyUserToken, async (req, res) => {
     //If good
     try {
         const user = await User.findOne({_id: req.userId})
+        const currentSession = await Session.find().limit(1).sort({$natural: -1})
         const article = new Article({
             title: title, 
             description: description,
             type: type,
-            topic: topic,
-            duration: duration,
-            session,
+            topic: currentSession[0].topic,
+            duration: currentSession[0].startedDate + ' ' + '-' + ' ' + currentSession[0].endedDate,
+            session: currentSession[0].session,
             comment: [],
             userId: req.userId,
-            creator: req.email
+            creator: req.email,
+            createdAt: moment().tz('Asia/Ho_Chi_Minh').format()
         })
 
         user.article.push(article)
@@ -36,6 +40,7 @@ router.post('/create', verifyUserToken, async (req, res) => {
         article.save()
 
         res.json({success: true, message: 'Article Successfully Created'})
+        console.log(currentSession[0].startedDate + ' ' + '-' + ' ' + currentSession[0].endedDate)
     } catch (err) {
         console.log(err)
         res.status(500).json({ success: false, message: 'Something wrongs' })

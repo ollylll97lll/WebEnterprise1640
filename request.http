@@ -7,6 +7,11 @@ GET http://localhost:5001/api/article/getAll_Article
 
 ################################
 
+//Get all Session
+GET http://localhost:5001/api/session/getAll_Session
+
+################################
+
 //register a new user for admin
 POST http://localhost:5001/api/auth/register
 Content-Type: application/json
@@ -34,15 +39,12 @@ Content-Type: application/json
 // Create Article
 POST http://localhost:5001/api/article/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTE0Y2M4YTg5NGQ4NTUxMTAwNDFkNzQiLCJlbWFpbCI6Imx0di45YTIuMjFAZ21haWwuY29tIiwiZmFjdWx0eSI6IklUIiwiaWF0IjoxNjI4NzU4NDgwLCJleHAiOjE2Mjg3NjAyODB9.iiXHQKJHn16-8ljhJI7bmU-yDBmIVPC0VFTdJfL9Dlk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTE0Y2M4YTg5NGQ4NTUxMTAwNDFkNzQiLCJlbWFpbCI6Imx0di45YTIuMjFAZ21haWwuY29tIiwiZmFjdWx0eSI6IklUIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjI4OTI2MjA5LCJleHAiOjE2Mjg5MjgwMDl9.eGvKeOjsFgdyjePnevALDfSjLiuhrzC_R6m_JYFKhsA
 
 {
-    "title" : "Should Human Die?",
-    "description" : "Should other species take control?",
-    "type" : "Article",
-    "topic" : "Human",
-    "duration" : "2021",
-    "session" : "Summer 2021"
+    "title" : "This is a Test about session",
+    "description" : "Add Session automatically from Session model",
+    "type" : "Testing API Article"
 }
 
 ################################
@@ -55,6 +57,20 @@ Content-Type: application/json
     "articleId" : "6114d5f6c7e3375c7892f2a2",
     "email" : "longnh20072000@gmail.com",
     "text" : "Sủa"
+}
+
+################################
+
+//Create new Session with Token have admin role
+POST http://localhost:5001/api/session/add_session
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTE0Y2M4YTg5NGQ4NTUxMTAwNDFkNzQiLCJlbWFpbCI6Imx0di45YTIuMjFAZ21haWwuY29tIiwiZmFjdWx0eSI6IklUIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjI4OTI2MjA5LCJleHAiOjE2Mjg5MjgwMDl9.eGvKeOjsFgdyjePnevALDfSjLiuhrzC_R6m_JYFKhsA
+
+{
+    "session" : "Winter 2021",
+    "startedDate" : "10/1/2021",
+    "endedDate" : "12/1/2021",
+    "topic" : "Life"
 }
 
 ################################

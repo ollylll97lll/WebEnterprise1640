@@ -25,6 +25,11 @@ const UserSchema = new Schema({
     role: {
         type: String,
     },
+
+    createdAt: {
+        type: Date,
+    },
+    
     article: [{
         id: {
             type: Schema.Types.ObjectId,
@@ -56,9 +61,6 @@ const UserSchema = new Schema({
             ref: 'articles',
         },
     }]
-},
-{
-    timestamps: true
 })
 
 module.exports = mongoose.model('users', UserSchema)

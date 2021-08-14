@@ -5,6 +5,7 @@ const cors = require('cors')
 
 const UserAuth = require('./routes/auth')
 const Article = require('./routes/article')
+const Session = require('./routes/session')
 
 const connectDB = async () => {
     try {
@@ -32,6 +33,7 @@ app.use(cors())
 
 app.use('/api/auth', UserAuth)
 app.use('/api/article', Article)
+app.use('/api/session', Session)
 
 app.get('/', (req, res) => res.send("Hello"))
 

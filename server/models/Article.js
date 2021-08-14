@@ -18,6 +18,10 @@ const ArticleSchema = new Schema({
         type: String,
     },
 
+    falcuty: {
+        type: String,
+    },
+
     duration: {
         type: String,
     },
@@ -33,6 +37,10 @@ const ArticleSchema = new Schema({
 
     creator: {
         type: String,
+    },
+
+    createdAt: {
+        type: Date,
     },
 
     comment: [{

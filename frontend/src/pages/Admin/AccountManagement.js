@@ -1,7 +1,7 @@
 import Pagination from 'rc-pagination';
 import "rc-pagination/assets/index.css";
 import React, { useEffect, useState } from 'react';
-import { Button, CustomInput, Form, FormGroup, Label, Table } from 'reactstrap';
+import { Button, Col, CustomInput, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
 
 function AccountManagement() {
     //Tất cả các faculty được phân loại sau khi chọn selectbox rồi set vào data
@@ -222,6 +222,10 @@ function AccountManagement() {
         roleSelector();
     }, [faculty, role])
 
+    const [modal, setModal] = useState(false);
+
+    const toggleModalAdd = () => setModal(!modal);
+
     return (
         <div style={{ paddingTop: '2%' }} >
             <Form>
@@ -248,6 +252,56 @@ function AccountManagement() {
                     </CustomInput>
                 </FormGroup>
             </Form>
+            <div className="mt-4 mb-2"><Button outline color="primary" onClick={toggleModalAdd}>Add Account</Button></div>
+            <Modal isOpen={modal} toggle={toggleModalAdd}>
+                <ModalHeader toggle={toggleModalAdd}>Add Session</ModalHeader>
+                <ModalBody>
+                    <Form>
+                        <Row form>
+                            <Col md={12}>
+                                <FormGroup>
+                                    <Label for="userEmail">Email<span className='text-danger'>*</span></Label>
+                                    <Input type="email" name="userEmail" id="userEmail" placeholder="User Email" required />
+                                </FormGroup>
+                            </Col>
+                        </Row>
+                        <Row form>
+                            <Col md={12}>
+                                <FormGroup>
+                                    <Label for='facultySelect'>Select Faculty</Label>
+                                    <CustomInput type="select" id="facultySelect" name='facultySelect' onChange={handleChange}>
+                                        <option value="">Select Faculty</option>
+                                        <option value="Graphic and Digital Design">Graphic and Digital Design</option>
+                                        <option value="Marketing">Marketing</option>
+                                        <option value="Computing">Computing</option>
+                                        <option value="Business Management">Business Management</option>
+                                        <option value="Event Management">Event Management</option>
+                                        <option value="Public Relations">Public Relations & Communications</option>
+                                    </CustomInput>
+                                </FormGroup>
+                            </Col>
+                        </Row>
+                        <Row form>
+                            <Col md={12}>
+                                <FormGroup>
+                                    <Label for='roleSelect'>Select Role</Label>
+                                    <CustomInput type="select" id="roleSelect" name='roleSelect' onChange={handleRoleChange}>
+                                        <option value="">Select Role</option>
+                                        <option value="Manager">Manager</option>
+                                        <option value="Coordinator">Coordinator</option>
+                                        <option value="Student">Student</option>
+                                        <option value="Guest">Guest</option>
+                                    </CustomInput>
+                                </FormGroup>
+                            </Col>
+                        </Row>
+                    </Form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="primary" onClick={toggleModalAdd}>Add New Account</Button>{' '}
+                    <Button color="secondary" onClick={toggleModalAdd}>Cancel</Button>
+                </ModalFooter>
+            </Modal>
             <Table responsive hover>
                 <thead>
                     <tr>

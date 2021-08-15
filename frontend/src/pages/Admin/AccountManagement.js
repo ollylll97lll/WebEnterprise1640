@@ -386,7 +386,6 @@ function AccountManagement() {
                         <th>Email</th>
                         <th>Faculty</th>
                         <th>Role</th>
-                        <th>Function</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -395,7 +394,6 @@ function AccountManagement() {
                             <td>{data.email}</td>
                             <td>{data.faculty}</td>
                             <td>{data.role}</td>
-                            <td><Button outline color="primary">Reset Password</Button></td>
                         </tr>
                     ))}
                 </tbody>

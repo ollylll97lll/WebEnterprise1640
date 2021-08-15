@@ -12,15 +12,61 @@ GET http://localhost:5001/api/session/getAll_Session
 
 ################################
 
+//Count All Article
+GET http://localhost:5001/api/article/countAll
+
+################################
+
+//Count All Article with faculty with query api?faculty=(insert faculty)
+GET http://localhost:5001/api/article/countWith_faculty?faculty=IT
+
+################################
+
+//Count All User submitted Article
+GET http://localhost:5001/api/user/userWithArticle
+
+################################
+
+//Count All User submitted Article of an Faculty
+GET http://localhost:5001/api/user/count_userFaculty_haveArticle?faculty=Marketing
+
+################################
+
+//Count All User sort with faculty and role using ?name=(insert) or search same with ?name=(insert)&name=(insert)
+GET http://localhost:5001/api/user/getAll_user?faculty=Design&role=manager
+
+################################
+
+//Update article status with article ID
+PUT http://localhost:5001/api/article/status/6118d4012ec0a91ca0121a34
+Content-Type: application/json
+
+{
+    "status": true
+}
+
+################################
+
+//Update session information with ID
+PUT http://localhost:5001/api/session/edit/611769f3abda6b0f648b9ec5
+Content-Type: application/json
+
+{
+    "topic": "Qwerty",
+    "startedDate" : "10/20/2021"
+}
+
+################################
+
 //register a new user for admin
 POST http://localhost:5001/api/auth/register
 Content-Type: application/json
 
 {
-    "email" : "ltv.9a2.21@gmail.com",
+    "email" : "longnh20072000@gmail.com",
     "password" : "Longdeptrai123",
-    "faculty" : "IT",
-    "role" : "admin"
+    "faculty" : "Marketing",
+    "role" : "student"
 }
 
 ################################
@@ -39,7 +85,7 @@ Content-Type: application/json
 // Create Article
 POST http://localhost:5001/api/article/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTE0Y2M4YTg5NGQ4NTUxMTAwNDFkNzQiLCJlbWFpbCI6Imx0di45YTIuMjFAZ21haWwuY29tIiwiZmFjdWx0eSI6IklUIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjI4OTI2MjA5LCJleHAiOjE2Mjg5MjgwMDl9.eGvKeOjsFgdyjePnevALDfSjLiuhrzC_R6m_JYFKhsA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTE0Y2M4YTg5NGQ4NTUxMTAwNDFkNzQiLCJlbWFpbCI6Imx0di45YTIuMjFAZ21haWwuY29tIiwiZmFjdWx0eSI6IklUIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjI5MDE3MDcyLCJleHAiOjE2MjkwMTg4NzJ9.PN06B5hZ44HVs6dfwG5BAKEtrktLJ7bf4I9Q8-m9ibw
 
 {
     "title" : "This is a Test about session",
@@ -71,6 +117,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTE0Y
     "startedDate" : "10/1/2021",
     "endedDate" : "12/1/2021",
     "topic" : "Life"
+}
+
+################################
+
+//Send mail forgot password
+POST http://localhost:5001/api/user/forgotPassword
+Content-Type: application/json
+
+{
+    "email" : "ltv.9a2.21@gmail.com"
 }
 
 ################################

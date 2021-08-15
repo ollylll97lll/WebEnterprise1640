@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import LoadingBox from '../../components/Return Boxes/LoadingBox';
+import MessageBox from '../../components/Return Boxes/MessageBox';
 import { login } from '../../redux folder/actions/useractions';
 import './index.css'
 
@@ -12,7 +14,7 @@ function LoginPage(props) {
     const redirect = props.location.search ? props.location.search.split('=')[1] : '/home'
 
     const userLogin = useSelector(state => state.userLogin)
-    const {userInfo, loading, error} = userLogin;
+    const { userInfo, loading, error } = userLogin;
 
     const SubmitHandler = (e) => {
         e.preventDefault();
@@ -20,7 +22,7 @@ function LoginPage(props) {
     }
 
     useEffect(() => {
-        if(userInfo){
+        if (userInfo) {
             props.history.push(redirect);
         }
     }, [props.history, redirect, userInfo]);
@@ -35,13 +37,14 @@ function LoginPage(props) {
                                 <div className="col-md-9 col-lg-8 mx-auto">
                                     <h3 className="login-heading mb-4">Welcome to Greenwich Magazine System!</h3>
                                     <form onSubmit={SubmitHandler}>
+
                                         <div className="form-label-group">
-                                            <input type="email" id="inputEmail" className="form-control" placeholder="Email address" required onChange={(e) => setEmail(e.target.value)}/>
+                                            <input type="email" id="inputEmail" className="form-control" placeholder="Email address" required onChange={(e) => setEmail(e.target.value)} />
                                             <label htmlFor="inputEmail">Email address</label>
                                         </div>
 
                                         <div className="form-label-group">
-                                            <input type="password" id="inputPassword" className="form-control" placeholder="Password" required onChange={(e) => setPassword(e.target.value)}/>
+                                            <input type="password" id="inputPassword" className="form-control" placeholder="Password" required onChange={(e) => setPassword(e.target.value)} />
                                             <label htmlFor="inputPassword">Password</label>
                                         </div>
 
@@ -50,6 +53,12 @@ function LoginPage(props) {
                                             <label className="custom-control-label" htmlFor="customCheck1">Remember password</label>
                                         </div>
                                         <button className="btn btn-lg btn-signin btn-block btn-login text-uppercase font-weight-bold mb-2" type="submit">Sign in</button>
+                                        {
+                                            loading && <LoadingBox/>
+                                        }
+                                        {
+                                            error && <MessageBox variant = 'danger'>{error}</MessageBox>
+                                        }
                                         <div className="text-center">
                                             <a className="small" href="/forgot">Forgot password?</a>
                                         </div>

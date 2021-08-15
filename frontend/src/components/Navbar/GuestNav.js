@@ -72,7 +72,7 @@ const GuestNav = (props) => {
                     </Col>
                     <Col xs="auto">
                         <NavItem>
-                            <NavLink href='/' onClick={signoutHandler }>Logout</NavLink>
+                            <NavLink href='/' onClick={signoutHandler}>Logout</NavLink>
                         </NavItem>
                     </Col>
                 </Nav>

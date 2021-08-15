@@ -1,6 +1,6 @@
 import {applyMiddleware, combineReducers, compose, createStore} from 'redux';
 import thunk from 'redux-thunk'
-import { userLoginReducer } from './reducer/userreducer';
+import { userLoginReducer, userRegisterReducer } from './reducer/userreducer';
 
 const initialState = {
     userLogin: {
@@ -13,6 +13,7 @@ const initialState = {
 // reducer nhận state đang có và action gửi về (đăng nhập, đăng xuất...)
 const reducer =  combineReducers({
     userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
 });
 
 // send to the extension to view

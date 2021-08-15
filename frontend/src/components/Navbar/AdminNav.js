@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     Button, Col, Collapse, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem,
     NavLink
 } from 'reactstrap';
+import { signout } from '../../redux folder/actions/useractions';
 import './index.css';
 
 const AdminNav = (props) => {
+    const dispatch = useDispatch();
     const { buttonLabel } = props;
 
     const [isOpen, setIsOpen] = useState(false);
@@ -15,6 +18,13 @@ const AdminNav = (props) => {
     const [modal, setModal] = useState(false);
 
     const toggleModal = () => setModal(!modal);
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin;
+
+    const signoutHandler = () => {
+        dispatch(signout());
+    }
 
     return (
         <Navbar light expand="md">
@@ -61,7 +71,7 @@ const AdminNav = (props) => {
                     </Col>
                     <Col xs="auto">
                         <NavItem>
-                            <NavLink href='#'>Logout</NavLink>
+                            <NavLink href='/' onClick={signoutHandler}>Logout</NavLink>
                         </NavItem>
                     </Col>
                 </Nav>

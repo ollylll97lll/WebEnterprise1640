@@ -54,7 +54,7 @@ function LoginPage(props) {
                                         </div>
                                         <button className="btn btn-lg btn-signin btn-block btn-login text-uppercase font-weight-bold mb-2" type="submit">Sign in</button>
                                         {
-                                            loading && <LoadingBox />
+                                            loading && <LoadingBox/>
                                         }
                                         {
                                             error && <MessageBox variant = 'danger'>{error}</MessageBox>

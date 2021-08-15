@@ -26,9 +26,11 @@ router.post('/create', verifyUserToken, async (req, res) => {
             title: title, 
             description: description,
             type: type,
+            faculty: req.faculty,
             topic: currentSession[0].topic,
             duration: currentSession[0].startedDate + ' ' + '-' + ' ' + currentSession[0].endedDate,
             session: currentSession[0].session,
+            status: 'false',
             comment: [],
             userId: req.userId,
             creator: req.email,
@@ -100,5 +102,67 @@ router.get('/getAll_Article', async (req, res) => {
         });
     });
 })
+
+//route api/article/status/:id
+//Update Status of article using its ID
+router.put('/status/:id', async (req, res) => {
+    if (!req.body) {
+        return res.status(400).send({
+          message: "Data to update can not be empty!"
+        });
+      }
+    
+      const id = req.params.id;
+    
+      Article.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+        .then(data => {
+          if (!data) {
+            res.status(404).send({
+              message: `Cannot update article status with id=${id}. Maybe article was not found!`
+            });
+          } else res.send({ message: "Article status was updated successfully." });
+        })
+        .catch(err => {
+          res.status(500).send({
+            message: "Error updating article status with id=" + id
+          });
+        });
+})
+
+//route api/article/countAll
+//Count All current article
+router.get('/countAll', async (req, res) => {
+  
+    Article.find().countDocuments()
+      .then(data => {
+        res.json({ success: true, count: data })
+      })
+      .catch(err => {
+        res.status(500).send({
+          success: false,
+          message:
+            err.message || "Some error occurred while retrieving forms."
+        });
+      });
+  })
+
+//route api/article/countAll
+//Count All current article
+router.get('/countWith_faculty', async (req, res) => {
+    const faculty = req.query.faculty;
+    const condition = faculty ? { faculty: { $regex: new RegExp(faculty), $options: "i" } } : {};
+  
+    Article.find(condition).countDocuments()
+      .then(data => {
+        res.json({ success: true, count: data })
+      })
+      .catch(err => {
+        res.status(500).send({
+          success: false,
+          message:
+            err.message || "Some error occurred while retrieving forms."
+        });
+      });
+  })
 
 module.exports = router

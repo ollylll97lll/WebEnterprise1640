@@ -18,7 +18,7 @@ const ArticleSchema = new Schema({
         type: String,
     },
 
-    falcuty: {
+    faculty: {
         type: String,
     },
 
@@ -27,6 +27,10 @@ const ArticleSchema = new Schema({
     },
 
     session: {
+        type: String,
+    },
+
+    status: {
         type: String,
     },
 

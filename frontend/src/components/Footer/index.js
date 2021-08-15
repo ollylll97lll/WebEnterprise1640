@@ -11,7 +11,7 @@ function Footer() {
                         <hr />
                         <ul className="list-unstyled">
                             <li>ĐẠI HỌC GREENWICH </li>
-                            <li>Tòa nhà DETECH -Số 8 Tôn Thất Thuyết-P.Mỹ Đình 2-Q.Nam Từ Liêm</li>
+                            <li>Tòa nhà DETECH - Số 8 Tôn Thất Thuyết-P.Mỹ Đình 2-Q.Nam Từ Liêm</li>
                             <li>Điện thoại: 024.7300.2266</li>
                             <li>Hotline: 0981.558.080 | 0971.274.545</li>
                         </ul>

@@ -1,9 +1,16 @@
 import Pagination from 'rc-pagination';
 import "rc-pagination/assets/index.css";
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Col, CustomInput, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
+import LoadingBox from '../../components/Return Boxes/LoadingBox';
+import MessageBox from '../../components/Return Boxes/MessageBox';
+import { register } from '../../redux folder/actions/useractions';
 
 function AccountManagement() {
+    // dispatch initiation
+    const dispatch = useDispatch();
+
     //Tất cả các faculty được phân loại sau khi chọn selectbox rồi set vào data
     const [data, setData] = useState([]);
 
@@ -133,11 +140,11 @@ function AccountManagement() {
     const [currentData, setCurrentData] = useState([]);
     const hienthicainayne = data.slice(indexOfFirstContent, indexOfLastContent);
 
-    console.log(currentPage);
-    console.log(contentsPerPage);
-    console.log(indexOfLastContent);
-    console.log(indexOfFirstContent);
-    console.log(currentData);
+    // console.log(currentPage);
+    // console.log(contentsPerPage);
+    // console.log(indexOfLastContent);
+    // console.log(indexOfFirstContent);
+    // console.log(currentData);
 
     const updatePage = p => {
         setCurrentPage(p);
@@ -224,7 +231,62 @@ function AccountManagement() {
 
     const [modal, setModal] = useState(false);
 
-    const toggleModalAdd = () => setModal(!modal);
+    const toggleModalAdd = () => {
+        setModal(!modal)
+    };
+
+    // State giá trị cho tạo người dùng mới
+    const [accountEmail, setAccountEmail] = useState('');
+    const [accountPassword, setAccountPassword] = useState('');
+    const [accountFaculty, setAccountFaculty] = useState('');
+    const [accountRole, setAccountRole] = useState('');
+
+    const setNewAccountData = (value, e) => {
+        let input = e.target.value;
+        switch (value) {
+            case 'Email':
+                setAccountEmail(input);
+                break;
+            case 'Password':
+                setAccountPassword(input);
+                break;
+
+            case 'Falcuty':
+                setAccountFaculty(input);
+                break;
+
+            case 'Role':
+                setAccountRole(input);
+                break;
+            default:
+                break;
+        }
+    }
+    const newUser = useSelector(state => state.userRegister)
+    const { registerUser, loading, error } = newUser;
+
+    // func gọi dispatch register.
+    const addNewAccount = async () => {
+        let newAccountData = {
+            email: accountEmail,
+            password: accountPassword,
+            faculty: accountFaculty,
+            role: accountRole,
+        }
+        console.log(newAccountData)
+        // dispatch(register(accountEmail, accountPassword,accountFaculty,accountRole));
+        
+        await dispatch(register(newAccountData));
+        if (registerUser) {
+            alert('account added successfully');
+        }
+        else alert('ERROR IN CREATING NEW ACCOUNT!');
+        toggleModalAdd();
+    }
+
+
+
+
 
     return (
         <div style={{ paddingTop: '2%' }} >
@@ -252,16 +314,32 @@ function AccountManagement() {
                     </CustomInput>
                 </FormGroup>
             </Form>
+            {
+                error && <MessageBox variant='danger'>{error}</MessageBox>
+            }
             <div className="mt-4 mb-2"><Button outline color="primary" onClick={toggleModalAdd}>Add Account</Button></div>
             <Modal isOpen={modal} toggle={toggleModalAdd}>
-                <ModalHeader toggle={toggleModalAdd}>Add Session</ModalHeader>
+                <ModalHeader toggle={toggleModalAdd}>Add New Account</ModalHeader>
                 <ModalBody>
+                    
+                    {
+                        loading && <LoadingBox />
+                    }
+
                     <Form>
                         <Row form>
                             <Col md={12}>
                                 <FormGroup>
                                     <Label for="userEmail">Email<span className='text-danger'>*</span></Label>
-                                    <Input type="email" name="userEmail" id="userEmail" placeholder="User Email" required />
+                                    <Input type="email" name="userEmail" id="userEmail" placeholder="User Email" required onChange={(e) => setNewAccountData('Email', e)} />
+                                </FormGroup>
+                            </Col>
+                        </Row>
+                        <Row form>
+                            <Col md={12}>
+                                <FormGroup>
+                                    <Label for="userPassword">Password<span className='text-danger'>*</span></Label>
+                                    <Input type="password" name="userPassword" id="userPassword" placeholder="User Password" required onChange={(e) => setNewAccountData('Password', e)} />
                                 </FormGroup>
                             </Col>
                         </Row>
@@ -269,7 +347,7 @@ function AccountManagement() {
                             <Col md={12}>
                                 <FormGroup>
                                     <Label for='facultySelect'>Select Faculty</Label>
-                                    <CustomInput type="select" id="facultySelect" name='facultySelect' onChange={handleChange}>
+                                    <CustomInput type="select" id="facultySelect" name='facultySelect' onChange={(e) => setNewAccountData('Falcuty', e)}>
                                         <option value="">Select Faculty</option>
                                         <option value="Graphic and Digital Design">Graphic and Digital Design</option>
                                         <option value="Marketing">Marketing</option>
@@ -285,7 +363,7 @@ function AccountManagement() {
                             <Col md={12}>
                                 <FormGroup>
                                     <Label for='roleSelect'>Select Role</Label>
-                                    <CustomInput type="select" id="roleSelect" name='roleSelect' onChange={handleRoleChange}>
+                                    <CustomInput type="select" id="roleSelect" name='roleSelect' onChange={(e) => setNewAccountData('Role', e)}>
                                         <option value="">Select Role</option>
                                         <option value="Manager">Manager</option>
                                         <option value="Coordinator">Coordinator</option>
@@ -298,7 +376,7 @@ function AccountManagement() {
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={toggleModalAdd}>Add New Account</Button>{' '}
+                    <Button color="primary" onClick={addNewAccount}>Add New Account</Button>{' '}
                     <Button color="secondary" onClick={toggleModalAdd}>Cancel</Button>
                 </ModalFooter>
             </Modal>

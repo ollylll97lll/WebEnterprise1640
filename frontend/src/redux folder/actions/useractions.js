@@ -32,23 +32,21 @@ export const signout = () => (dispatch) => {
 
 // REGISTER
 
-export const register = (email, password, falcuty, role) => async (dispatch) => {
+export const register = ({email,password,faculty,role}) => async (dispatch) => {
     dispatch({
         type: USER_REGISTER_REQUEST,
         payload: {
             email,
             password,
-            falcuty,
+            faculty,
             role
         }
     });
 
     try {
-        const { data } = await Axios.post('http://localhost:5001/api/auth/register', { email, password, falcuty, role });
+        const { data } = await Axios.post('http://localhost:5001/api/auth/register', { email, password, faculty, role });
         // create account & login w the account & redirect to the history page.
         dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
-        // dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
-        // localStorage.setItem("userInfo", JSON.stringify(data));
         
     } catch (error) {
         dispatch({

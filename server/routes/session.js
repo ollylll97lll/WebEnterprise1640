@@ -48,4 +48,30 @@ router.get('/getAll_session', async (req, res) => {
     });
 })
 
+//route api/session/edit/:id
+//Edit Session
+router.put('/edit/:id', async (req, res) => {
+    if (!req.body) {
+        return res.status(400).send({
+            message: "Data to update can not be empty!"
+        });
+    }
+
+    const id = req.params.id;
+
+    Session.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+        .then(data => {
+            if (!data) {
+                res.status(404).send({
+                    message: `Cannot update session information with id=${id}. Maybe session was not found!`
+                });
+            } else res.send({ message: "Session information was updated successfully." });
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Error updating session information with id=" + id
+            });
+        });
+})
+
 module.exports = router

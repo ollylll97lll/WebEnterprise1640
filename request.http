@@ -32,8 +32,8 @@ GET http://localhost:5001/api/user/count_userFaculty_haveArticle?faculty=Marketi
 
 ################################
 
-//Count All User sort with faculty and role using ?name=(insert) or search same with ?name=(insert)&name=(insert)
-GET http://localhost:5001/api/user/getAll_user?faculty=Design&role=manager
+//Get All User sort with faculty and role using ?name=(insert) or search same with ?name=(insert)&name=(insert)
+GET http://localhost:5001/api/user/getAll_user?faculty=&role=manager
 
 ################################
 
@@ -77,7 +77,7 @@ Content-Type: application/json
 
 {
     "email" : "ltv.9a2.21@gmail.com",
-    "password" : "Longdeptrai123"
+    "password" : "123456789"
 }
 
 ################################
@@ -127,6 +127,18 @@ Content-Type: application/json
 
 {
     "email" : "ltv.9a2.21@gmail.com"
+}
+
+################################
+
+// Change current user password
+POST http://localhost:5001/api/user/changePassword
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTE0Y2M4YTg5NGQ4NTUxMTAwNDFkNzQiLCJlbWFpbCI6Imx0di45YTIuMjFAZ21haWwuY29tIiwiZmFjdWx0eSI6IklUIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjI5MTg2NjcyLCJleHAiOjE2MjkxODg0NzJ9.y3MBqMDrepyXIILjVxlliyqCmEX06BDiPogjeuD5xCM
+
+{
+    "currentPassword" : "Longdeptrai123",
+    "newPassword" : "123456789"
 }
 
 ################################

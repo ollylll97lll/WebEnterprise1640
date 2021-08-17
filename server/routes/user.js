@@ -2,8 +2,10 @@ require('dotenv').config()
 const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
+const argon2 = require('argon2')
 const User = require('../models/User')
 const forgotPassMail = require('../middleware/forgotPassMail')
+const verifyUserToken = require('../middleware/userToken')
 
 //route api/user/userWithArticle
 //count user that submitted article
@@ -81,6 +83,45 @@ router.post('/forgotPassword', async (req, res) => {
     forgotPassMail(email, accessToken)
 
     res.json({ success: true, message: 'Nhận email thành công', accessToken, email })
+})
+
+//route api/user/changePassword
+//Change User Password
+router.post('/changePassword', verifyUserToken, async (req, res) => {
+    const {currentPassword, newPassword} = req.body
+
+    try {
+      //get current user
+      const user = await User.findOne({_id: req.userId})
+
+      //Find user in DB
+      if(!user)
+      return res.status(500).json({success: false, message: 'User not found'})
+
+      const passwordValid = await argon2.verify(user.password, currentPassword)
+
+      //Check if Password correctly input
+      if(!passwordValid)
+      return res.json({success: false, message: 'Password Incorrect'})
+
+      //if all good 
+      const hashedPassword = await argon2.hash(newPassword)
+
+      //Update Password
+      User.findByIdAndUpdate({_id: req.userId}, {password: hashedPassword}, { useFindAndModify: false })
+      .then(data => {
+        res.send({ success: true, message: "Password changed successfully." });
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).send({
+          message: 'Something wrong!!'
+        });
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({success: false, message: err.message})
+    }
 })
 
 function validateEmail(email) {

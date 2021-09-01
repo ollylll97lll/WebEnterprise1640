@@ -46,7 +46,7 @@ const forgotPassMail = (to, token) => {
         <p>Xin chào <strong>${to}</strong>,</p>
         <p>Cảm ơn bạn đã truy cập <strong>Hệ thống Khai báo y tế dành cho Doanh nghiệp</strong></p>
         <p>Bạn vui lòng chọn <strong>Xác Nhận</strong> để bắt đầu khai báo</p>
-        <p><a href="${CLIENT_URL}/forgotPass/${token}"><button style=
+        <p><a href="${CLIENT_URL}/recoverpass/${token}"><button style=
                 "
             width: 230px;
             height: 60px;

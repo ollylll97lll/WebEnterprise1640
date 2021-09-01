@@ -1,5 +1,5 @@
 import Axios from 'axios'
-import { USER_LOGIN_FAIL, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from '../constants/userconstants'
+import { USER_LOGIN_FAIL, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_RECOVER_EMAIL_FAIL, USER_RECOVER_EMAIL_REQUEST, USER_RECOVER_EMAIL_SUCCESS, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from '../constants/userconstants'
 
 export const login = (email, password) => async (dispatch) => {
     dispatch({
@@ -32,7 +32,7 @@ export const signout = () => (dispatch) => {
 
 // REGISTER
 
-export const register = ({email,password,faculty,role}) => async (dispatch) => {
+export const register = ({ email, password, faculty, role }) => async (dispatch) => {
     dispatch({
         type: USER_REGISTER_REQUEST,
         payload: {
@@ -47,10 +47,34 @@ export const register = ({email,password,faculty,role}) => async (dispatch) => {
         const { data } = await Axios.post('http://localhost:5001/api/auth/register', { email, password, faculty, role });
         // create account & login w the account & redirect to the history page.
         dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
-        
+
     } catch (error) {
         dispatch({
             type: USER_REGISTER_FAIL, payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        });
+    }
+}
+
+// RECOVER-PASSWORD
+
+export const recover = (email) => async (dispatch) => {
+    dispatch({
+        type: USER_RECOVER_EMAIL_REQUEST,
+        payload: {
+            email,
+        }
+    });
+
+    try {
+        const { data } = await Axios.post('http://localhost:5001/api/user/forgotPassword', { email } );
+        dispatch({ type: USER_RECOVER_EMAIL_SUCCESS, payload: data });
+
+    } catch (error) {
+        dispatch({
+            type: USER_RECOVER_EMAIL_FAIL, payload:
                 error.response && error.response.data.message
                     ? error.response.data.message
                     : error.message,

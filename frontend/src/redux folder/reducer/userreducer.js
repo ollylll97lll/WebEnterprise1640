@@ -1,4 +1,4 @@
-import { USER_LOGIN_FAIL, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from "../constants/userconstants";
+import { USER_LOGIN_FAIL, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_RECOVER_EMAIL_FAIL, USER_RECOVER_EMAIL_REQUEST, USER_RECOVER_EMAIL_SUCCESS, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from "../constants/userconstants";
 
 export const userLoginReducer = (state = {}, action) => {
     switch (action.type) {
@@ -22,6 +22,19 @@ export const userRegisterReducer = (state = {}, action) => {
         case USER_REGISTER_SUCCESS:
             return { loading: false, registerUser: action.payload };
         case USER_REGISTER_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+}
+
+export const userRecoverReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_RECOVER_EMAIL_REQUEST:
+            return { loading: true };
+        case USER_RECOVER_EMAIL_SUCCESS:
+            return { loading: false, recoverData: action.payload };
+        case USER_RECOVER_EMAIL_FAIL:
             return { loading: false, error: action.payload };
         default:
             return state;

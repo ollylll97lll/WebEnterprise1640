@@ -1,6 +1,7 @@
 import {applyMiddleware, combineReducers, compose, createStore} from 'redux';
 import thunk from 'redux-thunk'
-import { userLoginReducer, userRegisterReducer } from './reducer/userreducer';
+import { recoverPassFromEmailReducer } from './reducer/recoverpasswordreducer';
+import { userLoginReducer, userRecoverReducer, userRegisterReducer } from './reducer/userreducer';
 
 const initialState = {
     userLogin: {
@@ -14,6 +15,8 @@ const initialState = {
 const reducer =  combineReducers({
     userLogin: userLoginReducer,
     userRegister: userRegisterReducer,
+    userRecoverEmail: userRecoverReducer,
+    userRecoverpassfromemail: recoverPassFromEmailReducer,
 });
 
 // send to the extension to view

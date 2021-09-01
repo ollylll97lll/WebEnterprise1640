@@ -23,6 +23,7 @@ function LoginPage(props) {
 
     useEffect(() => {
         if (userInfo) {
+            let userRole = toString(userInfo.userInfo.role);
             props.history.push(redirect);
         }
     }, [props.history, redirect, userInfo]);

@@ -266,7 +266,7 @@ function AccountManagement() {
     const { registerUser, loading, error } = newUser;
 
     // func gọi dispatch register.
-    const addNewAccount = async () => {
+    const addNewAccount = () => {
         let newAccountData = {
             email: accountEmail,
             password: accountPassword,
@@ -274,13 +274,7 @@ function AccountManagement() {
             role: accountRole,
         }
         console.log(newAccountData)
-        // dispatch(register(accountEmail, accountPassword,accountFaculty,accountRole));
-        
-        await dispatch(register(newAccountData));
-        if (registerUser) {
-            alert('account added successfully');
-        }
-        else alert('ERROR IN CREATING NEW ACCOUNT!');
+        dispatch(register(newAccountData));
         toggleModalAdd();
     }
 
@@ -314,14 +308,19 @@ function AccountManagement() {
                     </CustomInput>
                 </FormGroup>
             </Form>
+
             {
                 error && <MessageBox variant='danger'>{error}</MessageBox>
+            }
+
+            {
+                registerUser && <MessageBox variant='success'>{registerUser.message}</MessageBox>
             }
             <div className="mt-4 mb-2"><Button outline color="primary" onClick={toggleModalAdd}>Add Account</Button></div>
             <Modal isOpen={modal} toggle={toggleModalAdd}>
                 <ModalHeader toggle={toggleModalAdd}>Add New Account</ModalHeader>
                 <ModalBody>
-                    
+
                     {
                         loading && <LoadingBox />
                     }
@@ -365,10 +364,10 @@ function AccountManagement() {
                                     <Label for='roleSelect'>Select Role</Label>
                                     <CustomInput type="select" id="roleSelect" name='roleSelect' onChange={(e) => setNewAccountData('Role', e)}>
                                         <option value="">Select Role</option>
-                                        <option value="Manager">Manager</option>
-                                        <option value="Coordinator">Coordinator</option>
-                                        <option value="Student">Student</option>
-                                        <option value="Guest">Guest</option>
+                                        <option value="manager">Manager</option>
+                                        <option value="coordinator">Coordinator</option>
+                                        <option value="student">Student</option>
+                                        <option value="guest">Guest</option>
                                     </CustomInput>
                                 </FormGroup>
                             </Col>

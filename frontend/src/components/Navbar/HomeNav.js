@@ -7,7 +7,7 @@ import {
 import { signout } from '../../redux folder/actions/useractions';
 import './index.css';
 
-const GuestNav = (props) => {
+const HomeNav = (props) => {
     const dispatch = useDispatch();
     const { buttonLabel } = props;
 
@@ -80,4 +80,4 @@ const GuestNav = (props) => {
     )
 };
 
-export default GuestNav
+export default HomeNav

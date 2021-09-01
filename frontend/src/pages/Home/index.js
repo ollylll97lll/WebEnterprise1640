@@ -3,13 +3,19 @@ import "rc-pagination/assets/index.css"
 import React, { useEffect, useState } from 'react'
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
+import { useSelector } from 'react-redux'
 import { Card, CardBody, CardImg, CardText, CardTitle, Col, CustomInput, Form, FormGroup, Label, Media, Row } from 'reactstrap'
 import Footer from '../../components/Footer'
 import GuestNav from '../../components/Navbar/GuestNav'
+import { renderNavBar } from '../../components/Navbar/renderNavBar'
 import Timer from '../../components/Timer'
 
 function HomePage() {
     const [data, setData] = useState([]);
+
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo, loading, error } = userLogin;
+    let userRole = userInfo.userInfo.role;
 
     //này để lấy session hiển thị
     const [startDate, setStartDate] = useState(new Date());
@@ -192,7 +198,7 @@ function HomePage() {
     return (
         <div className="page-container">
             <div className="content-wrap">
-                <GuestNav />
+                {renderNavBar(userRole)}
                 <div className="col-12 mt-3">
                     <Timer />
                 </div>

@@ -18,13 +18,15 @@ function App() {
     <Switch initial='/'>
       <Route path='/' exact component={LoginPage} />
       <Route path='/forgot' component={ForgotPassword} />
+      <Route path='/recoverpass' component={ChangePassword} />
+
       <PrivateRoute path='/home' component={HomePage} />
-      <Route path='/changepass' component={ChangePassword} />
-      <Route path='/admindashboard' component={AdminPage} />
-      <Route path='/manager' component={ManagerPage} />
-      <Route path='/coordinator' component={CoordinatorPage} />
-      <Route path='/student' component={StudentPage} />
-      <Route path='/viewdetails' component={ViewDetails} />
+      <PrivateRoute path='/admindashboard' component={AdminPage} /> 
+      <PrivateRoute path='/manager' component={ManagerPage} />
+      <PrivateRoute path='/coordinator' component={CoordinatorPage} />
+      <PrivateRoute path='/student' component={StudentPage} />
+      <PrivateRoute path='/viewdetails' component={ViewDetails} />
+      
       <Route path='/error' component={Error} />
       <Route path='/redirect' component={RedirectPage} />
     </Switch >

@@ -41,7 +41,7 @@ const GuestNav = (props) => {
                 <Nav className="ml-auto" navbar>
                     <Col xs="auto">
                         <NavItem>
-                            <NavLink href='#'>Guest</NavLink>
+                            <NavLink href='/home'>Guest</NavLink>
                         </NavItem>
                     </Col>
                     <Col xs="auto">

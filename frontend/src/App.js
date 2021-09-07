@@ -21,6 +21,7 @@ function App() {
       <Route path='/recoverpass' component={ChangePassword} />
 
       <PrivateRoute path='/home' component={HomePage} />
+      
       <PrivateRoute path='/admindashboard' component={AdminPage} /> 
       <PrivateRoute path='/manager' component={ManagerPage} />
       <PrivateRoute path='/coordinator' component={CoordinatorPage} />

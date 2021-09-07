@@ -7,12 +7,12 @@ const Article = require('../models/Article')
 const verifyUserToken = require('../middleware/userToken')
 const User = require('../models/User')
 const Comment = require('../models/Comment')
-const Session = require('../models/Session')
+const SeasonTopic = require('../models/SeasonTopic')
 
 //route api/article/create
 //Create Article for Student role
 router.post('/create', verifyUserToken, async (req, res) => {
-    const {title, description, type, file, topic, duration, session} = req.body
+    const {title, description, type, file, topic, duration, season} = req.body
 
     // title ad description validation
     if(!title || !description)
@@ -21,15 +21,15 @@ router.post('/create', verifyUserToken, async (req, res) => {
     //If good
     try {
         const user = await User.findOne({_id: req.userId})
-        const currentSession = await Session.find().limit(1).sort({$natural: -1})
+        const currentSeason = await SeasonTopic.find().limit(1).sort({$natural: -1})
         const article = new Article({
             title: title, 
             description: description,
             type: type,
             faculty: req.faculty,
-            topic: currentSession[0].topic,
-            duration: currentSession[0].startedDate + ' ' + '-' + ' ' + currentSession[0].endedDate,
-            session: currentSession[0].session,
+            topic: currentSeason[0].topic,
+            duration: currentSeason[0].startedDate + ' ' + '-' + ' ' + currentSeason[0].endedDate,
+            season: currentSeason[0].season,
             status: 'false',
             comment: [],
             userId: req.userId,
@@ -42,7 +42,7 @@ router.post('/create', verifyUserToken, async (req, res) => {
         article.save()
 
         res.json({success: true, message: 'Article Successfully Created'})
-        console.log(currentSession[0].startedDate + ' ' + '-' + ' ' + currentSession[0].endedDate)
+        console.log(currentSeason[0].startedDate + ' ' + '-' + ' ' + currentSeason[0].endedDate)
     } catch (err) {
         console.log(err)
         res.status(500).json({ success: false, message: 'Something wrongs' })
@@ -77,7 +77,7 @@ router.post('/add_comment', async (req, res) => {
 })
 
 //route api/article/getAll_Article
-//Get all articles with queries of creator, userId, topic and session
+//Get all articles with queries of creator, userId, topic and season
 router.get('/getAll_Article', async (req, res) => {
     const creator = req.query.creator;
     const creatorQuery = creator ? { creator: { $regex: new RegExp(creator), $options: "i" } } : {};
@@ -88,10 +88,10 @@ router.get('/getAll_Article', async (req, res) => {
     const topic = req.query.topic;
     const topicQuery = topic ? { topic: { $regex: new RegExp(topic), $options: "i" } } : {};
 
-    const session = req.query.session;
-    const sessionQuery = session ? { session: { $regex: new RegExp(session), $options: "i" } } : {};
+    const season = req.query.season;
+    const seasonQuery = season ? { season: { $regex: new RegExp(season), $options: "i" } } : {};
 
-    Article.find(creator ? creatorQuery : userId ? idQuery : topic ? topicQuery : session ? sessionQuery : {})
+    Article.find(creator ? creatorQuery : userId ? idQuery : topic ? topicQuery : season ? seasonQuery : {})
     .then(data => {
         res.send(data);
     })

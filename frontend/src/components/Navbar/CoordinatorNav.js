@@ -40,7 +40,7 @@ const CoordinatorNav = (props) => {
                 <Nav className="ml-auto" navbar>
                     <Col xs="auto">
                         <NavItem>
-                            <NavLink href='#'>Coordinator</NavLink>
+                            <NavLink href='/coordinator'>Coordinator</NavLink>
                         </NavItem>
                     </Col>
                     <Col xs="auto">

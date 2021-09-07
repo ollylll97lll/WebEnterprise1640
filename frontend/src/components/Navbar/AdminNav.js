@@ -40,7 +40,7 @@ const AdminNav = (props) => {
                 <Nav className="ml-auto" navbar>
                     <Col xs="auto">
                         <NavItem>
-                            <NavLink href='#'>Admin</NavLink>
+                            <NavLink href='/admindashboard'>Admin</NavLink>
                         </NavItem>
                     </Col>
                     <Col xs="auto">

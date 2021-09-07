@@ -1,8 +1,17 @@
-import React, { useState } from 'react'
-import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, Input, Form, Row, Col, FormGroup, Label } from 'reactstrap';
+import React, { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
+import LoadingBox from '../../components/Return Boxes/LoadingBox';
+import MessageBox from '../../components/Return Boxes/MessageBox';
+import { addseasontopic } from '../../redux folder/actions/articleaction';
 
-function SessionSettings() {
+function SeasonTopicSettings() {
+    const dispatch = useDispatch();
+
+    const addSeasonTopic = useSelector(state => state.addSeasonTopic);
+    const { response, loading, error } = addSeasonTopic;
+
     const [data, setData] = useState([
         {
             name: 'Winter-2021',
@@ -41,22 +50,76 @@ function SessionSettings() {
 
     const toggleModalEdit = () => setModalEdit(!modalEdit);
 
+    const [season, setSeason] = useState('');
+
+    const [topic, setTopic] = useState('');
+
+    function CheckSeason() {
+        const date = new Date();
+        const month = date.getUTCMonth();
+        const year = date.getUTCFullYear();
+
+        const season = () => {
+            if (month >= 0 && month <= 2) {
+                return 'Spring';
+            }
+            if (month >= 3 && month <= 5) {
+                return 'Summer';
+            }
+            if (month >= 6 && month <= 8) {
+                return 'Autumn';
+            }
+            if (month >= 9 && month <= 11) {
+                return 'Winter';
+            }
+            else return 'defaultseason';
+        }
+        setSeason(`${season()} ${year}`)
+        return;
+    }
+
+
+    const AddSeason = (e) => {
+        e.preventDefault();
+        const seasondata = {
+            season: season,
+            startedDate: startDate,
+            endedDate: endDate,
+            topic: topic
+        }
+        dispatch(addseasontopic(seasondata));
+        toggleModalAdd()
+    }
+
+    useEffect(() => {
+        CheckSeason();
+    }, [])
+
     return (
         <div style={{ paddingTop: '2%' }} >
-            <div><span style={{ textDecorationLine: 'underline' }}>Current Sessions</span>: <span className="font-weight-bold">{data[0].name}</span></div>
+            {
+                loading && <LoadingBox />
+            }
+            {
+                error && <MessageBox variant='danger'>{error}</MessageBox>
+            }
+
+            <div><span style={{ textDecorationLine: 'underline' }}>Current Seasons</span>: <span className="font-weight-bold">{data[0].name}</span></div>
             <div><span style={{ textDecorationLine: 'underline' }}>Duration</span>: <span className="font-weight-bold">{data[0].start} - {data[0].end}</span></div>
-            <div><span style={{ textDecorationLine: 'underline' }}>Session Topic</span>: <span className="font-weight-bold">{data[0].topic}</span></div>
-            <div className="mt-4"><Button outline color="primary" onClick={toggleModalAdd}>Add Session</Button></div>
+            <div><span style={{ textDecorationLine: 'underline' }}>Ongoing Season Topic</span>: <span className="font-weight-bold">{data[0].topic}</span></div>
+            <div className="mt-4"><Button outline color="primary" onClick={toggleModalAdd}>Add Season Topic</Button></div>
+            
             {/* Nhớ sửa cái vụ phải check validation rồi mới cho submit */}
+
             <Modal isOpen={modal} toggle={toggleModalAdd}>
-                <ModalHeader toggle={toggleModalAdd}>Add Session</ModalHeader>
+                <ModalHeader toggle={toggleModalAdd}>Add Season</ModalHeader>
                 <ModalBody>
                     <Form>
                         <Row form>
                             <Col md={12}>
                                 <FormGroup>
-                                    <Label for="sessionName">Session name <span className='text-danger'>*</span></Label>
-                                    <Input type="text" name="sessionName" id="sessionName" placeholder="Session name" required />
+                                    <Label for="seasonName">Season name</Label>
+                                    <Input type="text" name="seasonName" id="seasonName" placeholder="Season name" value={season} disabled />
                                 </FormGroup>
                             </Col>
                         </Row>
@@ -80,15 +143,15 @@ function SessionSettings() {
                         <Row form className='mt-3'>
                             <Col md={12}>
                                 <FormGroup>
-                                    <Label for="sessionTopic">Session Topic <span className='text-danger'>*</span></Label>
-                                    <Input type="text" name="sessionTopic" id="sessionTopic" placeholder="Session Topic" required />
+                                    <Label for="seasonTopic">Season Topic <span className='text-danger'>*</span></Label>
+                                    <Input type="text" name="seasonTopic" id="seasonTopic" placeholder="Season Topic" required onChange={(e) => { setTopic(e.target.value) }} />
                                 </FormGroup>
                             </Col>
                         </Row>
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={toggleModalAdd}>Add New Sesson</Button>{' '}
+                    <Button color="primary" type="submit" onClick={(e) => AddSeason(e)}>Add New Season</Button>{' '}
                     <Button color="secondary" onClick={toggleModalAdd}>Cancel</Button>
                 </ModalFooter>
             </Modal>
@@ -112,14 +175,14 @@ function SessionSettings() {
                             <td><Button outline color="primary" onClick={toggleModalEdit}>Edit</Button></td>
                             {/* Nhớ sửa cái vụ phải check validation rồi mới cho submit */}
                             <Modal isOpen={modalEdit} toggle={toggleModalEdit}>
-                                <ModalHeader toggle={toggleModalEdit}>Edit Session</ModalHeader>
+                                <ModalHeader toggle={toggleModalEdit}>Edit Season</ModalHeader>
                                 <ModalBody>
                                     <Form>
                                         <Row form>
                                             <Col md={12}>
                                                 <FormGroup>
-                                                    <Label for="sessionName">Session name <span className='text-danger'>*</span></Label>
-                                                    <Input type="text" name="sessionName" id="sessionName" placeholder="Session name" required />
+                                                    <Label for="seasonName">Season name <span className='text-danger'>*</span></Label>
+                                                    <Input type="text" name="seasonName" id="seasonName" placeholder="Season name" required />
                                                 </FormGroup>
                                             </Col>
                                         </Row>
@@ -143,15 +206,15 @@ function SessionSettings() {
                                         <Row form className='mt-3'>
                                             <Col md={12}>
                                                 <FormGroup>
-                                                    <Label for="sessionTopic">Session Topic <span className='text-danger'>*</span></Label>
-                                                    <Input type="text" name="sessionTopic" id="sessionTopic" placeholder="Session Topic" required />
+                                                    <Label for="seasonTopic">Season Topic <span className='text-danger'>*</span></Label>
+                                                    <Input type="text" name="seasonTopic" id="seasonTopic" placeholder="Season Topic" required />
                                                 </FormGroup>
                                             </Col>
                                         </Row>
                                     </Form>
                                 </ModalBody>
                                 <ModalFooter>
-                                    <Button color="primary" onClick={toggleModalEdit}>Edit Session</Button>{' '}
+                                    <Button color="primary" onClick={toggleModalEdit}>Edit Season</Button>{' '}
                                     <Button color="secondary" onClick={toggleModalEdit}>Cancel</Button>
                                 </ModalFooter>
                             </Modal>
@@ -163,4 +226,4 @@ function SessionSettings() {
     )
 }
 
-export default SessionSettings
+export default SeasonTopicSettings

@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import React, { useState } from 'react';
 import { Col, Nav, NavItem, NavLink, Row, TabContent, TabPane } from 'reactstrap';
 import AccountManagement from './AccountManagement';
-import SessionSettings from './SessionSettings';
+import SeasonTopicSettings from './SeasonTopicSetting';
 
 function AdminTab() {
     const [activeTab, setActiveTab] = useState('1');
@@ -41,7 +41,7 @@ function AdminTab() {
                 <TabPane tabId="2">
                     <Row>
                         <Col sm="12">
-                            <SessionSettings />
+                            <SeasonTopicSettings />
                         </Col>
                     </Row>
                 </TabPane>

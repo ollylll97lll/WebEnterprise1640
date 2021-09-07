@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
     Button, Col, Collapse, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem,
     NavLink
@@ -9,7 +10,7 @@ import './index.css';
 
 const StudentNav = (props) => {
     const dispatch = useDispatch();
-    const { buttonLabel } = props;
+    // const { buttonLabel } = props;
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -20,7 +21,7 @@ const StudentNav = (props) => {
     const toggleModal = () => setModal(!modal);
 
     const userLogin = useSelector(state => state.userLogin)
-    const { userInfo } = userLogin;
+    const { userInfo, loading, error } = userLogin;
 
     const signoutHandler = () => {
         dispatch(signout());
@@ -40,7 +41,7 @@ const StudentNav = (props) => {
                 <Nav className="ml-auto" navbar>
                     <Col xs="auto">
                         <NavItem>
-                            <NavLink href='#'>Student</NavLink>
+                            <NavLink href='/student'>Student</NavLink>
                         </NavItem>
                     </Col>
                     <Col xs="auto">

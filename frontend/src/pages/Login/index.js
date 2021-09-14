@@ -36,7 +36,7 @@ function LoginPage(props) {
                         <div className="container">
                             <div className="row">
                                 <div className="col-md-9 col-lg-8 mx-auto">
-                                    <h3 className="login-heading mb-4">Welcome to Greenwich Magazine System!</h3>
+                                    <h3 className="login-heading mb-4">Welcome to Greenwich Contribution Forum!</h3>
                                     <form onSubmit={SubmitHandler}>
 
                                         <div className="form-label-group">

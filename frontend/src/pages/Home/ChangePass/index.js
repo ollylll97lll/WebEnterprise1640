@@ -51,7 +51,7 @@ function ChangePassword(props) {
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-9 col-lg-8 mx-auto">
-                                    <h3 class="login-heading mb-4">Welcome to Greenwich Magazine System!</h3>
+                                    <h3 class="login-heading mb-4">Welcome to Greenwich Contribution Forum!</h3>
                                     <h4 class="login-heading mb-4">Set your new password</h4>
                                     <form onSubmit={(e) => submitRecover(e)} >
                                         <div class="form-label-group">

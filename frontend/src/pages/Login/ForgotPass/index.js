@@ -31,8 +31,8 @@ function ForgotPassword(props) {
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-9 col-lg-8 mx-auto">
-                                    <h3 class="login-heading mb-4">Welcome to Greenwich Magazine System!</h3>
-                                    <h4 class="login-heading mb-4">Recover your account</h4>
+                                    <h3 class="login-heading mb-4">Welcome to Greenwich Contribution Forum!</h3>
+                                    <h5 class="login-heading mb-4">Recover your account</h5>
                                     <form onSubmit={(e) => submitRecover(e)} >
                                         <div class="form-label-group">
                                             <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus onChange={(e) => setRecoverEmail(e.target.value)} />

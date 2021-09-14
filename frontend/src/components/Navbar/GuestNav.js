@@ -33,7 +33,7 @@ const GuestNav = (props) => {
                 <div className='d-flex align-items-center'>
                     <div style={{ marginLeft: "-10px" }} />
                     <div className='ml-2' />
-                    FPT Greenwich Magazine System
+                    FPT Greenwich Contribution Forum
                 </div>
             </NavbarBrand>
             <NavbarToggler onClick={toggle} />

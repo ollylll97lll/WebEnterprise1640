@@ -63,10 +63,10 @@ POST http://localhost:5001/api/auth/register
 Content-Type: application/json
 
 {
-    "email" : "longnh20072000@gmail.com",
-    "password" : "Longdeptrai123",
-    "faculty" : "Marketing",
-    "role" : "student"
+    "email" : "coordinator@coordinator.com",
+    "password" : "coordinator",
+    "department": "IT",
+    "role" : "coordinator"
 }
 
 ################################
@@ -76,8 +76,8 @@ POST http://localhost:5001/api/auth/login
 Content-Type: application/json
 
 {
-    "email" : "ltv.9a2.21@gmail.com",
-    "password" : "123456789"
+    "email" : "longnh20072002@gmail.com",
+    "password" : "Longdeptrai123"
 }
 
 ################################
@@ -95,6 +95,23 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTE0Y
 
 ################################
 
+################################
+
+// Create Article
+POST http://localhost:5001/api/post/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTRjOTNmNDgzY2IzMmI3YjgwZjA2ODEiLCJlbWFpbCI6InN0YWZmQHN0YWZmLmNvbSIsImRlcGFydG1lbnQiOiJJVCIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTYzMjc2MzA3MSwiZXhwIjoxNjMyNzY0ODcxfQ.Lt4ROb3nGgWHjArMa4epFEr8tIYzXJqN_cwPGHHBqb8
+
+{
+    "categoryId" : "6151ce318f44c40cb19d295b",
+    "userId" : "614c93f483cb32b7b80f0681",
+    "title" : "This is a Test about session 5",
+    "content" : "Add Session automatically from Session model",
+    "department" : "Testing API Article"
+}
+
+################################
+
 //Add comment in Article
 POST http://localhost:5001/api/article/add_comment
 Content-Type: application/json
@@ -103,6 +120,18 @@ Content-Type: application/json
     "articleId" : "6114d5f6c7e3375c7892f2a2",
     "email" : "longnh20072000@gmail.com",
     "text" : "Sủa"
+}
+
+################################
+
+//Add comment in post
+POST http://localhost:5001/api/post/comment
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTRjOTNmNDgzY2IzMmI3YjgwZjA2ODEiLCJlbWFpbCI6InN0YWZmQHN0YWZmLmNvbSIsImRlcGFydG1lbnQiOiJJVCIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTYzMjc2NTQ3OCwiZXhwIjoxNjMyNzY3Mjc4fQ.N22NuBQHCmwFLakOisdh-cP7OQfKjW9vqEeUxrWjfOc
+
+{
+    "postId" : "6151fd6bb85e9b07652b2479",
+    "comment" : "3rd cmt"
 }
 
 ################################
@@ -117,6 +146,22 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTE0Y
     "startedDate" : "10/1/2021",
     "endedDate" : "12/1/2021",
     "topic" : "Life"
+}
+
+################################
+
+################################
+
+//Create new Category with Token have admin role
+POST http://localhost:5001/api/category/add_category
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTRjOTNjNDgzY2IzMmI3YjgwZjA2N2QiLCJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTYzMjc1MTEzNiwiZXhwIjoxNjMyNzUyOTM2fQ.Tcgd8RdnGZmsiiZjR1ZN6zOVoO-TiHICSC7FyLP5Xtg
+
+{
+    "name" : "Mr.International",
+    "description": "Mr.305",
+    "startdate" : "1/10/2021",
+    "enddate" : "10/10/2021"
 }
 
 ################################

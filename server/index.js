@@ -9,7 +9,8 @@ const Article = require('./routes/article')
 const Post = require('./newroutes/post')
 const Seasons = require('./routes/seasons')
 const Category = require('./newroutes/category')
-const User = require('./routes/user')
+// const User = require('./routes/user')
+const User = require('./newroutes/user')
 
 const connectDB = async () => {
     try {
@@ -41,11 +42,12 @@ app.use('/api/auth', newUserAuth)
 app.use('/api/post', Post)
 app.use('/api/category', Category)
 
-app.use('/api/article', Article)
-app.use('/api/season', Seasons)
-
 app.use('/api/user', User)
 
+// Old routes
+app.use('/api/article', Article)
+app.use('/api/season', Seasons)
+// 
 app.get('/', (req, res) => res.send("Hello"))
 
 const PORT = 5001;

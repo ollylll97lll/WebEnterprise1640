@@ -3,14 +3,9 @@ const express = require('express')
 const router = express.Router()
 const moment = require('moment-timezone')
 
-const Article = require('../models/Article') //post
 const Post = require('../newmodels/Post')
-// const verifyUserToken = require('../middleware/userToken')
-// const User = require('../models/User') //user
 const User = require('../newmodels/User')
-// const Comment = require('../models/Comment') //comment
 const Comment = require('../newmodels/Comment')
-// const SeasonTopic = require('../models/SeasonTopic') //category
 const Category = require('../newmodels/Category')
 const { isAuth } = require('../middleware/utils')
 const date = new Date();
@@ -127,92 +122,44 @@ router.get('/getall', async (req, res) => {
   const shownby = req.query.shownby || ''
 
   // filters
-  const categoryIdFilter = categoryId ? {categoryId: {$regex: categoryId, $options: 'i'}} : {}
+  const categoryIdFilter = categoryId ? {categoryId: categoryId} : {}
   const titleFilter = title ? {title: {$regex: title, $options: 'i'}} : {}
   const departmentFilter = department ? {department: {$regex: department, $options: 'i'}} : {}
 
-  const creator = req.query.creator;
-  const creatorQuery = creator ? { creator: { $regex: new RegExp(creator), $options: "i" } } : {};
-
-  const userId = req.query.userId;
-  const idQuery = userId ? { userId: { $regex: new RegExp(userId), $options: "i" } } : {};
-
-  const topic = req.query.topic;
-  const topicQuery = topic ? { topic: { $regex: new RegExp(topic), $options: "i" } } : {};
-
-  const season = req.query.season;
-  const seasonQuery = season ? { season: { $regex: new RegExp(season), $options: "i" } } : {};
-
-  Article.find(creator ? creatorQuery : userId ? idQuery : topic ? topicQuery : season ? seasonQuery : {})
+  Post.find(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving article."
+          err.message || `Error when filtering : ${categoryId ? categoryId : '' || title ? title : '' || department ? department : ''}.`
       });
     });
 })
 
-//route api/article/status/:id
-//Update Status of article using its ID
-router.put('/status/:id', async (req, res) => {
-  if (!req.body) {
-    return res.status(400).send({
-      message: "Data to update can not be empty!"
-    });
-  }
+// Statistic APIs (later)
 
-  const id = req.params.id;
+//route api/post/countAll
+//Count All current post
+router.get('/countall', async (req, res) => {
+ const department = req.query.department || ''
+ const categoryId = req.query.categoryId || ''
 
-  Article.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+ const departmentFilter = department ? {department: {$regex: department, $options: 'i'}} : {}
+ const categoryIdFilter = categoryId ? {categoryId: categoryId} : {}
+ 
+ Post.find(department ? departmentFilter : categoryId ? categoryIdFilter : {} ).countDocuments()
     .then(data => {
-      if (!data) {
-        res.status(404).send({
-          message: `Cannot update article status with id=${id}. Maybe article was not found!`
-        });
-      } else res.send({ message: "Article status was updated successfully." });
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error updating article status with id=" + id
-      });
-    });
-})
-
-//route api/article/countAll
-//Count All current article
-router.get('/countAll', async (req, res) => {
-
-  Article.find().countDocuments()
-    .then(data => {
-      res.json({ success: true, count: data })
+      if(data === 0){
+        res.json({success:false, count: data, message: 'No post found to count'})
+      } else res.json({ success: true, count: data })
     })
     .catch(err => {
       res.status(500).send({
         success: false,
         message:
-          err.message || "Some error occurred while retrieving forms."
-      });
-    });
-})
-
-//route api/article/countAll
-//Count All current article
-router.get('/countWith_faculty', async (req, res) => {
-  const faculty = req.query.faculty;
-  const condition = faculty ? { faculty: { $regex: new RegExp(faculty), $options: "i" } } : {};
-
-  Article.find(condition).countDocuments()
-    .then(data => {
-      res.json({ success: true, count: data })
-    })
-    .catch(err => {
-      res.status(500).send({
-        success: false,
-        message:
-          err.message || "Some error occurred while retrieving forms."
+          err.message || `Cannot count the posts by ${categoryId ? `category Id: ${categoryId}` :''} ${department ? `department ${department}` :''}. Try again.`
       });
     });
 })

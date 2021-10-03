@@ -1,0 +1,15 @@
+.more {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+.wrapper{
+    padding: 5px 0;
+}
+i{
+    font-size: 20px;
+    height: 20px;
+}

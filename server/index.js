@@ -4,9 +4,13 @@ const mongoose = require('mongoose');
 const cors = require('cors')
 
 const UserAuth = require('./routes/auth')
+const newUserAuth = require('./newroutes/auth')
 const Article = require('./routes/article')
+const Post = require('./newroutes/post')
 const Seasons = require('./routes/seasons')
-const User = require('./routes/user')
+const Category = require('./newroutes/category')
+// const User = require('./routes/user')
+const User = require('./newroutes/user')
 
 const connectDB = async () => {
     try {
@@ -32,11 +36,18 @@ app.use(express.json())
 
 app.use(cors())
 
-app.use('/api/auth', UserAuth)
-app.use('/api/article', Article)
-app.use('/api/season', Seasons)
+// app.use('/api/auth', UserAuth)
+app.use('/api/auth', newUserAuth)
+
+app.use('/api/post', Post)
+app.use('/api/category', Category)
+
 app.use('/api/user', User)
 
+// Old routes
+app.use('/api/article', Article)
+app.use('/api/season', Seasons)
+// 
 app.get('/', (req, res) => res.send("Hello"))
 
 const PORT = 5001;

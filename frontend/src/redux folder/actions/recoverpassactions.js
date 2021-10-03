@@ -9,7 +9,7 @@ export const recoverpassfromemailaction = (user,token) => async (dispatch) => {
         }
     });
     try {
-        const { data } = await axios.put('http://localhost:5001/api/user/retrievePassword',
+        const { data } = await axios.put('http://localhost:5001/api/user/sendemailforgotpassword',
             user,
             {
                 headers: { Authorization: `Bearer ${token}` },

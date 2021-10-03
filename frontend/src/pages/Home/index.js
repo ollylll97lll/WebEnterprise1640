@@ -4,7 +4,8 @@ import React, { useEffect, useState } from 'react'
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import { useSelector } from 'react-redux'
-import { Card, CardBody, CardImg, CardText, CardTitle, Col, CustomInput, Form, FormGroup, Label, Media, Row } from 'reactstrap'
+import { Card, CardBody, CardImg, CardText, CardTitle, Col, Container, CustomInput, Form, FormGroup, Label, Media, Row } from 'reactstrap'
+import RedditCards from '../../components/Cards/Cards'
 import Footer from '../../components/Footer'
 import GuestNav from '../../components/Navbar/GuestNav'
 import { renderNavBar } from '../../components/Navbar/renderNavBar'
@@ -196,76 +197,27 @@ function HomePage() {
     }, [faculty])
 
     return (
-        <div className="page-container">
-            <div className="content-wrap">
+        <div className="page-container" style={{backgroundColor:'#DAE0E6'}}>
+            <div className="content-wrap" >
                 {renderNavBar(userRole)}
                 <div className="col-12 mt-3">
                     <Timer />
                 </div>
                 <h4 className="text-center">Home Page</h4>
                 <br />
-                <div className='col-12' style={{ display: 'flex', flexWrap: 'nowrap' }}>
-                    <div className="align-items-center" style={{ height: '40%', width: '0%', backgroundColor: 'cyan' }}>
-                        {/* Lấy Session theo quý */}
-                        <DatePicker
-                            selected={startDate}
-                            onChange={(dateFormatted) => setStartDate(dateFormatted)}
-                            dateFormat="yyyy, QQQ"
-                            showQuarterYearPicker
-                            wrapperClassName="a"
-                        />
-                    </div>
-                    <div className="container">
-                        <div className="mb-4">
-                            <div className="row" style={{ height: '300px', borderWidth: '1px solid black' }}>
-                                <Col sm='4'>
-                                    <Media src={highlight.url} style={{ width: '300px', height: '300px', borderRadius: '5px' }} />
-                                </Col>
-                                <Col sm='8'>
-                                    <h4 className="mt-2">{highlight.title}</h4>
-                                    <p>{highlight.description}</p>
-                                </Col>
-                            </div>
-                        </div>
-                        <Form>
-                            <FormGroup>
-                                <Label for='facultySelect'>Select Faculty</Label>
-                                <CustomInput type="select" id="facultySelect" name='facultySelect' onChange={handleChange}>
-                                    <option value="">All</option>
-                                    <option value="Graphic and Digital Design">Graphic and Digital Design</option>
-                                    <option value="Marketing">Marketing</option>
-                                    <option value="Computing">Computing</option>
-                                    <option value="Business Management">Business Management</option>
-                                    <option value="Event Management">Event Management</option>
-                                    <option value="Public Relations">Public Relations & Communications</option>
-                                </CustomInput>
-                            </FormGroup>
-                        </Form>
-                        <Row>
-                            {data.map((data) =>
-                                <Col sm="4" key={data.id}>
-                                    <Card>
-                                        <CardImg top width="100%" src={data.url} className="" />
-                                        <CardBody>
-                                            <CardTitle tag="h5" className="title">{data.title}</CardTitle>
-                                            <CardText className="description">{data.description}</CardText>
-                                        </CardBody>
-                                    </Card>
-                                    <div className="mt-4" />
-                                </Col>
-                            )}
-                        </Row>
-                        {/* Lấy total bằng cách lấy data.length, pageSize là lượng data mỗi trang */}
-                        <Pagination
-                            className='text-center'
-                            total={100}
-                            defaultPageSize={9}
-                            pageSize={9}
-                        />
-                    </div>
+                <div name="filter"></div>
+                <div style={{display:'flex', justifyContent:'center'}}>
+                    <Col sm='12' md='6'>
+                        <RedditCards />
+                        <RedditCards />
+                        <RedditCards />
+                        <RedditCards />
+                        <RedditCards />
+                    </Col>
                 </div>
+
             </div>
-            <div className="mt-4" />
+            <br/>
             <Footer />
         </div >
     )

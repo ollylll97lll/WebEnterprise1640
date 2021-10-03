@@ -41,11 +41,11 @@ const forgotPassMail = (to, token) => {
     const mailOptions = {
         from: SENDER_EMAIL_ADDRESS,
         to: to,
-        subject: 'Yêu cầu xác thực email',
+        subject: 'Change password request for Greenwich University Contribution Forum',
         html: `
-        <p>Xin chào <strong>${to}</strong>,</p>
-        <p>Cảm ơn bạn đã truy cập <strong>Hệ thống Khai báo y tế dành cho Doanh nghiệp</strong></p>
-        <p>Bạn vui lòng chọn <strong>Xác Nhận</strong> để bắt đầu khai báo</p>
+        <p>Hi <strong>${to}</strong>,</p>
+        <p>The password on your account has recently been requested for change,</p>
+        <p><span style="color: #999999;">If you did not request it, please ignore this message</span></p>
         <p><a href="${CLIENT_URL}/recoverpass/${token}"><button style=
                 "
             width: 230px;
@@ -63,12 +63,11 @@ const forgotPassMail = (to, token) => {
             cursor: pointer;
             "
             >
-            Xác nhận
+            Go to Reset Page
             </button></a></p>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
-        <p><span style="color: #999999;">Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email</span></p>
         `
     }
 

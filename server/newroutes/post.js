@@ -118,17 +118,49 @@ router.get('/getall', async (req, res) => {
   // current page
   const page = Number(req.query.pageNumber) || 1;
 
-  // show hotest || latest || default
+  // show hotest = lay bai co like cao nhat || latest = lay bai dang gan day nhat|| default = lay bang id
   const shownby = req.query.shownby || ''
 
   // filters
-  const categoryIdFilter = categoryId ? {categoryId: categoryId} : {}
-  const titleFilter = title ? {title: {$regex: title, $options: 'i'}} : {}
-  const departmentFilter = department ? {department: {$regex: department, $options: 'i'}} : {}
+  const categoryIdFilter = categoryId ? { categoryId: categoryId } : {}
 
-  Post.find(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
+  const titleFilter = title ? { title: { $regex: title, $options: 'i' } } : {}
+
+  const departmentFilter = department ? { department: { $regex: department, $options: 'i' } } : {}
+
+
+  // const retrieveCategoryname = {$ref: "category", $db: "categories"}
+  const retrieveCategoryname = {
+    $lookup: {
+      from: 'categories',
+      localField: 'categoryId',
+      foreignField: '_id',
+      as: 'categoryinfo'
+    }
+  }
+  
+  const retrieveComment = {
+    $lookup: {
+      from: 'comments',
+      localField: '_id',
+      foreignField: 'postId',
+      as: 'comments'
+    }
+  }
+  const shownOrder =
+    shownby === 'hotest' ? {likes: -1}
+      : shownby === 'latest' ? {createdAt: -1}
+        : {_id: -1}
+  const total = await Post.find(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
+
+  const post = await Post.aggregate([retrieveCategoryname, retrieveComment]).match(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
+  .sort(shownOrder)  
+  .skip(pageSize * (page - 1)).limit(pageSize)
     .then(data => {
-      res.send(data);
+      // posts la thong tin cac bai tra ve
+      // page la trang dang o
+      // pages la tong so trang = tong so bai / so luong bai moi trang (lam tron len)
+      res.send({ posts: data, page, pages: Math.ceil(total.length / pageSize) });
     })
     .catch(err => {
       res.status(500).send({
@@ -143,23 +175,23 @@ router.get('/getall', async (req, res) => {
 //route api/post/countAll
 //Count All current post
 router.get('/countall', async (req, res) => {
- const department = req.query.department || ''
- const categoryId = req.query.categoryId || ''
+  const department = req.query.department || ''
+  const categoryId = req.query.categoryId || ''
 
- const departmentFilter = department ? {department: {$regex: department, $options: 'i'}} : {}
- const categoryIdFilter = categoryId ? {categoryId: categoryId} : {}
- 
- Post.find(department ? departmentFilter : categoryId ? categoryIdFilter : {} ).countDocuments()
+  const departmentFilter = department ? { department: { $regex: department, $options: 'i' } } : {}
+  const categoryIdFilter = categoryId ? { categoryId: categoryId } : {}
+
+  Post.find(department ? departmentFilter : categoryId ? categoryIdFilter : {}).countDocuments()
     .then(data => {
-      if(data === 0){
-        res.json({success:false, count: data, message: 'No post found to count'})
+      if (data === 0) {
+        res.json({ success: false, count: data, message: 'No post found to count' })
       } else res.json({ success: true, count: data })
     })
     .catch(err => {
       res.status(500).send({
         success: false,
         message:
-          err.message || `Cannot count the posts by ${categoryId ? `category Id: ${categoryId}` :''} ${department ? `department ${department}` :''}. Try again.`
+          err.message || `Cannot count the posts by ${categoryId ? `category Id: ${categoryId}` : ''} ${department ? `department ${department}` : ''}. Try again.`
       });
     });
 })

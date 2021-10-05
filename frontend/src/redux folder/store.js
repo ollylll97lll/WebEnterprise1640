@@ -1,6 +1,7 @@
 import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { addSeasonTopicReducer } from './reducer/articlereducer';
+import { getPostReducer } from './reducer/postreducer';
 import { recoverPassFromEmailReducer } from './reducer/recoverpasswordreducer';
 import { userLoginReducer, userRecoverReducer, userRegisterReducer } from './reducer/userreducer';
 
@@ -19,6 +20,7 @@ const reducer =  combineReducers({
     userRecoverEmail: userRecoverReducer,
     userRecoverpassfromemail: recoverPassFromEmailReducer,
     addSeasonTopic: addSeasonTopicReducer,
+    postList: getPostReducer,
 });
 
 // send to the extension to view

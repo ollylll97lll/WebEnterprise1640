@@ -21,13 +21,13 @@ function App() {
       <Route path='/recoverpass' component={ChangePassword} />
 
       <PrivateRoute path='/home' component={HomePage} />
-      
-      <PrivateRoute path='/admindashboard' component={AdminPage} /> 
+
+      <PrivateRoute path='/admindashboard' component={AdminPage} />
       <PrivateRoute path='/manager' component={ManagerPage} />
       <PrivateRoute path='/coordinator' component={CoordinatorPage} />
       <PrivateRoute path='/student' component={StudentPage} />
       <PrivateRoute path='/viewdetails' component={ViewDetails} />
-      
+
       <Route path='/error' component={Error} />
       <Route path='/redirect' component={RedirectPage} />
     </Switch >

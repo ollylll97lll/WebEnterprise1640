@@ -1,12 +1,13 @@
+import moment from 'moment';
 import React from 'react'
 import { useState } from 'react'
 import { Col, Container, Row } from 'reactstrap'
 import './styles.css'
 
 export default function RedditCards(props) {
-
     const [like, setLike] = useState(false)
     const [dislike, setDislike] = useState(false)
+    const calTimesincePost = moment(props.createdAt).fromNow()
 
     const setLikeDislikeState = (name) => {
         switch (name) {
@@ -38,18 +39,20 @@ export default function RedditCards(props) {
                     </Col>
                     <Col name='main-body' xs='11' style={{ padding: '8px 0 0 0', display: 'flex', flexDirection: 'column', backgroundColor: 'white' }} >
                         <div style={{ display: 'flex' }}>
-                            <span style={{ fontStyle: 'italic' }} >{props.tag ? props.tag : 'sampleTag1'} &nbsp; </span>
-                            <span style={{ fontStyle: 'italic' }}>{props.time ? `Posted ${props.time} ago` : `Posted just now`} </span>
+                            <span style={{ fontStyle: 'italic' }} >{props.category ? props.category : 'SampleCategory1'} &nbsp; </span>
+                            <span style={{ fontStyle: 'italic' }}>{calTimesincePost ? `Posted ${calTimesincePost}` : `Posted just now`} </span>
                         </div>
-                        <h3 style={{ fontSize: '18px', padding: '10px 0 0 0' }}>{props.tittle ? props.tittle : 'Sample Tittle 1'}</h3>
+                        <h3 style={{ fontSize: '18px', padding: '10px 0 0 0' }}>{props.title ? props.title : 'Sample Tittle 1'}</h3>
                         <div name="preview-content" style={{ fontSize: '14px' }}>
                             <p class="more">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                {props.content ? props.content : 
+                                (`Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                                 Maecenas sed diam sed enim vestibulum gravida. Ut ultrices et ante ut egestas.
                                 Nulla id interdum nisi. Pellentesque at ex tempor, placerat urna quis, maximus lacus.
                                 Nullam pharetra, leo vel tincidunt gravida, elit erat pretium justo, vel faucibus mauris mauris id tortor.
                                 Praesent aliquam sodales odio, eu consequat nibh efficitur et. Sed pretium diam nulla.
-                                Vestibulum feugiat venenatis sapien a congue.
+                                Vestibulum feugiat venenatis sapien a congue.`)
+                                }
                             </p>
                         </div>
                         <div name='files' style={{ height: '300px', backgroundColor: 'gray', padding: '20px 0' }}></div>

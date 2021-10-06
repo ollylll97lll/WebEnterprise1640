@@ -114,7 +114,7 @@ router.get('/getall', async (req, res) => {
   const department = req.query.department || ''
 
   // return doc per page
-  const pageSize = 5
+  const pageSize = 2
   // current page
   const page = Number(req.query.pageNumber) || 1;
 
@@ -138,7 +138,7 @@ router.get('/getall', async (req, res) => {
       as: 'categoryinfo'
     }
   }
-  
+
   const retrieveComment = {
     $lookup: {
       from: 'comments',
@@ -148,14 +148,14 @@ router.get('/getall', async (req, res) => {
     }
   }
   const shownOrder =
-    shownby === 'hotest' ? {likes: -1}
-      : shownby === 'latest' ? {createdAt: -1}
-        : {_id: -1}
+    shownby === 'hotest' ? { likes: -1 }
+      : shownby === 'latest' ? { createdAt: -1 }
+        : { _id: -1 }
   const total = await Post.find(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
 
   const post = await Post.aggregate([retrieveCategoryname, retrieveComment]).match(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
-  .sort(shownOrder)  
-  .skip(pageSize * (page - 1)).limit(pageSize)
+    .sort(shownOrder)
+    .skip(pageSize * (page - 1)).limit(pageSize)
     .then(data => {
       // posts la thong tin cac bai tra ve
       // page la trang dang o

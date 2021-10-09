@@ -16,6 +16,7 @@ import ViewDetails from './pages/ViewDetails';
 function App() {
   return (
     <Switch initial='/'>
+      <Route path='/7265646972656374746f6c6f676f7574' exact component={RedirectPage}/>
       <Route path='/' exact component={LoginPage} />
       <Route path='/forgot' component={ForgotPassword} />
       <Route path='/recoverpass' component={ChangePassword} />

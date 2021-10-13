@@ -8,7 +8,7 @@ import {
 import { signout } from '../../redux folder/actions/useractions';
 import './index.css';
 
-const StudentNav = (props) => {
+const StaffNav = (props) => {
     const dispatch = useDispatch();
     // const { buttonLabel } = props;
 
@@ -41,7 +41,7 @@ const StudentNav = (props) => {
                 <Nav className="ml-auto" navbar>
                     <Col xs="auto">
                         <NavItem>
-                            <NavLink href='/student'>Student</NavLink>
+                            <NavLink href='/staff'>Staff</NavLink>
                         </NavItem>
                     </Col>
                     <Col xs="auto">
@@ -81,4 +81,4 @@ const StudentNav = (props) => {
     )
 };
 
-export default StudentNav
+export default StaffNav

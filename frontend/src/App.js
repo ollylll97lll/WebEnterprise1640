@@ -10,7 +10,7 @@ import ChangePassword from './pages/Home/ChangePass';
 import LoginPage from './pages/Login';
 import ForgotPassword from './pages/Login/ForgotPass';
 import ManagerPage from './pages/Manager';
-import StudentPage from './pages/Student';
+import StaffPage from './pages/Student';
 import ViewDetails from './pages/ViewDetails';
 
 function App() {
@@ -26,7 +26,7 @@ function App() {
       <PrivateRoute path='/admindashboard' component={AdminPage} />
       <PrivateRoute path='/manager' component={ManagerPage} />
       <PrivateRoute path='/coordinator' component={CoordinatorPage} />
-      <PrivateRoute path='/student' component={StudentPage} />
+      <PrivateRoute path='/staff' component={StaffPage} />
       <PrivateRoute path='/viewdetails' component={ViewDetails} />
 
       <Route path='/error' component={Error} />

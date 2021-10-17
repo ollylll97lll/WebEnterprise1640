@@ -8,6 +8,7 @@ const User = require('../newmodels/User')
 const Comment = require('../newmodels/Comment')
 const Category = require('../newmodels/Category')
 const { isAuth } = require('../middleware/utils')
+const { findById } = require('../newmodels/Post')
 const date = new Date();
 
 //route api/post/create
@@ -52,7 +53,108 @@ router.post('/create', isAuth, async (req, res) => {
     res.json({ success: true, message: `Post Is Created. Title: ${post.title}` })
   } catch (err) {
     console.log(err)
-    res.status(500).json({ success: false, message: 'Something wrongs' })
+    res.status(500).json({ success: false, message: err })
+  }
+})
+
+
+// count total like || dislike
+function tl(islike, isdislike, react) {
+  // unlike
+  if (islike && react === 'like') {
+    // 1 => 0 
+    return -1;
+  }
+  // undislike
+  if (isdislike && react === 'dislike') {
+    // -1 => 0
+    return 1;
+  }
+  // from dislike to like
+  if (isdislike && !islike && react === 'like') {
+    // -1 => 0 => 1
+    return 2
+  }
+  // from like to dislike
+  if (islike && !isdislike && react === 'dislike') {
+    //  1 => 0 => -1
+    return -2
+  }
+  // like
+  if (react === 'like' && !islike) {
+    // 0 => 1
+    return 1;
+  }
+  // dislike
+  if (react === 'dislike' && !isdislike) {
+    // 0 => -1
+    return -1;
+  }
+};
+// route api/post/likey
+// add like/dislike to total likes
+router.post('/likey/:postId', isAuth, async (req, res) => {
+
+  const postId = req.params.postId;
+  // get state from post
+  const { islike, isdislike, reaction } = req.body
+  const userId = req.user.userId;
+  const totallikes = tl(islike, isdislike, reaction);
+
+  // check user
+  const user = await User.findById(userId);
+  if (!user) {
+    res.status(400).json({ success: false, message: `cannot find user ${userId}` })
+  }
+
+  try {
+    const likedpost = {
+      postId: postId,
+      like: (reaction === 'like' ? true : false),
+      dislike: (reaction === 'dislike' ? true : false)
+    }
+
+
+    // 1st Part
+    // update likes by users
+    const result = await User.updateOne(
+      {
+        _id: userId,
+        'likedposts.postId': postId
+      },
+      {
+        $set: {
+          "likedposts.$": likedpost
+        }
+      }
+    )
+
+    // if no record found. add new to the doc
+    if (result.n === 0) {
+      const user = await User.updateOne({ _id: userId },
+        {
+          $addToSet: { likedposts: likedpost }
+        }
+      )
+    }
+
+    // 2nd Part
+    // count the like and update in the Post total likes
+    const uplike = await Post.updateOne({_id: postId},
+      {
+        $inc: {likes : totallikes}
+      }
+      )
+    if(uplike.n === 0){
+      res.status(400).json({success: false, message: 'uplike failed for there was no post found.'})
+      // TODO: NO POST => DEL USER LIKEDPOSTS RECORD WITH THIS POSTID
+    }
+    let msg =`user ${req.user.email} just ${reaction + 'd'} post ${postId}. Updated Type: ${result.n === 0 ? 'create new' : 'update'}`
+    res.status(200).json({success: true, message: msg})
+
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: error || 'Something Wrong' })
   }
 })
 
@@ -101,7 +203,7 @@ router.post('/comment', isAuth, async (req, res) => {
     }
   } catch (err) {
     console.log(err)
-    res.status(500).json({ success: false, message: 'Something wrongs' })
+    res.status(500).json({ success: false, message: err })
   }
 })
 

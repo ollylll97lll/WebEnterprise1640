@@ -6,7 +6,7 @@ import './index.css'
 import { useDispatch, useSelector } from 'react-redux';
 
 
-function StudentPage(props) {
+function StaffPage(props) {
     const dispatch = useDispatch();
     const redirect = props.location.search ? props.location.search.split('=')[1] : '/home'
 
@@ -15,7 +15,7 @@ function StudentPage(props) {
     let userRole = userInfo.userInfo.role;
 
     useEffect(() => {
-        if (userRole !== 'student') {
+        if (userRole !== 'staff') {
             alert('You are not authorize to access this page.')
             props.history.push(redirect);
         }
@@ -29,7 +29,7 @@ function StudentPage(props) {
                 <div className="col-12 mb-4">
                     <Timer />
                 </div>
-                <h4 className="text-center">Student Page</h4>
+                <h4 className="text-center">Staff Page</h4>
                 <div className="col-12">
                     <StudentTab />
                 </div>
@@ -38,4 +38,4 @@ function StudentPage(props) {
     )
 }
 
-export default StudentPage
+export default StaffPage

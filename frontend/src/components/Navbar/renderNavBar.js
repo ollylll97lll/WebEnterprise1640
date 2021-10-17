@@ -3,7 +3,7 @@ import CoordinatorNav from "./CoordinatorNav";
 import GuestNav from "./GuestNav";
 import HomeNav from "./HomeNav";
 import ManagerNav from "./ManagerNav";
-import StudentNav from "./StudentNav";
+import StaffNav from "./StudentNav";
 
 export function renderNavBar(role) {
     console.log(role)
@@ -16,8 +16,8 @@ export function renderNavBar(role) {
             return <GuestNav />
         case 'manager':
             return <ManagerNav />
-        case 'student':
-            return <StudentNav />
+        case 'staff':
+            return <StaffNav />
         default:
             return <HomeNav />
     }

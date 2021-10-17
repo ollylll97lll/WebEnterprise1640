@@ -1,29 +1,21 @@
-import React from 'react'
-import { useHistory } from 'react-router'
-import Footer from '../Footer'
-import GuestNav from '../Navbar/GuestNav'
-import Timer from '../Timer'
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { Redirect, useHistory } from 'react-router';
+import { signout } from '../../redux folder/actions/useractions'
 
 function RedirectPage() {
-    const history = useHistory()
-
-    setTimeout(() => {
-        history.push('/home')
-    }, 2000)
+    const dispatch = useDispatch();
+    const history = useHistory();
+    useEffect(() => {
+        dispatch(signout());
+        setTimeout( () => {
+            history.push('/');
+        },2000)
+    }, [])
 
     return (
         <div className="page-container">
-            <div className="content-wrap">
-                <GuestNav />
-                <br />
-                <div className="col-12">
-                    <Timer />
-                </div>
-                <div className="container">
-                    <div className="text-center">Redirect Page</div>
-                </div>
-            </div>
-            <Footer />
+            <h1>...You are being redirect to login page. Please hold tight</h1>
         </div>
     )
 }

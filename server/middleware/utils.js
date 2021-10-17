@@ -12,6 +12,7 @@ const isAuth = (req, res, next) => {
         try {
             const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
             req.user = decoded;
+            // const accessToken = jwt.sign({ userId: user._id, email, department: user.department, role: user.role }
             next()
         } catch (err) {
             console.log(err)

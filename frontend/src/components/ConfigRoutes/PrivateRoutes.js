@@ -8,8 +8,8 @@ import { signout } from '../../redux folder/actions/useractions';
 export default function PrivateRoute({ component: Component, ...rest }) {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-  const accessToken = userInfo.accessToken;
-  const decoded = jwtDecode(accessToken);
+  const accessToken = userInfo ? userInfo.accessToken : null;
+  const decoded = accessToken ? jwtDecode(accessToken) : null;
   const dispatch = useDispatch();
   return (
     <Route

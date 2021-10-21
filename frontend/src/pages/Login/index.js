@@ -9,6 +9,7 @@ import './index.css'
 function LoginPage(props) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [checkbox, setCheckBox] = useState(false)
 
     const dispatch = useDispatch();
     const redirect = props.location.search ? props.location.search.split('=')[1] : '/home'
@@ -26,6 +27,29 @@ function LoginPage(props) {
             props.history.push(redirect);
         }
     }, [props.history, redirect, userInfo]);
+
+    useEffect(() => {
+        setEmail(localStorage.getItem('email'));
+        setPassword(localStorage.getItem('password'));
+        setCheckBox(localStorage.getItem('checkbox'))
+        console.log('setdata')
+    }, [window.onload])
+
+    function rememberMe(e) {
+        const checkbox = document.getElementById('rememberMe');
+        if (checkbox.checked == true) {
+            setCheckBox(true);
+            localStorage.setItem('email', email);
+            localStorage.setItem('password', password);
+            localStorage.setItem('checkbox',true);
+        }
+        else {
+            localStorage.removeItem('email');
+            localStorage.removeItem('password');
+            localStorage.removeItem('checkbox');
+            setCheckBox(false)
+        }
+    }
     return (
         <div className="container-fluid">
             <div className="row no-gutter">
@@ -35,32 +59,32 @@ function LoginPage(props) {
                         <div className="container">
                             <div className="row">
                                 <div className="col-md-9 col-lg-8 mx-auto">
-                                    <h3 className="login-heading mb-4">Welcome to Greenwich Contribution Forum!</h3>
+                                    <h3 className="login-heading mb-4" style={{ userSelect: 'none' }}>Welcome to Greenwich Contribution Forum!</h3>
                                     <form onSubmit={SubmitHandler}>
 
                                         <div className="form-label-group">
-                                            <input type="email" id="inputEmail" className="form-control" placeholder="Email address" required onChange={(e) => setEmail(e.target.value)} />
+                                            <input type="email" id="inputEmail" className="form-control" placeholder="Email address" required value={email} onChange={(e) => setEmail(e.target.value)} />
                                             <label htmlFor="inputEmail">Email address</label>
                                         </div>
 
                                         <div className="form-label-group">
-                                            <input type="password" id="inputPassword" className="form-control" placeholder="Password" required onChange={(e) => setPassword(e.target.value)} />
+                                            <input type="password" id="inputPassword" className="form-control" placeholder="Password" required value={password} onChange={(e) => setPassword(e.target.value)} />
                                             <label htmlFor="inputPassword">Password</label>
                                         </div>
 
-                                        <div className="custom-control custom-checkbox mb-3">
-                                            <input type="checkbox" className="custom-control-input" id="customCheck1" />
-                                            <label className="custom-control-label" htmlFor="customCheck1">Remember password</label>
+                                        <div className="custom-control custom-checkbox mb-3" style={{ userSelect: 'none' }}>
+                                            <input type="checkbox" className="custom-control-input" id="rememberMe" checked={checkbox} onClick={(e) => rememberMe(e)} />
+                                            <label className="custom-control-label" htmlFor="rememberMe" >Remember password</label>
                                         </div>
                                         <button className="btn btn-lg btn-signin btn-block btn-login text-uppercase font-weight-bold mb-2" type="submit">Sign in</button>
                                         {
-                                            loading && <LoadingBox/>
+                                            loading && <LoadingBox />
                                         }
                                         {
-                                            error && <MessageBox variant = 'danger'>{error}</MessageBox>
+                                            error && <MessageBox variant='danger'>{error}</MessageBox>
                                         }
                                         <div className="text-center">
-                                            <a className="small" href="/forgot">Forgot password?</a>
+                                            <a className="small" href="/forgot" style={{ userSelect: 'none' }}>Forgot password?</a>
                                         </div>
                                     </form>
                                 </div>

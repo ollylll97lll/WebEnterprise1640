@@ -6,7 +6,6 @@ import ManagerNav from "./ManagerNav";
 import StaffNav from "./StudentNav";
 
 export function renderNavBar(role) {
-    console.log(role)
     switch (role) {
         case 'admin':
             return <AdminNav />

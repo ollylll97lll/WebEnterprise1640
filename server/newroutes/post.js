@@ -91,8 +91,97 @@ function tl(islike, isdislike, react) {
     return -1;
   }
 };
-// route api/post/likey
-// add like/dislike to total likes
+// route api/post/getlikey
+// get all likedposts from user & set the state to each post
+router.post('/getlikey', isAuth, async (req, res) => {
+  // get state from post
+  const { postIdList } = req.body
+  const userId = req.user.userId;
+
+  // check user
+  const user = await User.findById(userId);
+  if (!user) {
+    res.status(400).json({ success: false, message: `cannot find user ${userId}` })
+  }
+  // postId[] nhận vào
+  let postList = new Array().concat(postIdList);
+  // result query từ postList
+  const resultList = new Array();
+
+  if (postList.length === 0) {
+    res.status(400).send('You did not put in any post. Send again');
+    return;
+  }
+
+  try {
+    await Promise.all(postList.map(async (postId) => {
+      let result = await User.findOne({ _id: userId, likedposts: { $elemMatch: { postId: postId._id } } }, { likedposts: { $elemMatch: { postId: postId._id } } })
+      if (result) {
+        const successresult = {postId: postId._id, result }
+        resultList.push(successresult);
+      }
+      else {
+        const failresult = {postId: postId._id, message: `User has not react this post` }
+        resultList.push(failresult)
+      }
+    }))
+    res.status(200).send(resultList)
+  } catch (error) {
+    res.status(400).json({ success: false, message: `Something Wrong` || error })
+  }
+})
+
+function newlikestate(islike,isdislike,reaction){
+   // unlike
+   if (islike && reaction === 'like') { 
+    return {
+      like: false,
+      dislike: false
+    };
+  }
+  // undislike
+  if (isdislike && reaction === 'dislike') {
+    // -1 => 0
+    return {
+      like: false,
+      dislike: false
+    };
+  }
+  // from dislike to like
+  if (isdislike && !islike && reaction === 'like') {
+    // -1 => 0 => 1
+    return {
+      like: true,
+      dislike: false
+    }
+  }
+  // from like to dislike
+  if (islike && !isdislike && reaction === 'dislike') {
+    //  1 => 0 => -1
+    return {
+      like: false,
+      dislike: true
+    }
+  }
+  // like
+  if (reaction === 'like' && !islike) {
+    // 0 => 1
+    return {
+      like: true,
+      dislike: false
+    }
+  }
+  // dislike
+  if (reaction === 'dislike' && !isdislike) {
+    // 0 => -1
+    return {
+      like: false,
+      dislike: true
+    }
+  }
+}
+// route api/post/likey/:postId
+// like post = create || modified user.likedposts then add into Post totallikes
 router.post('/likey/:postId', isAuth, async (req, res) => {
 
   const postId = req.params.postId;
@@ -106,12 +195,13 @@ router.post('/likey/:postId', isAuth, async (req, res) => {
   if (!user) {
     res.status(400).json({ success: false, message: `cannot find user ${userId}` })
   }
+  const newlikey = newlikestate(islike,isdislike,reaction);
 
   try {
     const likedpost = {
       postId: postId,
-      like: (reaction === 'like' ? true : false),
-      dislike: (reaction === 'dislike' ? true : false)
+      like: newlikey.like,
+      dislike: newlikey.dislike
     }
 
 
@@ -140,17 +230,17 @@ router.post('/likey/:postId', isAuth, async (req, res) => {
 
     // 2nd Part
     // count the like and update in the Post total likes
-    const uplike = await Post.updateOne({_id: postId},
+    const uplike = await Post.updateOne({ _id: postId },
       {
-        $inc: {likes : totallikes}
+        $inc: { likes: totallikes }
       }
-      )
-    if(uplike.n === 0){
-      res.status(400).json({success: false, message: 'uplike failed for there was no post found.'})
+    )
+    if (uplike.n === 0) {
+      res.status(400).json({ success: false, message: 'uplike failed for there was no post found.' })
       // TODO: NO POST => DEL USER LIKEDPOSTS RECORD WITH THIS POSTID
     }
-    let msg =`user ${req.user.email} just ${reaction + 'd'} post ${postId}. Updated Type: ${result.n === 0 ? 'create new' : 'update'}`
-    res.status(200).json({success: true, message: msg})
+    let msg = `user ${req.user.email} just ${reaction + 'd'} post ${postId}. Updated Type: ${result.n === 0 ? 'create new' : 'update'}`
+    res.status(200).json({ success: true, message: msg })
 
 
   } catch (error) {
@@ -252,7 +342,7 @@ router.get('/getall', async (req, res) => {
   const shownOrder =
     shownby === 'hotest' ? { likes: -1 }
       : shownby === 'latest' ? { createdAt: -1 }
-        : { _id: -1 }
+        : { _id: -1 } 
   const total = await Post.find(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
 
   const post = await Post.aggregate([retrieveCategoryname, retrieveComment]).match(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})

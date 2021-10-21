@@ -1,5 +1,5 @@
 import "rc-pagination/assets/index.css"
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import "react-datepicker/dist/react-datepicker.css"
 import { useDispatch, useSelector } from 'react-redux'
 import { Col, Pagination, PaginationItem, PaginationLink } from 'reactstrap'
@@ -9,7 +9,7 @@ import { renderNavBar } from '../../components/Navbar/renderNavBar'
 import LoadingBox from "../../components/Return Boxes/LoadingBox"
 import MessageBox from "../../components/Return Boxes/MessageBox"
 import Timer from '../../components/Timer'
-import { getAllPosts } from "../../redux folder/actions/postaction"
+import { getAllPosts, getPostLikey } from "../../redux folder/actions/postaction"
 
 function HomePage(props) {
     // const { category='all', title='all', department='all', shownby='latest', pagenum=1} = useParams();
@@ -22,14 +22,16 @@ function HomePage(props) {
     const department = urlParams.get('department') || 'all';
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        console.log(pageNumber)
-    }, [])
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin;
 
     const postList = useSelector(state => state.postList)
     const { posts, loading, error, page, pages } = postList;
+
+    const getPostLikeState = useSelector(state => state.getPostLikeState);
+    const { data } = getPostLikeState;
+
+    const [cardData, setCardData] = useState([])
 
 
     useEffect(() => {
@@ -43,6 +45,52 @@ function HomePage(props) {
             })
         )
     }, [dispatch, category, title, department, shownby, pageNumber])
+
+    useEffect(() => {
+        if (posts) {
+            let postIdList = new Array()
+            let postList = Array.from(posts);
+            postList.map(post => {
+                postIdList.push({ _id: post._id });
+            })
+            dispatch(getPostLikey({ postIdList }))
+        }
+    }, [posts])
+
+    useEffect(() => {
+        if (data && posts) {
+            const rl = Array.from(data)
+            const p = Array.from(posts)
+            // console.log(rl)
+            setCardData(mappinglikestate2post(rl, p))
+        }
+    }, [data])
+
+    function mappinglikestate2post(likestates = [], posts = []) {
+        const carddatas = new Array();
+        likestates.forEach(ls => {
+            posts.forEach(p => {
+                if (ls.postId === p._id) {
+                    carddatas.push({
+                        post: p,
+                        likedstate: ls.result
+                            ? {
+                                like: ls.result.likedposts[0].like,
+                                dislike: ls.result.likedposts[0].dislike
+                            }
+                            :{
+                                like: false,
+                                dislike: false
+                            }
+                    });
+                }
+            })
+        })
+        // console.log("carddatas", carddatas);
+        return carddatas.sort((a,b) => {
+            return a.post._id - b.post._id;
+        });
+    }
 
     const getFilterURL = (filter) => {
         const filterPage = filter.page || pageNumber;
@@ -74,8 +122,32 @@ function HomePage(props) {
                             ) :
                                 (
                                     <>
-                                        {posts.length === 0 && <MessageBox>No Post Found. F5 to refresh</MessageBox>}
+                                        {cardData.length === 0 && <MessageBox>No Post Found. F5 to refresh</MessageBox>}
                                         {
+                                            cardData.map((carddata) => {
+
+                                                return (
+                                                    <RedditCards
+                                                        key={carddata.post._id}
+                                                        category={carddata.post.categoryinfo[0].name}
+                                                        title={carddata.post.title}
+                                                        content={carddata.post.content}
+                                                        files={carddata.post.files}
+                                                        likes={carddata.post.likes}
+                                                        createdAt={carddata.post.createdAt}
+                                                        postId={carddata.post._id}
+                                                        closuredate={carddata.post.closuredate}
+
+                                                        // like state
+                                                        like={carddata.likedstate.like}
+                                                        dislike={carddata.likedstate.dislike}
+                                                    />
+
+
+                                                )
+                                            })
+                                        }
+                                        {/* {
                                             posts.map((post) => {
                                                 return (
                                                     <RedditCards
@@ -86,19 +158,19 @@ function HomePage(props) {
                                                         files={post.files}
                                                         likes={post.likes}
                                                         createdAt={post.createdAt}
-
+                                                        postId={post._id}
                                                         closuredate={post.closuredate}
                                                     />
                                                 )
                                             })
-                                        }
+                                        } */}
                                     </>
                                 )
                         }
                     </Col>
                 </div>
 
-                <div style={{display:'flex', justifyContent:'center', paddingTop:'75px'}}>
+                <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '75px' }}>
                     <Pagination className="text-center">
                         <PaginationItem disabled={page === 1 ? true : false} >
                             <PaginationLink first href={getFilterURL({ page: 1 })} />

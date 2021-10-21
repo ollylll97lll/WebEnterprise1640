@@ -1,23 +1,46 @@
 import moment from 'moment';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { Col, Container, Row } from 'reactstrap'
+import { getPostLikey, postLikey } from '../../redux folder/actions/postaction';
 import './styles.css'
 
 export default function RedditCards(props) {
-    const [like, setLike] = useState(false)
-    const [dislike, setDislike] = useState(false)
+    const postId = props.postId;
+    const [like, setLike] = useState(props.like)
+    const [dislike, setDislike] = useState(props.dislike)
     const calTimesincePost = moment(props.createdAt).fromNow()
+    const dispatch = useDispatch();
+    // sampletext
+    const sampletext = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    Maecenas sed diam sed enim vestibulum gravida. Ut ultrices et ante ut egestas.
+    Nulla id interdum nisi. Pellentesque at ex tempor, placerat urna quis, maximus lacus.
+    Nullam pharetra, leo vel tincidunt gravida, elit erat pretium justo, vel faucibus mauris mauris id tortor.
+    Praesent aliquam sodales odio, eu consequat nibh efficitur et. Sed pretium diam nulla.
+    Vestibulum feugiat venenatis sapien a congue.`
+    // fake total likes
+    const [shownLikes, setShownLikes] = useState(props.likes ? props.likes : 0)
 
     const setLikeDislikeState = (name) => {
         switch (name) {
             case 'like-btn':
+                dispatch(postLikey({ islike: like, isdislike: dislike, reaction: 'like', postId }));
+
                 setLike(!like);
                 setDislike(false);
+
+                setShownLikes(shownLikes + returnfakelikes(like, dislike, 'like'))
+
                 return
             case 'dislike-btn':
+                dispatch(postLikey({ islike: like, isdislike: dislike, reaction: 'dislike', postId }));
+
                 setLike(false);
                 setDislike(!dislike);
+
+                setShownLikes(shownLikes + returnfakelikes(like, dislike, 'dislike'))
+
                 return
             default:
                 setLike(false);
@@ -26,6 +49,41 @@ export default function RedditCards(props) {
         }
     }
 
+    function returnfakelikes(islike, isdislike, react) {
+        // unlike
+        if (islike && react === 'like') {
+            // 1 => 0 
+            return -1;
+        }
+        // undislike
+        if (isdislike && react === 'dislike') {
+            // -1 => 0
+            return 1;
+        }
+        // from dislike to like
+        if (isdislike && !islike && react === 'like') {
+            // -1 => 0 => 1
+            return 2
+        }
+        // from like to dislike
+        if (islike && !isdislike && react === 'dislike') {
+            //  1 => 0 => -1
+            return -2
+        }
+        // like
+        if (react === 'like' && !islike) {
+            // 0 => 1
+            return 1;
+        }
+        // dislike
+        if (react === 'dislike' && !isdislike) {
+            // 0 => -1
+            return -1;
+        }
+    }
+
+
+
     return (
         <div class='wrapper'>
             <Container>
@@ -33,7 +91,7 @@ export default function RedditCards(props) {
                     <Col name='like-dislike' xs='1' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', borderLeft: '4px solid transparent', padding: '8px 4px', paddingLeft: 0 }} >
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '40px', left: 0, top: 0 }} >
                             <a name="like-btn" onClick={(e) => setLikeDislikeState("like-btn")} ><i class={like ? "bi bi-caret-up-fill" : "bi bi-caret-up"} /></a>
-                            <h5>{props.likes ? props.likes : 0}</h5>
+                            <h5>{shownLikes}</h5>
                             <a name="dislike-btn" onClick={(e) => setLikeDislikeState("dislike-btn")}><i class={dislike ? "bi bi-caret-down-fill" : "bi bi-caret-down"} /></a>
                         </div>
                     </Col>
@@ -45,14 +103,7 @@ export default function RedditCards(props) {
                         <h3 style={{ fontSize: '18px', padding: '10px 0 0 0' }}>{props.title ? props.title : 'Sample Tittle 1'}</h3>
                         <div name="preview-content" style={{ fontSize: '14px' }}>
                             <p class="more">
-                                {props.content ? props.content : 
-                                (`Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Maecenas sed diam sed enim vestibulum gravida. Ut ultrices et ante ut egestas.
-                                Nulla id interdum nisi. Pellentesque at ex tempor, placerat urna quis, maximus lacus.
-                                Nullam pharetra, leo vel tincidunt gravida, elit erat pretium justo, vel faucibus mauris mauris id tortor.
-                                Praesent aliquam sodales odio, eu consequat nibh efficitur et. Sed pretium diam nulla.
-                                Vestibulum feugiat venenatis sapien a congue.`)
-                                }
+                                {props.content ? props.content : sampletext}
                             </p>
                         </div>
                         <div name='files' style={{ height: '300px', backgroundColor: 'gray', padding: '20px 0' }}></div>

@@ -15,7 +15,7 @@ export default function PrivateRoute({ component: Component, ...rest }) {
     <Route
       {...rest}
       render={(props) =>
-        userInfo && moment(decoded.exp * 1000) > moment() ?
+        userInfo && moment(decoded?.exp * 1000) > moment() ?
           (
             <Component {...props}></Component>
           )

@@ -117,11 +117,11 @@ router.post('/getlikey', isAuth, async (req, res) => {
     await Promise.all(postList.map(async (postId) => {
       let result = await User.findOne({ _id: userId, likedposts: { $elemMatch: { postId: postId._id } } }, { likedposts: { $elemMatch: { postId: postId._id } } })
       if (result) {
-        const successresult = {postId: postId._id, result }
+        const successresult = { postId: postId._id, result }
         resultList.push(successresult);
       }
       else {
-        const failresult = {postId: postId._id, message: `User has not react this post` }
+        const failresult = { postId: postId._id, message: `User has not react this post` }
         resultList.push(failresult)
       }
     }))
@@ -131,9 +131,9 @@ router.post('/getlikey', isAuth, async (req, res) => {
   }
 })
 
-function newlikestate(islike,isdislike,reaction){
-   // unlike
-   if (islike && reaction === 'like') { 
+function newlikestate(islike, isdislike, reaction) {
+  // unlike
+  if (islike && reaction === 'like') {
     return {
       like: false,
       dislike: false
@@ -195,7 +195,7 @@ router.post('/likey/:postId', isAuth, async (req, res) => {
   if (!user) {
     res.status(400).json({ success: false, message: `cannot find user ${userId}` })
   }
-  const newlikey = newlikestate(islike,isdislike,reaction);
+  const newlikey = newlikestate(islike, isdislike, reaction);
 
   try {
     const likedpost = {
@@ -342,7 +342,7 @@ router.get('/getall', async (req, res) => {
   const shownOrder =
     shownby === 'hotest' ? { likes: -1 }
       : shownby === 'latest' ? { createdAt: -1 }
-        : { _id: -1 } 
+        : { _id: -1 }
   const total = await Post.find(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
 
   const post = await Post.aggregate([retrieveCategoryname, retrieveComment]).match(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
@@ -360,6 +360,17 @@ router.get('/getall', async (req, res) => {
           err.message || `Error when filtering : ${categoryId ? categoryId : '' || title ? title : '' || department ? department : ''}.`
       });
     });
+})
+
+// route api/post/getAllDepartment
+// get all department
+router.get('/getAllDepartment', async (req, res) => {
+  try {
+    const result = await Post.aggregate([{ $group: { _id: "$department" } }])
+    res.status(201).json({ message: 'Success', departments: result });
+  } catch (error) {
+    res.status(400).send('Something Wrong')
+  }
 })
 
 // Statistic APIs (later)

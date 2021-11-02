@@ -10,6 +10,8 @@ import LoadingBox from "../../components/Return Boxes/LoadingBox"
 import MessageBox from "../../components/Return Boxes/MessageBox"
 import Timer from '../../components/Timer'
 import { getAllPosts, getPostLikey } from "../../redux folder/actions/postaction"
+import { Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, Box, Grid, BottomNavigation } from '@mui/material'
+import axios from "axios"
 
 function HomePage(props) {
     // const { category='all', title='all', department='all', shownby='latest', pagenum=1} = useParams();
@@ -45,6 +47,21 @@ function HomePage(props) {
             })
         )
     }, [dispatch, category, title, department, shownby, pageNumber])
+    const getAllDept = async () => {
+        try {
+            const fetch = await axios.get('http://localhost:5001/api/post/getAllDepartment')
+            console.log(fetch.data.departments)
+            setAllDept(fetch.data.departments)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    const [allDept, setAllDept] = useState(null)
+
+    useEffect(() => {
+        getAllDept()
+        props.history.push(getFilterURL({ shownby: 'hotest' }))
+    }, [])
 
     useEffect(() => {
         if (posts) {
@@ -78,7 +95,7 @@ function HomePage(props) {
                                 like: ls.result.likedposts[0].like,
                                 dislike: ls.result.likedposts[0].dislike
                             }
-                            :{
+                            : {
                                 like: false,
                                 dislike: false
                             }
@@ -87,7 +104,7 @@ function HomePage(props) {
             })
         })
         // console.log("carddatas", carddatas);
-        return carddatas.sort((a,b) => {
+        return carddatas.sort((a, b) => {
             return a.post._id - b.post._id;
         });
     }
@@ -102,6 +119,33 @@ function HomePage(props) {
     }
 
     let userRole = userInfo.userInfo.role;
+    const [countrySort, setCountrySort] = useState('')
+    const [isEverywhereVisible, setIsEverywhereVisible] = useState(true)
+    const [isSelected, setIsSelected] = useState(0)
+
+    const handleChange = (e) => {
+        console.log(e.target.value)
+        setCountrySort(e.target.value)
+        props.history.push(getFilterURL({ department: e.target.value }))
+    }
+
+    const handleHotButton = () => {
+        setIsEverywhereVisible(true)
+        props.history.push(getFilterURL({ shownby: 'hotest' }))
+        setIsSelected(0)
+
+    }
+    const handleNewButton = () => {
+        setIsEverywhereVisible(false)
+        props.history.push(getFilterURL({ shownby: 'latest' }))
+        setIsSelected(1)
+    }
+    const handleTopButton = () => {
+        setIsEverywhereVisible(false)
+        setIsSelected(2)
+    }
+
+
     return (
         <div className="page-container" style={{ backgroundColor: '#DAE0E6' }}>
             <div className="content-wrap" >
@@ -114,6 +158,71 @@ function HomePage(props) {
                 <div name="filter"></div>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <Col sm='12' md='6'>
+                        <div style={{ padding: 10, flexDirection: 'row', backgroundColor: '#fff' }}>
+                            <Button variant='outlined' sx={{ height: 40, m: 1, marginRight: 1, borderColor: isSelected == 0 ? '#0079d3' : '#878a8c' }}
+                                onClick={() => { handleHotButton() }}
+                            >
+                                <i class="bi bi-gem" style={{ fontSize: 20, marginBottom: 10, fontWeight: 'bold', paddingRight: 10, color: isSelected == 0 ? '#0079d3' : '#878a8c' }}></i>
+                                <span style={{ justifyContent: 'center', fontWeight: 'bold', color: isSelected == 0 ? '#0079d3' : '#878a8c' }}>
+                                    Hot
+                                </span>
+                            </Button>
+
+                            {isEverywhereVisible && allDept &&
+                                <FormControl sx={{ minWidth: 160, m: 1,
+                                
+                                }}>
+                                    <InputLabel sx={{ marginTop: -1, fontWeight: 'bold', color: '#0079d3', borderColor: '#0079d3' }} id="select-label">Country Sort</InputLabel>
+                                    <Select
+                                        sx={{
+                                            height: 40,
+                                            fontWeight: 'bold',
+                                            color: '#0079d3',
+                                            "&:hover": {
+                                                "&& fieldset": {
+                                                    border: "1px solid #0079d3"
+                                                }
+                                            },
+                                        }}
+                                        variant="outlined"
+                                        labelId="select-label"
+                                        id="simple-select"
+                                        value={countrySort}
+                                        label="Country Sort"
+                                        onChange={handleChange}
+                                    >
+                                        {allDept.map((item, index) => {
+                                            return (
+                                                <MenuItem value={item._id}
+                                                >{item._id}</MenuItem>
+                                            )
+                                        })}
+                                    </Select>
+                                </FormControl>
+                            }
+
+
+                            <Button
+                                variant='outlined' sx={{ height: 40, m: 1, marginRight: 1, borderColor: isSelected == 1 ? '#0079d3' : '#878a8c' }}
+                                onClick={() => { handleNewButton() }}
+                            >
+                                <i class="bi bi-sun" style={{ fontSize: 20, marginBottom: 10, paddingRight: 10, fontWeight: 'bold', color: isSelected == 1 ? '#0079d3' : '#878a8c' }}></i>
+                                <span style={{ justifyContent: 'center', fontWeight: 'bold', color: isSelected == 1 ? '#0079d3' : '#878a8c' }}>
+                                    New
+                                </span>
+                            </Button>
+                            <Button variant='outlined' sx={{ height: 40, m: 1, marginRight: 1, borderColor: isSelected == 2 ? '#0079d3' : '#878a8c' }}
+                                onClick={() => { handleTopButton() }}
+                            >
+                                <i class="bi bi-sort-down" style={{ fontSize: 20, marginBottom: 10, fontWeight: 'bold', paddingRight: 10, color: isSelected == 2 ? '#0079d3' : '#878a8c' }}></i>
+                                <span style={{ justifyContent: 'center', fontWeight: 'bold', color: isSelected == 2 ? '#0079d3' : '#878a8c' }}>
+                                    Top
+                                </span>
+
+                            </Button>
+
+
+                        </div>
                         {
                             loading ? (
                                 <LoadingBox />
@@ -198,11 +307,12 @@ function HomePage(props) {
                     </Pagination>
                 </div>
 
-            </div>
+            </div >
             <br />
             <Footer />
         </div >
     )
 }
+
 
 export default HomePage

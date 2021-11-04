@@ -30,9 +30,6 @@ function HomePage(props) {
     const postList = useSelector(state => state.postList)
     const { posts, loading, error, page, pages } = postList;
 
-    const getPostLikeState = useSelector(state => state.getPostLikeState);
-    const { data } = getPostLikeState;
-
     const [cardData, setCardData] = useState([])
 
 

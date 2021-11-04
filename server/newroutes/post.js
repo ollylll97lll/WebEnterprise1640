@@ -383,9 +383,9 @@ router.get('/getall', async (req, res) => {
     });
 })
 
-// route/api/post/getone
+// route/api/post/getpostdetail
 // get one post
-router.post('/getone', async (req,res) => {
+router.post('/getpostdetail', async (req,res) => {
   const {postId} = req.body;
   if(!postId){
     res.status(404).send('No PostId found to query.')

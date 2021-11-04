@@ -302,8 +302,8 @@ router.post('/comment', isAuth, async (req, res) => {
 router.get('/getall', async (req, res) => {
   // find by categoryId, title & department
   const categoryId = req.query.categoryId || ''
-  const title = req.query.title || ''
-  const department = req.query.department || ''
+  const title = decodeURI(req.query.title) || ''
+  const department = decodeURI(req.query.department) || ''
 
   // return doc per page
   const pageSize = 2

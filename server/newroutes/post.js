@@ -91,6 +91,7 @@ function tl(islike, isdislike, react) {
     return -1;
   }
 };
+
 // route api/post/getlikey
 // get all likedposts from user & set the state to each post
 router.post('/getlikey', isAuth, async (req, res) => {
@@ -130,6 +131,26 @@ router.post('/getlikey', isAuth, async (req, res) => {
     res.status(400).json({ success: false, message: `Something Wrong` || error })
   }
 })
+
+// route api/post/getlikefrpost
+// get all likedposts from user & set the state to each post
+router.post('/getlikefrpost', isAuth, async (req, res) => {
+  const { postId } = req.body;
+  const userId = req.user?.userId;
+
+  if (!postId) {
+    res.send('No post Id sent');
+  }
+  try {
+    const isPostLikey = await User.findOne({ _id: userId, likedposts: { $elemMatch: { postId: postId } } }, { likedposts: { $elemMatch: { postId: postId } } })
+    res.status(200).send(isPostLikey?.likedposts[0]);
+
+  } catch (error) {
+    res.status(201).send(error)
+  }
+
+})
+
 
 function newlikestate(islike, isdislike, reaction) {
   // unlike
@@ -302,8 +323,8 @@ router.post('/comment', isAuth, async (req, res) => {
 router.get('/getall', async (req, res) => {
   // find by categoryId, title & department
   const categoryId = req.query.categoryId || ''
-  const title = decodeURI(req.query.title) || ''
-  const department = decodeURI(req.query.department) || ''
+  const title = req.query.title || ''
+  const department = req.query.department || ''
 
   // return doc per page
   const pageSize = 2
@@ -360,6 +381,21 @@ router.get('/getall', async (req, res) => {
           err.message || `Error when filtering : ${categoryId ? categoryId : '' || title ? title : '' || department ? department : ''}.`
       });
     });
+})
+
+// route/api/post/getone
+// get one post
+router.post('/getone', async (req,res) => {
+  const {postId} = req.body;
+  if(!postId){
+    res.status(404).send('No PostId found to query.')
+  }
+  try {
+    const result = await Post.findById(postId);
+    res.status(200).send(result)
+  } catch (error) {
+    res.status(400).send(error)
+  }
 })
 
 // route api/post/getAllDepartment

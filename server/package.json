@@ -11,16 +11,18 @@
   "license": "ISC",
   "dependencies": {
     "argon2": "^0.28.2",
+    "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "googleapis": "^81.0.0",
+    "gridfs-stream": "^1.1.1",
     "jsonwebtoken": "^8.5.1",
+    "md5": "^2.3.0",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
     "mongoose": "^5.13.2",
     "multer": "^1.4.2",
-    "multer-gridfs-storage": "^5.0.0",
     "nodemailer": "^6.6.2"
   },
   "devDependencies": {

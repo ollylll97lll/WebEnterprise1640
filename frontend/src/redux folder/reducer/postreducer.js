@@ -1,4 +1,4 @@
-import { GET_POST_FAIL, GET_POST_LIKESTATE_FAIL, GET_POST_LIKESTATE_REQUEST, GET_POST_LIKESTATE_SUCCESS, GET_POST_REQUEST, GET_POST_SUCCESS, POST_LIKES_FAIL, POST_LIKES_REQUEST, POST_LIKES_SUCCESS } from "../constants/postconstants";
+import { GET_POST_FAIL, GET_POST_REQUEST, GET_POST_SUCCESS, POST_LIKES_FAIL, POST_LIKES_REQUEST, POST_LIKES_SUCCESS } from "../constants/postconstants";
 
 export const getPostReducer = (state = { loading: true, posts: [] }, action) => {
     switch (action.type) {
@@ -12,17 +12,6 @@ export const getPostReducer = (state = { loading: true, posts: [] }, action) => 
     }
 }
 
-export const getPostLikeyReducer = (state = {}, action) => {
-    switch (action.type) {
-        case GET_POST_LIKESTATE_REQUEST:
-            return { loading: true };
-        case GET_POST_LIKESTATE_SUCCESS:
-            return { loading: false, data: action.payload };
-        case GET_POST_LIKESTATE_FAIL:
-            return { loading: false, error: action.payload };
-        default: return state;
-    }
-}
 
 export const postLikeyReducer = (state = {}, action) => {
     switch (action.type) {

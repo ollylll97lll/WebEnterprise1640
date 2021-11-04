@@ -1,3 +1,4 @@
+import axios from 'axios';
 import moment from 'moment';
 import React, { useEffect } from 'react'
 import { useState } from 'react'
@@ -6,21 +7,41 @@ import { Col, Container, Row } from 'reactstrap'
 import { getPostLikey, postLikey } from '../../redux folder/actions/postaction';
 import './styles.css'
 
+// sampletext
+const sampletext = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Maecenas sed diam sed enim vestibulum gravida. Ut ultrices et ante ut egestas.
+Nulla id interdum nisi. Pellentesque at ex tempor, placerat urna quis, maximus lacus.
+Nullam pharetra, leo vel tincidunt gravida, elit erat pretium justo, vel faucibus mauris mauris id tortor.
+Praesent aliquam sodales odio, eu consequat nibh efficitur et. Sed pretium diam nulla.
+Vestibulum feugiat venenatis sapien a congue.`
+
 export default function RedditCards(props) {
+    const userLogin = useSelector(state => state.userLogin)
+    const { userInfo } = userLogin;
     const postId = props.postId;
-    const [like, setLike] = useState(props.like)
-    const [dislike, setDislike] = useState(props.dislike)
+    const [like, setLike] = useState(false)
+    const [dislike, setDislike] = useState(false)
     const calTimesincePost = moment(props.createdAt).fromNow()
     const dispatch = useDispatch();
-    // sampletext
-    const sampletext = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    Maecenas sed diam sed enim vestibulum gravida. Ut ultrices et ante ut egestas.
-    Nulla id interdum nisi. Pellentesque at ex tempor, placerat urna quis, maximus lacus.
-    Nullam pharetra, leo vel tincidunt gravida, elit erat pretium justo, vel faucibus mauris mauris id tortor.
-    Praesent aliquam sodales odio, eu consequat nibh efficitur et. Sed pretium diam nulla.
-    Vestibulum feugiat venenatis sapien a congue.`
+
     // fake total likes
     const [shownLikes, setShownLikes] = useState(props.likes ? props.likes : 0)
+
+    async function getPostLikeState(postId) {
+        try {
+            const result = await axios.post('http://localhost:5001/api/post/getlikefrpost', { postId: postId },
+                { headers: { Authorization: `Bearer ${userInfo?.accessToken}` } })
+            console.log(result.data)
+            setLike(result.data?.like || false)
+            setDislike(result.data?.dislike || false)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(async () => {
+        getPostLikeState(props.postId)
+    }, [])
 
     const setLikeDislikeState = (name) => {
         switch (name) {

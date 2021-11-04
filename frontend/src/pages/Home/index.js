@@ -62,53 +62,7 @@ function HomePage(props) {
         getAllDept()
         props.history.push(getFilterURL({ shownby: 'hotest' }))
     }, [])
-
-    useEffect(() => {
-        if (posts) {
-            let postIdList = new Array()
-            let postList = Array.from(posts);
-            postList.map(post => {
-                postIdList.push({ _id: post._id });
-            })
-            dispatch(getPostLikey({ postIdList }))
-        }
-    }, [posts])
-
-    useEffect(() => {
-        if (data && posts) {
-            const rl = Array.from(data)
-            const p = Array.from(posts)
-            // console.log(rl)
-            setCardData(mappinglikestate2post(rl, p))
-        }
-    }, [data])
-
-    function mappinglikestate2post(likestates = [], posts = []) {
-        const carddatas = new Array();
-        likestates.forEach(ls => {
-            posts.forEach(p => {
-                if (ls.postId === p._id) {
-                    carddatas.push({
-                        post: p,
-                        likedstate: ls.result
-                            ? {
-                                like: ls.result.likedposts[0].like,
-                                dislike: ls.result.likedposts[0].dislike
-                            }
-                            : {
-                                like: false,
-                                dislike: false
-                            }
-                    });
-                }
-            })
-        })
-        // console.log("carddatas", carddatas);
-        return carddatas.sort((a, b) => {
-            return a.post._id - b.post._id;
-        });
-    }
-
+    
     const getFilterURL = (filter) => {
         const filterPage = filter.page || pageNumber;
         const filterCategoryId = filter.categoryId || category;
@@ -231,32 +185,7 @@ function HomePage(props) {
                             ) :
                                 (
                                     <>
-                                        {cardData.length === 0 && <MessageBox>No Post Found. F5 to refresh</MessageBox>}
                                         {
-                                            cardData.map((carddata) => {
-
-                                                return (
-                                                    <RedditCards
-                                                        key={carddata.post._id}
-                                                        category={carddata.post.categoryinfo[0].name}
-                                                        title={carddata.post.title}
-                                                        content={carddata.post.content}
-                                                        files={carddata.post.files}
-                                                        likes={carddata.post.likes}
-                                                        createdAt={carddata.post.createdAt}
-                                                        postId={carddata.post._id}
-                                                        closuredate={carddata.post.closuredate}
-
-                                                        // like state
-                                                        like={carddata.likedstate.like}
-                                                        dislike={carddata.likedstate.dislike}
-                                                    />
-
-
-                                                )
-                                            })
-                                        }
-                                        {/* {
                                             posts.map((post) => {
                                                 return (
                                                     <RedditCards
@@ -272,7 +201,7 @@ function HomePage(props) {
                                                     />
                                                 )
                                             })
-                                        } */}
+                                        }
                                     </>
                                 )
                         }

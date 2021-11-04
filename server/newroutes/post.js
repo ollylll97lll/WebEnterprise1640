@@ -92,46 +92,6 @@ function tl(islike, isdislike, react) {
   }
 };
 
-// route api/post/getlikey
-// get all likedposts from user & set the state to each post
-router.post('/getlikey', isAuth, async (req, res) => {
-  // get state from post
-  const { postIdList } = req.body
-  const userId = req.user.userId;
-
-  // check user
-  const user = await User.findById(userId);
-  if (!user) {
-    res.status(400).json({ success: false, message: `cannot find user ${userId}` })
-  }
-  // postId[] nhận vào
-  let postList = new Array().concat(postIdList);
-  // result query từ postList
-  const resultList = new Array();
-
-  if (postList.length === 0) {
-    res.status(400).send('You did not put in any post. Send again');
-    return;
-  }
-
-  try {
-    await Promise.all(postList.map(async (postId) => {
-      let result = await User.findOne({ _id: userId, likedposts: { $elemMatch: { postId: postId._id } } }, { likedposts: { $elemMatch: { postId: postId._id } } })
-      if (result) {
-        const successresult = { postId: postId._id, result }
-        resultList.push(successresult);
-      }
-      else {
-        const failresult = { postId: postId._id, message: `User has not react this post` }
-        resultList.push(failresult)
-      }
-    }))
-    res.status(200).send(resultList)
-  } catch (error) {
-    res.status(400).json({ success: false, message: `Something Wrong` || error })
-  }
-})
-
 // route api/post/getlikefrpost
 // get all likedposts from user & set the state to each post
 router.post('/getlikefrpost', isAuth, async (req, res) => {

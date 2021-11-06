@@ -328,7 +328,7 @@ router.get('/getall', async (req, res) => {
         : { _id: -1 }
   const total = await Post.find(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
 
-  const post = await Post.aggregate([retrieveCategoryname, retrieveComment]).match(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
+  const post = await Post.find(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
     .sort(shownOrder)
     .skip(pageSize * (page - 1)).limit(pageSize)
     .then(data => {
@@ -347,17 +347,26 @@ router.get('/getall', async (req, res) => {
 
 // route/api/post/getpostdetail
 // get one post
-router.post('/getpostdetail', async (req,res) => {
-  const {postId} = req.body;
-  if(!postId){
+router.post('/getpostdetail', async (req, res) => {
+  const { postId } = req.body;
+  if (!postId) {
     res.status(404).send('No PostId found to query.')
   }
+  let returndat = {};
   try {
-    const result = await Post.findById(postId);
-    res.status(200).send(result)
+    const result = await Post.findById(postId).then(async (data) => {
+      returndat.data = data;
+      const catdetail = await Category.findById(data?.categoryId).then(async (data) => {
+        returndat.cartdetail = data;
+        const cmts = await Comment.findOne({ postId: postId });
+        returndat.cmts = cmts
+      })
+    })
+
   } catch (error) {
     res.status(400).send(error)
   }
+  res.send(returndat)
 })
 
 // route api/post/getAllDepartment

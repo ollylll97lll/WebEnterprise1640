@@ -282,6 +282,18 @@ router.post('/comment', isAuth, async (req, res) => {
   }
 })
 
+router.delete('/delpost', isAuth, async (req, res) => {
+  const { postId, commentId } = req.body;
+  if (!postId) {
+    res.status(404).send('No PostId')
+  }
+  if (!commentId) {
+    res.send('No Comment Id')
+  }
+  const result = await Comment.findOneAndRemove({ postId: postId, comments: { $elemMatch: { _id: commentId, userId: req.user.userId } } })
+  res.send(result);
+})
+
 //route api/post/getall
 //Get all posts with queries of creator, userId, topic and season
 router.get('/getall', async (req, res) => {
@@ -359,7 +371,7 @@ router.post('/getpostdetail', async (req, res) => {
   const catdetail = await Category.findById(result?.categoryId);
   const cmts = await Comment.findOne({ postId: postId });
   res.status(200).json({
-    result, catdetail, cmts: cmts? [...cmts.comments] : []
+    result, catdetail, cmts: cmts ? [...cmts.comments] : []
   })
 
 

@@ -10,13 +10,14 @@ import ChangePassword from './pages/Home/ChangePass';
 import LoginPage from './pages/Login';
 import ForgotPassword from './pages/Login/ForgotPass';
 import ManagerPage from './pages/Manager';
+import PostDetails from './pages/PostDetail';
 import StaffPage from './pages/Student';
 import ViewDetails from './pages/ViewDetails';
 
 function App() {
   return (
     <Switch initial='/'>
-      <Route path='/7265646972656374746f6c6f676f7574' exact component={RedirectPage}/>
+      <Route path='/7265646972656374746f6c6f676f7574' exact component={RedirectPage} />
       <Route path='/' exact component={LoginPage} />
       <Route path='/forgot' component={ForgotPassword} />
       <Route path='/recoverpass' component={ChangePassword} />
@@ -28,6 +29,8 @@ function App() {
       <PrivateRoute path='/coordinator' component={CoordinatorPage} />
       <PrivateRoute path='/staff' component={StaffPage} />
       <PrivateRoute path='/viewdetails' component={ViewDetails} />
+      <PrivateRoute path='/postdetails' component={PostDetails} />
+
 
       <Route path='/error' component={Error} />
       <Route path='/redirect' component={RedirectPage} />

@@ -2,7 +2,7 @@ import "rc-pagination/assets/index.css"
 import React, { useEffect, useState } from 'react'
 import "react-datepicker/dist/react-datepicker.css"
 import { useDispatch, useSelector } from 'react-redux'
-import { Col, Pagination, PaginationItem, PaginationLink } from 'reactstrap'
+import { Col, Container, Pagination, PaginationItem, PaginationLink } from 'reactstrap'
 import RedditCards from '../../components/Cards/Cards'
 import Footer from '../../components/Footer'
 import { renderNavBar } from '../../components/Navbar/renderNavBar'
@@ -12,6 +12,7 @@ import Timer from '../../components/Timer'
 import { getAllPosts, getPostLikey } from "../../redux folder/actions/postaction"
 import { Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, Box, Grid, BottomNavigation } from '@mui/material'
 import axios from "axios"
+import { useHistory } from "react-router"
 
 function HomePage(props) {
     // const { category='all', title='all', department='all', shownby='latest', pagenum=1} = useParams();
@@ -59,7 +60,7 @@ function HomePage(props) {
         getAllDept()
         props.history.push(getFilterURL({ shownby: 'hotest' }))
     }, [])
-    
+
     const getFilterURL = (filter) => {
         const filterPage = filter.page || pageNumber;
         const filterCategoryId = filter.categoryId || category;
@@ -95,6 +96,11 @@ function HomePage(props) {
         setIsEverywhereVisible(false)
         setIsSelected(2)
     }
+    const history = useHistory()
+    const onPressCard = (postDetail) => {
+        console.log(postDetail)
+        history.push(`/postdetails?postid=${postDetail._id}`, { post: postDetail })
+    }
 
 
     return (
@@ -120,8 +126,9 @@ function HomePage(props) {
                             </Button>
 
                             {isEverywhereVisible && allDept &&
-                                <FormControl sx={{ minWidth: 160, m: 1,
-                                
+                                <FormControl sx={{
+                                    minWidth: 160, m: 1,
+
                                 }}>
                                     <InputLabel sx={{ marginTop: -1, fontWeight: 'bold', color: '#0079d3', borderColor: '#0079d3' }} id="select-label">Country Sort</InputLabel>
                                     <Select
@@ -185,17 +192,21 @@ function HomePage(props) {
                                         {
                                             posts.map((post) => {
                                                 return (
-                                                    <RedditCards
-                                                        key={post._id}
-                                                        category={post.categoryinfo[0].name}
-                                                        title={post.title}
-                                                        content={post.content}
-                                                        files={post.files}
-                                                        likes={post.likes}
-                                                        createdAt={post.createdAt}
-                                                        postId={post._id}
-                                                        closuredate={post.closuredate}
-                                                    />
+                                                    <Container onClick={() => {
+                                                        onPressCard(post)
+                                                    }}>
+                                                        <RedditCards
+                                                            key={post._id}
+                                                            category={post.categoryinfo[0].name}
+                                                            title={post.title}
+                                                            content={post.content}
+                                                            files={post.files}
+                                                            likes={post.likes}
+                                                            createdAt={post.createdAt}
+                                                            postId={post._id}
+                                                            closuredate={post.closuredate}
+                                                        />
+                                                    </Container>
                                                 )
                                             })
                                         }

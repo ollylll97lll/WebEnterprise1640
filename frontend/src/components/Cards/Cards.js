@@ -3,6 +3,7 @@ import moment from 'moment';
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
 import { Col, Container, Row } from 'reactstrap'
 import { getPostLikey, postLikey } from '../../redux folder/actions/postaction';
 import './styles.css'
@@ -102,41 +103,40 @@ export default function RedditCards(props) {
             return -1;
         }
     }
+    const history = useHistory()
 
 
 
     return (
         <div class='wrapper'>
-            <Container>
-                <Row style={{ backgroundColor: '#F8F9FA' }}>
-                    <Col name='like-dislike' xs='1' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', borderLeft: '4px solid transparent', padding: '8px 4px', paddingLeft: 0 }} >
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '40px', left: 0, top: 0 }} >
-                            <a name="like-btn" onClick={(e) => setLikeDislikeState("like-btn")} ><i class={like ? "bi bi-caret-up-fill" : "bi bi-caret-up"} /></a>
-                            <h5>{shownLikes}</h5>
-                            <a name="dislike-btn" onClick={(e) => setLikeDislikeState("dislike-btn")}><i class={dislike ? "bi bi-caret-down-fill" : "bi bi-caret-down"} /></a>
-                        </div>
-                    </Col>
-                    <Col name='main-body' xs='11' style={{ padding: '8px 0 0 0', display: 'flex', flexDirection: 'column', backgroundColor: 'white' }} >
-                        <div style={{ display: 'flex' }}>
-                            <span style={{ fontStyle: 'italic' }} >{props.category ? props.category : 'SampleCategory1'} &nbsp; </span>
-                            <span style={{ fontStyle: 'italic' }}>{calTimesincePost ? `Posted ${calTimesincePost}` : `Posted just now`} </span>
-                        </div>
-                        <h3 style={{ fontSize: '18px', padding: '10px 0 0 0' }}>{props.title ? props.title : 'Sample Tittle 1'}</h3>
-                        <div name="preview-content" style={{ fontSize: '14px' }}>
-                            <p class="more">
-                                {props.content ? props.content : sampletext}
-                            </p>
-                        </div>
-                        <div name='files' style={{ height: '300px', backgroundColor: 'gray', padding: '20px 0' }}></div>
-                        <div name='comment'>
-                            <a style={{ padding: '8px' }}>
-                                <i class="bi bi-chat" />
-                                <span> {props.comment ? props.comment : 999} comment(s)</span>
-                            </a>
-                        </div>
-                    </Col>
-                </Row>
-            </Container>
+            <Row style={{ backgroundColor: '#F8F9FA' }}>
+                <Col name='like-dislike' xs='1' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', borderLeft: '4px solid transparent', padding: '8px 4px', paddingLeft: 0 }} >
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '40px', left: 0, top: 0 }} >
+                        <a name="like-btn" onClick={(e) => setLikeDislikeState("like-btn")} ><i class={like ? "bi bi-caret-up-fill" : "bi bi-caret-up"} /></a>
+                        <h5>{shownLikes}</h5>
+                        <a name="dislike-btn" onClick={(e) => setLikeDislikeState("dislike-btn")}><i class={dislike ? "bi bi-caret-down-fill" : "bi bi-caret-down"} /></a>
+                    </div>
+                </Col>
+                <Col name='main-body' xs='11' style={{ padding: '8px 0 0 0', display: 'flex', flexDirection: 'column', backgroundColor: 'white' }} >
+                    <div style={{ display: 'flex' }}>
+                        <span style={{ fontStyle: 'italic' }} >{props.category ? props.category : 'SampleCategory1'} &nbsp; </span>
+                        <span style={{ fontStyle: 'italic' }}>{calTimesincePost ? `Posted ${calTimesincePost}` : `Posted just now`} </span>
+                    </div>
+                    <h3 style={{ fontSize: '18px', padding: '10px 0 0 0' }}>{props.title ? props.title : 'Sample Tittle 1'}</h3>
+                    <div name="preview-content" style={{ fontSize: '14px' }}>
+                        <p class="more">
+                            {props.content ? props.content : sampletext}
+                        </p>
+                    </div>
+                    <div name='files' style={{ height: '200px', backgroundColor: 'gray', padding: '20px 0' }}></div>
+                    <div name='comment'>
+                        <a style={{ padding: '8px' }}>
+                            <i class="bi bi-chat" />
+                            <span> {props.comment ? props.comment : 999} comment(s)</span>
+                        </a>
+                    </div>
+                </Col>
+            </Row>
         </div>
     )
 }

@@ -253,7 +253,7 @@ router.post('/comment', isAuth, async (req, res) => {
         comments: [
           {
             userId: req.user.userId,
-            emai: req.user.email,
+            email: req.user.email,
             comment: comment,
             createdAt: moment().tz('Asia/Ho_Chi_Minh').format(),
             isAnonymous: isAnonymous
@@ -261,13 +261,16 @@ router.post('/comment', isAuth, async (req, res) => {
         ]
       })
       newpostcomments.save()
+
+
+
       res.json({ success: true, message: `Create new Comment document for post: ${newpostcomments.postId}` })
     }
     // else push new comment into the doc
     else {
       const newcomment = {
         userId: req.user.userId,
-        emai: req.user.email,
+        email: req.user.email,
         comment: comment,
         createdAt: moment().tz('Asia/Ho_Chi_Minh').format(),
         isAnonymous: isAnonymous
@@ -282,7 +285,7 @@ router.post('/comment', isAuth, async (req, res) => {
   }
 })
 
-router.delete('/delpost', isAuth, async (req, res) => {
+router.delete('/deletecommentpost', isAuth, async (req, res) => {
   const { postId, commentId } = req.body;
   if (!postId) {
     res.status(404).send('No PostId')
@@ -290,8 +293,29 @@ router.delete('/delpost', isAuth, async (req, res) => {
   if (!commentId) {
     res.send('No Comment Id')
   }
-  const result = await Comment.findOneAndRemove({ postId: postId, comments: { $elemMatch: { _id: commentId, userId: req.user.userId } } })
-  res.send(result);
+  const result = await Comment.updateOne({ postId: postId },
+    {
+      $pull:
+      {
+        comments:
+        {
+            _id: commentId,
+            userId: req.user.userId
+        }
+      }
+    })
+  if(result.n === 0 || result.nModified === 0){
+    res.status(404).send('No cmt found 2 del')
+    return
+  }
+  if(result.nModified === 1){
+    res.status(200).json({success: true, message: 'Deleted cmt'})
+    return
+  }
+  else {
+    res.status(400).send('Smthing Wrong bro')
+    return
+  }
 })
 
 //route api/post/getall

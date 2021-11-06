@@ -354,24 +354,15 @@ router.post('/getpostdetail', async (req, res) => {
   if (!postId) {
     res.status(404).send('No PostId found to query.')
   }
-  let returndat = {};
-  try {
-    const result = await Post.findById(postId).then(async (data) => {
-      returndat.data = data;
 
-      const catdetail = await Category.findById(data?.categoryId).then(async (data) => {
-        returndat.cartdetail = data;
+  const result = await Post.findById(postId)
+  const catdetail = await Category.findById(result?.categoryId);
+  const cmts = await Comment.findOne({ postId: postId });
+  res.status(200).json({
+    result, catdetail, cmts: cmts? [...cmts.comments] : []
+  })
 
-        const cmts = await Comment.findOne({ postId: postId });
-        returndat.cmts = [...cmts.comments];
-      })
-    })
 
-    res.send(returndat)
-
-  } catch (error) {
-    res.status(400).send(error)
-  }
 })
 
 // route api/post/getAllDepartment

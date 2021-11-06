@@ -11,6 +11,11 @@ const CommentSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref:'user'
         },
+        email:{
+            type: String,
+            ref:'user',
+            required: true
+        },
         comment: {
             type: String
         },

@@ -253,6 +253,7 @@ router.post('/comment', isAuth, async (req, res) => {
         comments: [
           {
             userId: req.user.userId,
+            emai: req.user.email,
             comment: comment,
             createdAt: moment().tz('Asia/Ho_Chi_Minh').format(),
             isAnonymous: isAnonymous
@@ -266,6 +267,7 @@ router.post('/comment', isAuth, async (req, res) => {
     else {
       const newcomment = {
         userId: req.user.userId,
+        emai: req.user.email,
         comment: comment,
         createdAt: moment().tz('Asia/Ho_Chi_Minh').format(),
         isAnonymous: isAnonymous
@@ -356,17 +358,20 @@ router.post('/getpostdetail', async (req, res) => {
   try {
     const result = await Post.findById(postId).then(async (data) => {
       returndat.data = data;
+
       const catdetail = await Category.findById(data?.categoryId).then(async (data) => {
         returndat.cartdetail = data;
+
         const cmts = await Comment.findOne({ postId: postId });
-        returndat.cmts = cmts
+        returndat.cmts = [...cmts.comments];
       })
     })
+
+    res.send(returndat)
 
   } catch (error) {
     res.status(400).send(error)
   }
-  res.send(returndat)
 })
 
 // route api/post/getAllDepartment

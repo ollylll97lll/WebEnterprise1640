@@ -328,7 +328,7 @@ router.get('/getall', async (req, res) => {
         : { _id: -1 }
   const total = await Post.find(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
 
-  const post = await Post.find(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
+  const post = await Post.aggregate([retrieveCategoryname]).match(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
     .sort(shownOrder)
     .skip(pageSize * (page - 1)).limit(pageSize)
     .then(data => {

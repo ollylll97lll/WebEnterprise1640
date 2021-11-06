@@ -16,6 +16,9 @@ const CommentSchema = new Schema({
         },
         createdAt: {
             type: Date,
+        },
+        isAnonymous: {
+            type: Boolean
         }
     }]
 })

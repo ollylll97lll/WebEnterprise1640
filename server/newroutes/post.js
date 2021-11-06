@@ -232,7 +232,7 @@ router.post('/likey/:postId', isAuth, async (req, res) => {
 //route api/post/comment
 //Add comment in a post
 router.post('/comment', isAuth, async (req, res) => {
-  const { postId, comment } = req.body
+  const { postId, comment, isAnonymous } = req.body
 
   //if comment not input
   if (!comment)
@@ -254,7 +254,8 @@ router.post('/comment', isAuth, async (req, res) => {
           {
             userId: req.user.userId,
             comment: comment,
-            createdAt: moment().tz('Asia/Ho_Chi_Minh').format()
+            createdAt: moment().tz('Asia/Ho_Chi_Minh').format(),
+            isAnonymous: isAnonymous
           }
         ]
       })
@@ -266,7 +267,8 @@ router.post('/comment', isAuth, async (req, res) => {
       const newcomment = {
         userId: req.user.userId,
         comment: comment,
-        createdAt: moment().tz('Asia/Ho_Chi_Minh').format()
+        createdAt: moment().tz('Asia/Ho_Chi_Minh').format(),
+        isAnonymous: isAnonymous
       }
       postcomments.comments.push(newcomment)
       postcomments.save()

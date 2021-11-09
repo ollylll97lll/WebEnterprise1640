@@ -37,7 +37,15 @@ router.get('/getall', async (req, res) => {
     const role = req.query.role || '';
     const roleFilter = role ? { role: { $regex: role, $options: "i" } } : {};
 
-    User.find({ $and: [departmentFilter, roleFilter] })
+    // return doc per page
+    const pageSize = 2
+    // current page
+    const page = Number(req.query.pageNumber) || 1;
+
+    const total = await User.find({ $and: [departmentFilter, roleFilter] })
+
+
+    User.find({ $and: [departmentFilter, roleFilter] }).skip(pageSize * (page - 1)).limit(pageSize)
         .then(data => {
             const returndata = [];
             [...data].forEach((d) => {

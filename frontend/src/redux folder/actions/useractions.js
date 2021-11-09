@@ -1,5 +1,5 @@
 import Axios from 'axios'
-import { USER_LOGIN_FAIL, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_RECOVER_EMAIL_FAIL, USER_RECOVER_EMAIL_REQUEST, USER_RECOVER_EMAIL_SUCCESS, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from '../constants/userconstants'
+import { USER_GETALL_FAIL, USER_GETALL_REQUEST, USER_GETALL_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_RECOVER_EMAIL_FAIL, USER_RECOVER_EMAIL_REQUEST, USER_RECOVER_EMAIL_SUCCESS, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from '../constants/userconstants'
 
 export const login = (email, password) => async (dispatch) => {
     dispatch({
@@ -75,6 +75,26 @@ export const recover = (email) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: USER_RECOVER_EMAIL_FAIL, payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        });
+    }
+}
+
+//  GETALL
+
+export const getallUser = ({department = '', role = '', pageNumber= ''}) => async (dispatch) => {
+    dispatch({
+        type: USER_GETALL_REQUEST
+    });
+
+    try {
+        const {data} = await Axios.get(`http://localhost:5001/api/user/getall?department=${department}&role=${role}&pageNumber=${pageNumber}`);
+        dispatch({type: USER_GETALL_SUCCESS, payload: data})
+    } catch (error) {
+        dispatch({
+            type: USER_GETALL_FAIL, payload:
                 error.response && error.response.data.message
                     ? error.response.data.message
                     : error.message,

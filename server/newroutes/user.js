@@ -39,7 +39,16 @@ router.get('/getall', async (req, res) => {
 
     User.find({ $and: [departmentFilter, roleFilter] })
         .then(data => {
-            res.json({ success: true, data: data })
+            const returndata = [];
+            [...data].forEach( async (d) => {
+                const tempdata = {
+                    email: d.email,
+                    department: d.department,
+                    role: d.role
+                }
+               await returndata.push(tempdata);
+            })
+            res.json({ success: true, data: returndata })
         })
         .catch(err => {
             res.status(500).send({

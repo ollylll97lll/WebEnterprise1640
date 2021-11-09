@@ -7,7 +7,7 @@ const Post = require('../newmodels/Post')
 const User = require('../newmodels/User')
 const Comment = require('../newmodels/Comment')
 const Category = require('../newmodels/Category')
-const { isAuth } = require('../middleware/utils')
+const { isAuth, isAdmin } = require('../middleware/utils')
 const { findById } = require('../newmodels/Post')
 const Departments = require('../newmodels/Departments')
 const date = new Date();
@@ -300,17 +300,17 @@ router.delete('/deletecommentpost', isAuth, async (req, res) => {
       {
         comments:
         {
-            _id: commentId,
-            userId: req.user.userId
+          _id: commentId,
+          userId: req.user.userId
         }
       }
     })
-  if(result.n === 0 || result.nModified === 0){
+  if (result.n === 0 || result.nModified === 0) {
     res.status(404).send('No cmt found 2 del')
     return
   }
-  if(result.nModified === 1){
-    res.status(200).json({success: true, message: 'Deleted cmt'})
+  if (result.nModified === 1) {
+    res.status(200).json({ success: true, message: 'Deleted cmt' })
     return
   }
   else {
@@ -415,8 +415,8 @@ router.get('/getAllDepartment', async (req, res) => {
 
 // route api/post/postDepartment
 // get all department
-router.post('/postDepartment', async (req, res) => {
-  const {name} = req.body;
+router.post('/postDepartment', isAuth, isAdmin, async (req, res) => {
+  const { name } = req.body;
   try {
     const result = await Departments.create({
       name: name,

@@ -40,13 +40,22 @@ router.get('/getall', async (req, res) => {
     User.find({ $and: [departmentFilter, roleFilter] })
         .then(data => {
             const returndata = [];
-            [...data].forEach( async (d) => {
-                const tempdata = {
-                    email: d.email,
-                    department: d.department,
-                    role: d.role
+            [...data].forEach((d) => {
+                switch (d.role) {
+                    case 'admin': {
+                        break;
+                    }
+                    default:
+                        {
+                            const tempdata = {
+                                email: d.email,
+                                department: d.department,
+                                role: d.role
+                            }
+                            returndata.push(tempdata);
+                        }
                 }
-               await returndata.push(tempdata);
+
             })
             res.json({ success: true, data: returndata })
         })

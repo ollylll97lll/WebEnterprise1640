@@ -35,11 +35,11 @@ router.post('/register', async (req, res) => {
         //Check if the user existed in DB
         const user = await User.findOne({ email })
 
-        const department = await Departments.findByIdAndUpdate(departmentId, { $inc: { totalStaff: 1 } })
-        if (department.n === 0) {
+        const returndepartment = await Departments.findByIdAndUpdate(departmentId, { $inc: { totalStaff: 1 } })
+        if (returndepartment.n === 0) {
             return res.status(404).json({ success: false, message: 'Cannot find the department to update' })
         }
-        if (department.nModified === 0) {
+        if (returndepartment.nModified === 0) {
             return res.status(400).json({ success: false, message: 'Either no department found to modified. Or the requests are not valid.' })
         }
 

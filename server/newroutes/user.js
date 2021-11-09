@@ -66,7 +66,7 @@ router.get('/getall', async (req, res) => {
                 }
 
             })
-            res.json({ success: true, data: returndata })
+            res.json({ success: true, data: returndata, page, pages: Math.ceil(total.length / pageSize) })
         })
         .catch(err => {
             res.status(500).send({

@@ -64,9 +64,9 @@ router.post('/register', async (req, res) => {
             newUser = new User({
                 email,
                 password: hashedPassword,
-                department,
-                departmentId,
-                role,
+                department: department,
+                departmentId: departmentId,
+                role: role,
                 createdAt: moment().tz('Asia/Ho_Chi_Minh').format(),
                 posts: [],
                 likedposts: []

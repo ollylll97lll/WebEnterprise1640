@@ -11,6 +11,7 @@ import LoginPage from './pages/Login';
 import ForgotPassword from './pages/Login/ForgotPass';
 import ManagerPage from './pages/Manager';
 import PostDetails from './pages/PostDetail';
+import MultipleUp from './pages/MultipleUploadPage/MultipleUp';
 import StaffPage from './pages/Student';
 import ViewDetails from './pages/ViewDetails';
 
@@ -34,6 +35,7 @@ function App() {
 
       <Route path='/error' component={Error} />
       <Route path='/redirect' component={RedirectPage} />
+      <Route path='/mulup' component={MultipleUp}/>
     </Switch >
   );
 }

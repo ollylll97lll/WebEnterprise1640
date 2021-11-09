@@ -6,15 +6,16 @@ const argon2 = require('argon2')
 const moment = require('moment-timezone')
 
 const User = require('../newmodels/User')
+const Departments = require('../newmodels/Departments')
 
 //route Post api/auth/register
 //Register for user
 router.post('/register', async (req, res) => {
-    const { email, password, department, role } = req.body
+    const { email, password, department, role, departmentId } = req.body
 
     //validation for inputs
-    if (!email || !password)
-        return res.status(400).json({ success: false, message: 'Please enter your email or password' })
+    if (!email || !password || !departmentId)
+        return res.status(400).json({ success: false, message: `Please enter your ${email ? ' email' : ''}${password ? ', password' : ''} ${departmentId ? ', department' : ''} ` })
 
 
     //check if mail actual valid
@@ -26,13 +27,21 @@ router.post('/register', async (req, res) => {
 
     if (!department && role !== 'admin') {
         // if (role !== 'admin') {
-            return res.status(400).json({ success: false, message: 'Please enter a Department for the non admin User' })
+        return res.status(400).json({ success: false, message: 'Please enter a Department for the non admin User' })
         // }
     }
 
     try {
         //Check if the user existed in DB
         const user = await User.findOne({ email })
+
+        const department = await Departments.findByIdAndUpdate(departmentId, { $inc: { totalStaff: 1 } })
+        if (department.n === 0) {
+            return res.status(404).json({ success: false, message: 'Cannot find the department to update' })
+        }
+        if (department.nModified === 0) {
+            return res.status(400).json({ success: false, message: 'Either no department found to modified. Or the requests are not valid.' })
+        }
 
         if (user)
             return res.status(400).json({ success: false, message: 'The Account Already Existed' })
@@ -56,6 +65,7 @@ router.post('/register', async (req, res) => {
                 email,
                 password: hashedPassword,
                 department,
+                departmentId,
                 role,
                 createdAt: moment().tz('Asia/Ho_Chi_Minh').format(),
                 posts: [],

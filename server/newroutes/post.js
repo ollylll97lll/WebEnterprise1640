@@ -9,6 +9,7 @@ const Comment = require('../newmodels/Comment')
 const Category = require('../newmodels/Category')
 const { isAuth } = require('../middleware/utils')
 const { findById } = require('../newmodels/Post')
+const Departments = require('../newmodels/Departments')
 const date = new Date();
 
 //route api/post/create
@@ -405,12 +406,28 @@ router.post('/getpostdetail', async (req, res) => {
 // get all department
 router.get('/getAllDepartment', async (req, res) => {
   try {
-    const result = await Post.aggregate([{ $group: { _id: "$department" } }])
+    const result = await Departments.find({});
     res.status(201).json({ message: 'Success', departments: result });
   } catch (error) {
     res.status(400).send('Something Wrong')
   }
 })
+
+// route api/post/postDepartment
+// get all department
+router.post('/postDepartment', async (req, res) => {
+  const {name} = req.body;
+  try {
+    const result = await Departments.create({
+      name: name,
+      totalStaff: 0
+    })
+    res.status(201).json({ message: 'Success', departments: result });
+  } catch (error) {
+    res.status(400).send('Something Wrong')
+  }
+})
+
 
 // Statistic APIs (later)
 

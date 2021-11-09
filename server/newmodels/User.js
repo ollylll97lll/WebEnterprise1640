@@ -17,6 +17,12 @@ const UserSchema = new Schema({
         type: String,
     },
 
+    departmentId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'departments'
+    },
+
     role: {
         type: String,
     },

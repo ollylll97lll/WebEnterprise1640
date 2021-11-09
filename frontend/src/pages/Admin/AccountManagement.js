@@ -1,3 +1,4 @@
+import axios from 'axios';
 import Pagination from 'rc-pagination';
 import "rc-pagination/assets/index.css";
 import React, { useEffect, useState } from 'react';
@@ -5,132 +6,124 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Col, CustomInput, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
 import LoadingBox from '../../components/Return Boxes/LoadingBox';
 import MessageBox from '../../components/Return Boxes/MessageBox';
-import { register } from '../../redux folder/actions/useractions';
+import { getallUser, register } from '../../redux folder/actions/useractions';
+import { arrayIsEmpty } from '../../utils/function';
+
+const dataAccount = [
+    {
+        faculty: 'Graphic and Digital Design',
+        email: 'whisper4shot1kill@gmail.com',
+        role: 'Manager',
+        password: 'whisper4shot1kill@gmail.com'
+    },
+    {
+        faculty: 'Graphic and Digital Design',
+        email: 'AnhDQ@gmail.com',
+        role: 'Coordinator',
+        password: 'AnhDQ@gmail.com'
+    },
+    {
+        faculty: 'Graphic and Digital Design',
+        email: 'AnhDQStudent@gmail.com',
+        role: 'Student',
+        password: 'AnhDQStudent@gmail.com'
+    },
+    {
+        faculty: 'Marketing',
+        email: 'ltv.9a2.21@gmail.com',
+        role: 'Manager',
+        password: 'ltv.9a2.21@gmail.com'
+    },
+    {
+        faculty: 'Marketing',
+        email: 'longnh@gmail.com',
+        role: 'Coordinator',
+        password: 'longnh@gmail.com'
+    },
+    {
+        faculty: 'Marketing',
+        email: 'longnhStudent@gmail.com',
+        role: 'Student',
+        password: 'longnhStudent@gmail.com'
+    },
+    {
+        faculty: 'Computing',
+        email: 'nhatlam1695@gmail.com',
+        role: 'Manager',
+        password: 'nhatlam1695@gmail.com'
+    },
+    {
+        faculty: 'Computing',
+        email: 'nhatlamStudent@gmail.com',
+        role: 'Coordinator',
+        password: 'nhatlamStudent@gmail.com'
+    },
+    {
+        faculty: 'Computing',
+        email: 'lamnn11@gmail.com',
+        role: 'Student',
+        password: 'lamnn11@gmail.com'
+    },
+    {
+        faculty: 'Business Management',
+        email: 'nguyenmman06@gmail.com',
+        role: 'Coordinator',
+        password: 'nguyenmman06@gmail.com'
+    },
+    {
+        faculty: 'Business Management',
+        email: 'ManNM@gmail.com',
+        role: 'Coordinator',
+        password: 'ManNM@gmail.com'
+    },
+    {
+        faculty: 'Business Management',
+        email: 'ManNMStudent@gmail.com',
+        role: 'Student',
+        password: 'ManNMStudent@gmail.com'
+    },
+    {
+        faculty: 'Event Management',
+        email: 'chauminhduy.2607@gmail.com',
+        role: 'Manager',
+        password: 'chauminhduy.2607@gmail.com'
+    },
+    {
+        faculty: 'Event Management',
+        email: 'duycm@gmail.com',
+        role: 'Coordinator',
+        password: 'duycm@gmail.com'
+    },
+    {
+        faculty: 'Event Management',
+        email: 'duycmStudent@gmail.com',
+        role: 'Student',
+        password: 'duycmStudent@gmail.com'
+    },
+    {
+        faculty: 'Public Relations & Communications',
+        email: 'sept9th2015@gmail.com',
+        role: 'Manager',
+        password: 'sept9th2015@gmail.com'
+    },
+    {
+        faculty: 'Public Relations & Communications',
+        email: '9915ln001@gmail.com',
+        role: 'Coordinator',
+        password: '9915ln001@gmail.com'
+    },
+    {
+        faculty: 'Public Relations & Communications',
+        email: '9915ln001Student@gmail.com',
+        role: 'Student',
+        password: '9915ln001Student@gmail.com'
+    },
+]
 
 function AccountManagement() {
     // dispatch initiation
     const dispatch = useDispatch();
-
-    //Tất cả các faculty được phân loại sau khi chọn selectbox rồi set vào data
-    const [data, setData] = useState([]);
-
-    //để phân loại faculty để lọc ra set lên Data
-    const [faculty, setFaculty] = useState('');
-
-    //lấy role để gắn vào ?link filter
-    const [role, setRole] = useState('');
-
-    //lấy tất cả account (mọi role, mọi faculty), initialState khi load trang
-    const [total, setTotal] = useState([
-        {
-            faculty: 'Graphic and Digital Design',
-            email: 'whisper4shot1kill@gmail.com',
-            role: 'Manager',
-            password: 'whisper4shot1kill@gmail.com'
-        },
-        {
-            faculty: 'Graphic and Digital Design',
-            email: 'AnhDQ@gmail.com',
-            role: 'Coordinator',
-            password: 'AnhDQ@gmail.com'
-        },
-        {
-            faculty: 'Graphic and Digital Design',
-            email: 'AnhDQStudent@gmail.com',
-            role: 'Student',
-            password: 'AnhDQStudent@gmail.com'
-        },
-        {
-            faculty: 'Marketing',
-            email: 'ltv.9a2.21@gmail.com',
-            role: 'Manager',
-            password: 'ltv.9a2.21@gmail.com'
-        },
-        {
-            faculty: 'Marketing',
-            email: 'longnh@gmail.com',
-            role: 'Coordinator',
-            password: 'longnh@gmail.com'
-        },
-        {
-            faculty: 'Marketing',
-            email: 'longnhStudent@gmail.com',
-            role: 'Student',
-            password: 'longnhStudent@gmail.com'
-        },
-        {
-            faculty: 'Computing',
-            email: 'nhatlam1695@gmail.com',
-            role: 'Manager',
-            password: 'nhatlam1695@gmail.com'
-        },
-        {
-            faculty: 'Computing',
-            email: 'nhatlamStudent@gmail.com',
-            role: 'Coordinator',
-            password: 'nhatlamStudent@gmail.com'
-        },
-        {
-            faculty: 'Computing',
-            email: 'lamnn11@gmail.com',
-            role: 'Student',
-            password: 'lamnn11@gmail.com'
-        },
-        {
-            faculty: 'Business Management',
-            email: 'nguyenmman06@gmail.com',
-            role: 'Coordinator',
-            password: 'nguyenmman06@gmail.com'
-        },
-        {
-            faculty: 'Business Management',
-            email: 'ManNM@gmail.com',
-            role: 'Coordinator',
-            password: 'ManNM@gmail.com'
-        },
-        {
-            faculty: 'Business Management',
-            email: 'ManNMStudent@gmail.com',
-            role: 'Student',
-            password: 'ManNMStudent@gmail.com'
-        },
-        {
-            faculty: 'Event Management',
-            email: 'chauminhduy.2607@gmail.com',
-            role: 'Manager',
-            password: 'chauminhduy.2607@gmail.com'
-        },
-        {
-            faculty: 'Event Management',
-            email: 'duycm@gmail.com',
-            role: 'Coordinator',
-            password: 'duycm@gmail.com'
-        },
-        {
-            faculty: 'Event Management',
-            email: 'duycmStudent@gmail.com',
-            role: 'Student',
-            password: 'duycmStudent@gmail.com'
-        },
-        {
-            faculty: 'Public Relations & Communications',
-            email: 'sept9th2015@gmail.com',
-            role: 'Manager',
-            password: 'sept9th2015@gmail.com'
-        },
-        {
-            faculty: 'Public Relations & Communications',
-            email: '9915ln001@gmail.com',
-            role: 'Coordinator',
-            password: '9915ln001@gmail.com'
-        },
-        {
-            faculty: 'Public Relations & Communications',
-            email: '9915ln001Student@gmail.com',
-            role: 'Student',
-            password: '9915ln001Student@gmail.com'
-        },
-    ]);
+    const userLogin = useSelector(state => state.userLogin)
 
     const [currentPage, setCurrentPage] = useState(1);
     const [contentsPerPage, setContentsPerPage] = useState(9);
@@ -138,96 +131,113 @@ function AccountManagement() {
     const indexOfLastContent = currentPage * contentsPerPage;
     const indexOfFirstContent = indexOfLastContent - contentsPerPage;
     const [currentData, setCurrentData] = useState([]);
-    const hienthicainayne = data.slice(indexOfFirstContent, indexOfLastContent);
+    // const hienthicainayne = data.slice(indexOfFirstContent, indexOfLastContent);
 
+    const user = useSelector(state => state.userAll)
     // console.log(currentPage);
     // console.log(contentsPerPage);
     // console.log(indexOfLastContent);
     // console.log(indexOfFirstContent);
     // console.log(currentData);
+    const [dataUser, setDataUser] = useState([])
+    const [filteredData, setFilteredData] = useState([])
 
     const updatePage = p => {
         setCurrentPage(p);
-        setCurrentData(hienthicainayne);
+        // setCurrentData(hienthicainayne);
     };
+    const getAllDept = async () => {
+        try {
+            const fetch = await axios.get('http://localhost:5001/api/post/getAllDepartment')
+            console.log(fetch.data.departments)
+            setAllDept(fetch.data.departments)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    const [allDept, setAllDept] = useState(null)
+    useEffect(() => {
+        const action = getallUser({ department: '', role: '', pageNumber: '' })
+        dispatch(action)
+        getAllDept()
+    }, [])
 
-    //lấy data từng faculty
-    const [design, setDesign] = useState([]);
-    const [marketing, setMarketing] = useState([]);
-    const [computing, setComputing] = useState([]);
-    const [business, setBusiness] = useState([]);
-    const [eventManage, setEventManage] = useState([]);
-    const [communication, setCommunication] = useState([]);
+    useEffect(() => {
+        if (user.allUser?.data) {
+            console.log('running')
+            setDataUser(user.allUser?.data)
+            setFilteredData(user.allUser?.data)
+        }
+    }, [user, user.allUser?.data])
+
+    // console.log(allDept)
+    const [deptFilter, setDeptFilter] = useState('')
+    const [roleFilter, setRoleFilter] = useState('')
 
     //lấy faculty để phân loại selectbox
     const handleChange = (e) => {
         const value = e.target.value;
-        setFaculty(value);
+        setDeptFilter(value)
+        dataFilterred(value, roleFilter)
     }
 
-    //lấy role để gắn vào link filter api
     const handleRoleChange = (e) => {
         const value = e.target.value;
-        setRole(value);
+        setRoleFilter(value)
+        dataFilterred(deptFilter, value)
     }
 
-    //phân loại role
-    const roleSelector = () => {
-        switch (role) {
-            case '':
-                setRole(total);
-                break;
-            case 'Manager':
-                setRole('Manager');
-                break;
-            case 'Coordinator':
-                setRole('Coordinator');
-                break;
-            case 'Student':
-                setRole('Student');
-                break;
-            case 'Guest':
-                setRole('Guest');
-                break;
-            default:
-                return role;
+    const dataFilterred = (itemDept, itemRole) => {
+        if (itemDept == '' && itemRole == '') {
+            setFilteredData(dataUser)
+            return
         }
-    }
-
-    //phân loại data theo faculty
-    const dataSelector = () => {
-        switch (faculty) {
-            case '':
-                setData(total);
-                break;
-            case 'Graphic and Digital Design':
-                setData(design);
-                break;
-            case 'Marketing':
-                setData(marketing);
-                break;
-            case 'Computing':
-                setData(computing);
-                break;
-            case 'Business Management':
-                setData(business);
-                break;
-            case 'Event Management':
-                setData(eventManage);
-                break;
-            case 'Public Relations':
-                setData(communication);
-                break;
-            default:
-                return data;
+        if (itemDept == '') {
+            const dataFiltered = dataUser.filter(item => item.role.toLowerCase() == itemRole.toLowerCase())
+            console.log(dataFiltered)
+            setFilteredData(dataFiltered)
+            return
         }
-    }
+        if (itemRole == '') {
+            const dataFiltered = dataUser.filter(item => item.department.toLowerCase() == itemDept.toLowerCase())
+            console.log(dataFiltered)
+            setFilteredData(dataFiltered)
+            return
+        }
+        if (itemDept != '' && itemRole != '') {
+            const dataFiltered = dataUser.filter(item => item.department.toLowerCase() == itemDept.toLowerCase() && item.role.toLowerCase() == itemRole.toLowerCase())
+            console.log(dataFiltered)
+            setFilteredData(dataFiltered)
+        }
 
-    //thay đổi data, role theo selectbox
-    useEffect(() => {
-        dataSelector();
-        roleSelector();
-    }, [faculty, role])
+        // console.log('data return', dataFiltered)
+
+    }
+    console.log(deptFilter, roleFilter)
+    // console.log(filteredData)
+    //lấy role để gắn vào link filter api
+
+
+    // const filteredDataRole = (itemDept, itemRole) => {
+    //     if (itemDept == '' && itemRole == '') {
+    //         setFilteredData(dataUser)
+    //     }
+    //     if (itemDept == '') {
+    //         const dataFiltered = dataUser.filter(item => item.role.toLowerCase() == itemRole.toLowerCase())
+    //         console.log(dataFiltered)
+    //         setFilteredData(dataFiltered)
+    //     }
+    //     if (itemRole == '') {
+    //         const dataFiltered = dataUser.filter(item => item.department.toLowerCase() == itemDept.toLowerCase())
+    //         console.log(dataFiltered)
+    //         setFilteredData(dataFiltered)
+    //     }
+    //     if (itemDept != '' && itemRole != '') {
+    //         const dataFiltered = dataUser.filter(item => item.department.toLowerCase() == itemDept.toLowerCase() && item.role.toLowerCase() == itemRole.toLowerCase())
+    //         console.log(dataFiltered)
+    //         setFilteredData(dataFiltered)
+    //     }
+    // }
 
     const [modal, setModal] = useState(false);
 
@@ -235,10 +245,38 @@ function AccountManagement() {
         setModal(!modal)
     };
 
+    const [modalAddDept, setModalAddDept] = useState(false)
+    const [newDepartment, setNewDepartment] = useState('')
+
+    const toggleModalAddDept = () => {
+        setModalAddDept(!modalAddDept)
+    }
+
+    const onPressAddDept = async () => {
+        try {
+            const newDept = await axios.post('http://localhost:5001/api/post/postDepartment',
+                {
+                    name: newDepartment
+                },
+                {
+                    headers: { Authorization: `Bearer ${userLogin.userInfo.accessToken}` },
+                })
+            if (newDept.data?.message) {
+                getAllDept()
+            }
+            console.log('return value:   ', newDept)
+            setNewDepartment('')
+        } catch (error) {
+            console.log(error)
+        }
+        setModalAddDept(!modalAddDept)
+    }
+
     // State giá trị cho tạo người dùng mới
     const [accountEmail, setAccountEmail] = useState('');
     const [accountPassword, setAccountPassword] = useState('');
     const [accountFaculty, setAccountFaculty] = useState('');
+    const [accountDepartment, setAccountDepartment] = useState('')
     const [accountRole, setAccountRole] = useState('');
 
     const setNewAccountData = (value, e) => {
@@ -251,8 +289,9 @@ function AccountManagement() {
                 setAccountPassword(input);
                 break;
 
-            case 'Falcuty':
-                setAccountFaculty(input);
+            case 'Department':
+                const deptInfo = handleChangeDept(input)
+                setAccountDepartment(deptInfo)
                 break;
 
             case 'Role':
@@ -262,52 +301,74 @@ function AccountManagement() {
                 break;
         }
     }
+
+    const handleChangeDept = (id) => {
+        const clickedOption = allDept.find(item => item._id == id)
+        console.log(clickedOption)
+        return { name: clickedOption.name, id: clickedOption._id }
+    }
+
     const newUser = useSelector(state => state.userRegister)
     const { registerUser, loading, error } = newUser;
 
+    useEffect(() => {
+        const action = getallUser({ department: '', role: '', pageNumber: '' })
+        dispatch(action)
+    }, [newUser])
     // func gọi dispatch register.
     const addNewAccount = () => {
         let newAccountData = {
             email: accountEmail,
             password: accountPassword,
-            faculty: accountFaculty,
+            department: accountDepartment.name,
+            departmentId: accountDepartment.id,
             role: accountRole,
         }
         console.log(newAccountData)
         dispatch(register(newAccountData));
         toggleModalAdd();
     }
-
-
-
-
+    if (user.loading) {
+        return (
+            <div className={"container"} style={{
+                display: 'flex', justifyContent: 'center', alignItems: 'center',
+                flexDirection: 'column',
+                padding: 20,
+            }}>
+                <div class="spinner-border" role="status">
+                </div>
+                <span style={{ padding: 20, }} >Loading...</span>
+            </div>
+        )
+    }
 
     return (
         <div style={{ paddingTop: '2%' }} >
-            <Form>
-                <FormGroup>
-                    <Label for='facultySelect'>Select Faculty</Label>
-                    <CustomInput type="select" id="facultySelect" name='facultySelect' onChange={handleChange}>
-                        <option value="">All</option>
-                        <option value="Graphic and Digital Design">Graphic and Digital Design</option>
-                        <option value="Marketing">Marketing</option>
-                        <option value="Computing">Computing</option>
-                        <option value="Business Management">Business Management</option>
-                        <option value="Event Management">Event Management</option>
-                        <option value="Public Relations">Public Relations & Communications</option>
-                    </CustomInput>
-                </FormGroup>
-                <FormGroup>
-                    <Label for='roleSelect'>Select Role</Label>
-                    <CustomInput type="select" id="roleSelect" name='roleSelect' onChange={handleRoleChange}>
-                        <option value="">All</option>
-                        <option value="Manager">Manager</option>
-                        <option value="Coordinator">Coordinator</option>
-                        <option value="Student">Student</option>
-                        <option value="Guest">Guest</option>
-                    </CustomInput>
-                </FormGroup>
-            </Form>
+            {!arrayIsEmpty(allDept) &&
+                <Form>
+                    <FormGroup>
+                        <Label for='deptSelect'>Select Department</Label>
+                        <CustomInput type="select" id="deptSelect" name='deptSelect' onChange={handleChange}>
+                            <option value="">All</option>
+                            {allDept.map((item) => {
+                                return (
+                                    <option value={item.name} >{item.name}</option>
+                                )
+                            })}
+                        </CustomInput>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for='roleSelect'>Select Role</Label>
+                        <CustomInput type="select" id="roleSelect" name='roleSelect' onChange={handleRoleChange}>
+                            <option value="">All</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Coordinator">Coordinator</option>
+                            <option value="Staff">Staff</option>
+                            <option value="Guest">Guest</option>
+                        </CustomInput>
+                    </FormGroup>
+                </Form>
+            }
 
             {
                 error && <MessageBox variant='danger'>{error}</MessageBox>
@@ -316,7 +377,11 @@ function AccountManagement() {
             {
                 registerUser && <MessageBox variant='success'>{registerUser.message}</MessageBox>
             }
-            <div className="mt-4 mb-2"><Button outline color="primary" onClick={toggleModalAdd}>Add Account</Button></div>
+            <div style={{ display: 'flex', }}>
+                <div className="mt-4 mb-2" style={{ paddingRight: 20, }}><Button outline color="primary" onClick={toggleModalAdd}>Add Account</Button></div>
+                <div className="mt-4 mb-2" ><Button outline color="primary" onClick={toggleModalAddDept}>Add Department</Button></div>
+            </div>
+
             <Modal isOpen={modal} toggle={toggleModalAdd}>
                 <ModalHeader toggle={toggleModalAdd}>Add New Account</ModalHeader>
                 <ModalBody>
@@ -344,30 +409,34 @@ function AccountManagement() {
                         </Row>
                         <Row form>
                             <Col md={12}>
-                                <FormGroup>
-                                    <Label for='facultySelect'>Select Faculty</Label>
-                                    <CustomInput type="select" id="facultySelect" name='facultySelect' onChange={(e) => setNewAccountData('Falcuty', e)}>
-                                        <option value="">Select Faculty</option>
-                                        <option value="Graphic and Digital Design">Graphic and Digital Design</option>
-                                        <option value="Marketing">Marketing</option>
-                                        <option value="Computing">Computing</option>
-                                        <option value="Business Management">Business Management</option>
-                                        <option value="Event Management">Event Management</option>
-                                        <option value="Public Relations">Public Relations & Communications</option>
-                                    </CustomInput>
-                                </FormGroup>
+                                {!arrayIsEmpty(allDept) &&
+                                    <FormGroup>
+                                        <Label for='facultySelect'>Select Department</Label>
+                                        <CustomInput
+                                            type="select" id="facultySelect" name='facultySelect' onChange={(e) => setNewAccountData('Department', e)}>
+                                            <option value="">Select Department</option>
+                                            {allDept.map((item) => {
+                                                return (
+                                                    <option value={item._id} >{item.name}</option>
+                                                )
+                                            })}
+                                        </CustomInput>
+                                    </FormGroup>
+                                }
+
                             </Col>
                         </Row>
                         <Row form>
                             <Col md={12}>
                                 <FormGroup>
                                     <Label for='roleSelect'>Select Role</Label>
-                                    <CustomInput type="select" id="roleSelect" name='roleSelect' onChange={(e) => setNewAccountData('Role', e)}>
+                                    <CustomInput
+                                        type="select" id="roleSelect" name='roleSelect' onChange={(e) => setNewAccountData('Role', e)}>
                                         <option value="">Select Role</option>
-                                        <option value="manager">Manager</option>
-                                        <option value="coordinator">Coordinator</option>
-                                        <option value="student">Student</option>
-                                        <option value="guest">Guest</option>
+                                        <option value="Manager">Manager</option>
+                                        <option value="Coordinator">Coordinator</option>
+                                        <option value="Staff">Staff</option>
+                                        <option value="Guest">Guest</option>
                                     </CustomInput>
                                 </FormGroup>
                             </Col>
@@ -379,33 +448,65 @@ function AccountManagement() {
                     <Button color="secondary" onClick={toggleModalAdd}>Cancel</Button>
                 </ModalFooter>
             </Modal>
+
+            <Modal isOpen={modalAddDept} toggle={toggleModalAddDept}>
+                <ModalHeader toggle={toggleModalAddDept}>Add New Department</ModalHeader>
+                <ModalBody>
+
+                    {
+                        loading && <LoadingBox />
+                    }
+
+                    <Form>
+                        <Row form>
+                            <Col md={12}>
+                                <FormGroup>
+                                    <Label for="departmentAdd">Department<span className='text-danger'>*</span></Label>
+                                    <Input type="text" name="departmentAdd" id="deptAdd" placeholder="Department name" required onChange={(e) => setNewDepartment(e.target.value)} />
+                                </FormGroup>
+                            </Col>
+                        </Row>
+                    </Form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="primary" onClick={onPressAddDept}>Add New Department</Button>{' '}
+                    <Button color="secondary" onClick={toggleModalAddDept}>Cancel</Button>
+                </ModalFooter>
+            </Modal>
+
             <Table responsive hover>
                 <thead>
                     <tr>
                         <th>Email</th>
-                        <th>Faculty</th>
+                        <th>Department</th>
                         <th>Role</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((data) => (
-                        <tr key={data.email}>
-                            <td>{data.email}</td>
-                            <td>{data.faculty}</td>
-                            <td>{data.role}</td>
-                        </tr>
-                    ))}
+                    {!arrayIsEmpty(filteredData) ? filteredData.map((data, index) => {
+                        // if(index == 5) return 
+                        return (
+                            <tr key={data._id}>
+                                <td>{data.email}</td>
+                                <td>{data.department}</td>
+                                <td>{data.role}</td>
+                            </tr>
+                        )
+                    })
+                        : <span> No user found in this department</span>
+                    }
+
                 </tbody>
             </Table>
             {/* Lấy total bằng cách lấy data.length, pageSize là lượng data mỗi trang */}
             <Pagination
                 className='text-center mt-4 mb-4'
-                total={data.length}
+                total={dataUser.length}
                 pageSize={9}
                 onChange={updatePage}
                 current={currentPage}
             />
-        </div>
+        </div >
     )
 }
 

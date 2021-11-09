@@ -21,14 +21,14 @@ function AdminTab() {
                         Account Management
                     </NavLink>
                 </NavItem>
-                <NavItem>
+                {/* <NavItem>
                     <NavLink
                         className={classnames({ active: activeTab === '2' })}
                         onClick={() => { toggle('2'); }}
                     >
                         Session Settings
                     </NavLink>
-                </NavItem>
+                </NavItem> */}
             </Nav>
             <TabContent activeTab={activeTab}>
                 <TabPane tabId="1">
@@ -38,13 +38,13 @@ function AdminTab() {
                         </Col>
                     </Row>
                 </TabPane>
-                <TabPane tabId="2">
+                {/* <TabPane tabId="2">
                     <Row>
                         <Col sm="12">
                             <SeasonTopicSettings />
                         </Col>
                     </Row>
-                </TabPane>
+                </TabPane> */}
             </TabContent>
         </div>
     )

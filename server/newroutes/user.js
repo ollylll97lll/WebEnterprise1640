@@ -38,7 +38,7 @@ router.get('/getall', async (req, res) => {
     const roleFilter = role ? { role: { $regex: role, $options: "i" } } : {};
 
     // return doc per page
-    const pageSize = 2
+    const pageSize = 10
     // current page
     const page = Number(req.query.pageNumber) || 1;
 

@@ -32,19 +32,20 @@ export const signout = () => (dispatch) => {
 
 // REGISTER
 
-export const register = ({ email, password, faculty, role }) => async (dispatch) => {
+export const register = ({ email, password, department, departmentId, role }) => async (dispatch) => {
     dispatch({
         type: USER_REGISTER_REQUEST,
         payload: {
             email,
             password,
-            faculty,
+            department,
+            departmentId,
             role
         }
     });
 
     try {
-        const { data } = await Axios.post('http://localhost:5001/api/auth/register', { email, password, faculty, role });
+        const { data } = await Axios.post('http://localhost:5001/api/auth/register', { email, password, department, departmentId, role });
         // create account & login w the account & redirect to the history page.
         dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
 
@@ -69,7 +70,7 @@ export const recover = (email) => async (dispatch) => {
     });
 
     try {
-        const { data } = await Axios.post('http://localhost:5001/api/user/forgotPassword', { email } );
+        const { data } = await Axios.post('http://localhost:5001/api/user/forgotPassword', { email });
         dispatch({ type: USER_RECOVER_EMAIL_SUCCESS, payload: data });
 
     } catch (error) {
@@ -84,14 +85,14 @@ export const recover = (email) => async (dispatch) => {
 
 //  GETALL
 
-export const getallUser = ({department = '', role = '', pageNumber= ''}) => async (dispatch) => {
+export const getallUser = ({ department = '', role = '', pageNumber = '' }) => async (dispatch) => {
     dispatch({
         type: USER_GETALL_REQUEST
     });
 
     try {
-        const {data} = await Axios.get(`http://localhost:5001/api/user/getall?department=${department}&role=${role}&pageNumber=${pageNumber}`);
-        dispatch({type: USER_GETALL_SUCCESS, payload: data})
+        const { data } = await Axios.get(`http://localhost:5001/api/user/getall?department=${department}&role=${role}&pageNumber=${pageNumber}`);
+        dispatch({ type: USER_GETALL_SUCCESS, payload: data })
     } catch (error) {
         dispatch({
             type: USER_GETALL_FAIL, payload:

@@ -56,6 +56,7 @@ router.get('/getall', async (req, res) => {
                     default:
                         {
                             const tempdata = {
+                                _id: d._id,
                                 email: d.email,
                                 department: d.department,
                                 role: d.role

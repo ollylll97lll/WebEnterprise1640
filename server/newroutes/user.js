@@ -9,6 +9,7 @@ const forgotPassMail = require('../middleware/forgotPassMail')
 const verifyUserToken = require('../middleware/userToken')
 const { isAuth, isAdmin } = require('../middleware/utils')
 const Departments = require('../newmodels/Departments')
+const mongoose = require('mongoose');
 
 //route api/user/userWithArticle
 //count user that submitted article
@@ -160,41 +161,83 @@ router.post('/changePassword', verifyUserToken, async (req, res) => {
 router.delete('/deleteUser', isAuth, isAdmin, async (req, res) => {
     const { userId } = req.body;
 
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
         const result = await User.findByIdAndDelete(userId)
+            .session(session);
         if (result.n === 0 || result.nModified === 0) {
             return res.status(400).json({ success: false, message: 'No User found or some error occur when deleting User', result })
         } else {
-            return res.status(201).json({ success: true, message: 'Deleted', result })
+            const decreasedTotalinDep = await Departments.findByIdAndUpdate(result?.departmentId, { $inc: { totalStaff: -1 } })
+                .session(session);
+            if (!decreasedTotalinDep) {
+                return res.status(400).json({ success: false, message: 'Cannot Update Department. Try again' })
+            }
+            await session.commitTransaction();
+            res.status(201).json({ success: true, message: 'Deleted', result })
+            return session.endSession();
         }
     } catch (error) {
-        return res.status(400).json({ success: false, error: error || 'No user found' })
+        await session.abortTransaction();
+        res.status(400).json({ success: false, error: error || 'No user found' })
+        return session.endSession();
     }
 })
 
 // ROUTE api/user/updateUser
 router.patch('/updateUser', isAuth, isAdmin, async (req, res) => {
     const { userId, department, role } = req.body;
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
     if (!department && !role) {
         return res.status(400).send('No new data sent to update');
     }
-    if(role === 'admin'){
+    if (role === 'admin') {
         return res.status(401).send('You are not authorized to Update any user to admin')
     }
 
     try {
-        const dep = await Departments.findOne({ name: department });
-        if (!dep) {
-            return res.status(400).json({ success: false, message: 'Cannot find the department. Plz try again later' });
+        let updatedat = {}
+        const olddep = await User.findById(userId).session(session);
+        // same department
+        if (olddep.department === department) {
+            updatedat = {
+                role: role
+            }
+            const result = await User.findByIdAndUpdate(userId, updatedat).session(session);
+
+            await session.commitTransaction();
+
+            res.status(200).json({ success: true, message: `User ${userId} updated`, result, dep })
+            return session.endSession();
         }
-        const result = await User.findByIdAndUpdate(userId, {
-            department: department,
-            role: role,
-            departmentId: dep._id
-        })
-        return res.status(200).json({ success: true, message: `User ${userId} updated`, result, dep })
+        
+        // not same department
+        // update department
+        else {
+            await Departments.findByIdAndUpdate(olddep.departmentId, { $inc: { totalStaff: -1 } }).session(session);
+            const newdep = await Departments.findOneAndUpdate({ name: department }, { $inc: { totalStaff: 1 } }).session(session);
+
+            updatedat = {
+                department: department,
+                role: role,
+                departmentId: newdep._id
+            }
+
+            const result = await User.findByIdAndUpdate(userId, updatedat).session(session);
+
+            await session.commitTransaction();
+
+            res.status(200).json({ success: true, message: `User ${userId} updated`, result, dep })
+            return session.endSession();
+        }
     } catch (error) {
-        return res.status(400).json({success: false, error})
+        session.abortTransaction();
+        res.status(400).json({ success: false, error });
+        return session.endSession();
     }
 })
 

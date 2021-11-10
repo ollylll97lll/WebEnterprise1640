@@ -427,7 +427,29 @@ router.post('/postDepartment', isAuth, isAdmin, async (req, res) => {
     res.status(400).send('Something Wrong')
   }
 })
+// route api/post/delDepartment
+// delete department
+router.delete('/delDepartment', isAuth, isAdmin, async (req, res) => {
+  const { departmentId } = req.body;
+  if (!departmentId) {
+    return res.status(200).send('No department Id found')
+  }
+  try {
+    const fetchTotalStaff = await Departments.findById(departmentId);
+    if (!fetchTotalStaff) {
+      return res.status(400).json({ success: false, message: 'No Department Found' })
+    }
+    if (fetchTotalStaff.totalStaff !== 0) {
+      return res.status(400).json({ success: false, message: 'There are staffs in this department. Abort Delete Request' })
+    }
 
+    const result = await Departments.findByIdAndDelete(departmentId);
+    return res.status(200).json({ success: true, result, message: 'Deleted Successfully' })
+
+  } catch (error) {
+    res.status(400).json({ success: false, error })
+  }
+})
 
 // Statistic APIs (later)
 

@@ -7,7 +7,8 @@ const argon2 = require('argon2')
 const User = require('../newmodels/User')
 const forgotPassMail = require('../middleware/forgotPassMail')
 const verifyUserToken = require('../middleware/userToken')
-const { isAuth } = require('../middleware/utils')
+const { isAuth, isAdmin } = require('../middleware/utils')
+const Departments = require('../newmodels/Departments')
 
 //route api/user/userWithArticle
 //count user that submitted article
@@ -152,6 +153,48 @@ router.post('/changePassword', verifyUserToken, async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500).json({ success: false, message: err.message })
+    }
+})
+
+// ROUTE api/user/deleteUser
+router.delete('/deleteUser', isAuth, isAdmin, async (req, res) => {
+    const { userId } = req.body;
+
+    try {
+        const result = await User.findByIdAndDelete(userId)
+        if (result.n === 0 || result.nModified === 0) {
+            return res.status(400).json({ success: false, message: 'No User found or some error occur when deleting User', result })
+        } else {
+            return res.status(201).json({ success: true, message: 'Deleted', result })
+        }
+    } catch (error) {
+        return res.status(400).json({ success: false, error: error || 'No user found' })
+    }
+})
+
+// ROUTE api/user/updateUser
+router.patch('/updateUser', isAuth, isAdmin, async (req, res) => {
+    const { userId, department, role } = req.body;
+    if (!department && !role) {
+        return res.status(400).send('No new data sent to update');
+    }
+    if(role === 'admin'){
+        return res.status(401).send('You are not authorized to Update any user to admin')
+    }
+
+    try {
+        const dep = await Departments.findOne({ name: department });
+        if (!dep) {
+            return res.status(400).json({ success: false, message: 'Cannot find the department. Plz try again later' });
+        }
+        const result = await User.findByIdAndUpdate(userId, {
+            department: department,
+            role: role,
+            departmentId: dep._id
+        })
+        return res.status(200).json({ success: true, message: `User ${userId} updated`, result, dep })
+    } catch (error) {
+        return res.status(400).json({success: false, error})
     }
 })
 

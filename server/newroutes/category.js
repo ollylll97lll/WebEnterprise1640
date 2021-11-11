@@ -6,6 +6,7 @@ const moment = require('moment-timezone')
 const SeasonTopic = require('../models/SeasonTopic')
 const Category = require('../newmodels/Category')
 const { isAuth, isAdmin } = require('../middleware/utils')
+const Post = require('../newmodels/Post')
 
 //route api/category/add_category
 //Add new category using  Model
@@ -88,6 +89,11 @@ router.delete('/deleteCategory', isAuth, isAdmin, async(req,res) => {
     const {CategoryId} =  req.body;
     if(!CategoryId){
         return res.status(400).json({success: false, message: 'No data sent'})
+    }
+
+    const result = await Post.find({categoryId: CategoryId});
+    if(result){
+        return res.status(200).json({success: false, message: 'There are Posts under this Tag. Abort Delete request'})
     }
 
     await Category.findByIdAndDelete(CategoryId).then(data => {

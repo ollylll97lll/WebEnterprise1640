@@ -451,6 +451,17 @@ router.delete('/delDepartment', isAuth, isAdmin, async (req, res) => {
   }
 })
 
+// route api/get/getCategories
+// Get all department
+router.get('/getCategories', async (req, res) => {
+  try {
+    const result = await Category.find({});
+    res.status(201).json({ message: 'Success', category: result });
+  } catch (error) {
+    res.status(400).send(error || 'Something Wrong')
+  }
+})
+
 // Statistic APIs (later)
 
 //route api/post/countAll

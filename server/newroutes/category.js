@@ -5,12 +5,12 @@ const moment = require('moment-timezone')
 
 const SeasonTopic = require('../models/SeasonTopic')
 const Category = require('../newmodels/Category')
-const { isAuth, isAdmin } = require('../middleware/utils')
+const { isAuth, isAdmin, isManager } = require('../middleware/utils')
 const Post = require('../newmodels/Post')
 
 //route api/category/add_category
 //Add new category using  Model
-router.post('/add_category', isAuth, isAdmin, async (req, res) => {
+router.post('/add_category', isAuth, isManager, async (req, res) => {
     const { name, description, startdate, enddate } = req.body
     //if ok
     const starteddate = moment(startdate, 'DD-MM-YY').add(1, 'd')
@@ -59,7 +59,7 @@ router.get('/getall', async (req, res) => {
 
 //route api/category/edit/:id
 //Edit Category
-router.patch('/edit/:id', isAuth, isAdmin, async (req, res) => {
+router.patch('/edit/:id', isAuth, isManager, async (req, res) => {
     if (!req.body) {
         return res.status(400).send({
             message: "Empty data sent. Request denied!"
@@ -85,7 +85,7 @@ router.patch('/edit/:id', isAuth, isAdmin, async (req, res) => {
 
 //route api/category/deleteCategory
 // Delete Category
-router.delete('/deleteCategory', isAuth, isAdmin, async(req,res) => {
+router.delete('/deleteCategory', isAuth, isManager, async(req,res) => {
     const {CategoryId} =  req.body;
     if(!CategoryId){
         return res.status(400).json({success: false, message: 'No data sent'})

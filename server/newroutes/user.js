@@ -169,12 +169,12 @@ router.delete('/deleteUser', isAuth, isAdmin, async (req, res) => {
         if (result.n === 0 || result.nModified === 0) {
             return res.status(400).json({ success: false, message: 'No User found or some error occur when deleting User', result })
         }
-        if (!result.departmentId){
-            return res.status(400).json({success: false, message: 'Old User w no DepartmentId'});
+        if (!result.departmentId) {
+            return res.status(400).json({ success: false, message: 'Old User w no DepartmentId' });
         }
-            // else {
-            const decreasedTotalinDep = await Departments.findByIdAndUpdate(result?.departmentId, { $inc: { totalStaff: -1 } })
-                .session(session);
+        // else {
+        const decreasedTotalinDep = await Departments.findByIdAndUpdate(result?.departmentId, { $inc: { totalStaff: -1 } })
+            .session(session);
         if (!decreasedTotalinDep) {
             return res.status(400).json({ success: false, message: 'Cannot Update Department. Try again' })
         }
@@ -191,56 +191,74 @@ router.delete('/deleteUser', isAuth, isAdmin, async (req, res) => {
 
 // ROUTE api/user/updateUser
 router.patch('/updateUser', isAuth, isAdmin, async (req, res) => {
-    const { userId, department, role } = req.body;
+    const { userId, departmentId, role } = req.body;
 
     const session = await mongoose.startSession();
     session.startTransaction();
 
-    if (!department && !role) {
-        return res.status(400).send('No new data sent to update');
+    if (!departmentId || !role) {
+        res.status(400).send('No new data sent to update');
+        return session.endSession();
     }
     if (role === 'admin') {
-        return res.status(401).send('You are not authorized to Update any user to admin')
+        res.status(401).send('You are not authorized to Update any user to admin')
+        return session.endSession();
     }
 
     try {
         let updatedat = {}
-        const olddep = await User.findById(userId).session(session);
+        const userolddat = await User.findById(userId);
+        // no user
+        if (!userolddat) {
+            return res.status(400).send("No User");
+        }
+        // res.send(userolddat);
+
         // same department
-        if (olddep.department === department) {
+        if (userolddat.departmentId === departmentId) {
             updatedat = {
                 role: role
             }
             const result = await User.findByIdAndUpdate(userId, updatedat).session(session);
 
+            if (!result) {
+                res.status(400).json({ success: false, message: 'Somthing Wrong Updating User' })
+                await session.abortTransaction();
+                return session.endSession();
+            }
             await session.commitTransaction();
-
-            res.status(200).json({ success: true, message: `User ${userId} updated`, result, dep })
+            res.status(200).json({ success: true, message: `User ${userId} updated`, result })
             return session.endSession();
         }
-
         // not same department
         // update department
         else {
-            await Departments.findByIdAndUpdate(olddep.departmentId, { $inc: { totalStaff: -1 } }).session(session);
-            const newdep = await Departments.findOneAndUpdate({ name: department }, { $inc: { totalStaff: 1 } }).session(session);
+            // using old departmentId
+            await Departments.findByIdAndUpdate(userolddat.departmentId, { $inc: { totalStaff: -1 } }).session(session);
+            // using req.body departmentId
+            const newdep = await Departments.findByIdAndUpdate(departmentId, { $inc: { totalStaff: 1 } }).session(session);
 
             updatedat = {
-                department: department,
+                department: newdep.name,
                 role: role,
                 departmentId: newdep._id
             }
 
             const result = await User.findByIdAndUpdate(userId, updatedat).session(session);
-
-            await session.commitTransaction();
-
-            res.status(200).json({ success: true, message: `User ${userId} updated`, result, dep })
-            return session.endSession();
+            if (newdep && result) {
+                await session.commitTransaction();
+                res.status(200).json({ success: true, message: `User ${userId} updated`, result, newdep })
+            }
+            else {
+                await session.abortTransaction();
+                res.status(400).json({ success: false, message: 'somthing error', session: session.id });
+            }
+            session.endSession();
+            return
         }
     } catch (error) {
-        session.abortTransaction();
-        res.status(400).json({ success: false, error });
+        await session.abortTransaction();
+        res.status(400).json({ success: false, message: 'Trycatch error', error, session: session.id });
         return session.endSession();
     }
 })
@@ -249,5 +267,5 @@ function validateEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
 }
-
 module.exports = router
+

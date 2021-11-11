@@ -217,7 +217,7 @@ router.patch('/updateUser', isAuth, isAdmin, async (req, res) => {
         // same department
         if (userolddat.departmentId === departmentId) {
             updatedat = {
-                role: role
+                role: String(role).toLowerCase()
             }
             const result = await User.findByIdAndUpdate(userId, updatedat).session(session);
 
@@ -240,7 +240,7 @@ router.patch('/updateUser', isAuth, isAdmin, async (req, res) => {
 
             updatedat = {
                 department: newdep.name,
-                role: role,
+                role: String(role).toLowerCase(),
                 departmentId: newdep._id
             }
 

@@ -1,5 +1,5 @@
 import Axios from 'axios'
-import { USER_GETALL_FAIL, USER_GETALL_REQUEST, USER_GETALL_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_RECOVER_EMAIL_FAIL, USER_RECOVER_EMAIL_REQUEST, USER_RECOVER_EMAIL_SUCCESS, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from '../constants/userconstants'
+import { USER_DELETE_DEPARTMENT_FAIL, USER_DELETE_DEPARTMENT_REQUEST, USER_DELETE_DEPARTMENT_SUCCESS, USER_GETALL_FAIL, USER_GETALL_REQUEST, USER_GETALL_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_RECOVER_EMAIL_FAIL, USER_RECOVER_EMAIL_REQUEST, USER_RECOVER_EMAIL_SUCCESS, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from '../constants/userconstants'
 
 export const login = (email, password) => async (dispatch) => {
     dispatch({
@@ -96,6 +96,34 @@ export const getallUser = ({ department = '', role = '', pageNumber = '' }) => a
     } catch (error) {
         dispatch({
             type: USER_GETALL_FAIL, payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        });
+    }
+}
+
+export const deleteDepartment = ({ departmentId, token }) => async (dispatch) => {
+    dispatch({
+        type: USER_DELETE_DEPARTMENT_REQUEST,
+        payload: { departmentId, token }
+    });
+
+    try {
+        const { data } = await Axios.delete(`http://localhost:5001/api/post/delDepartment`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                data: {
+                    departmentId: departmentId
+                }
+            }
+        );
+        dispatch({ type: USER_DELETE_DEPARTMENT_SUCCESS, payload: data })
+    } catch (error) {
+        dispatch({
+            type: USER_DELETE_DEPARTMENT_FAIL, payload:
                 error.response && error.response.data.message
                     ? error.response.data.message
                     : error.message,

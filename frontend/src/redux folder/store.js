@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import { addSeasonTopicReducer } from './reducer/articlereducer';
 import { getPostReducer, postLikeyReducer } from './reducer/postreducer';
 import { recoverPassFromEmailReducer } from './reducer/recoverpasswordreducer';
-import { userGetAllReducer, userLoginReducer, userRecoverReducer, userRegisterReducer } from './reducer/userreducer';
+import { userDelDeptReducer, userGetAllReducer, userLoginReducer, userRecoverReducer, userRegisterReducer } from './reducer/userreducer';
 
 const initialState = {
     userLogin: {
@@ -14,7 +14,7 @@ const initialState = {
     },
 };
 // reducer nhận state đang có và action gửi về (đăng nhập, đăng xuất...)
-const reducer =  combineReducers({
+const reducer = combineReducers({
     userLogin: userLoginReducer,
     userRegister: userRegisterReducer,
     userRecoverEmail: userRecoverReducer,
@@ -23,12 +23,13 @@ const reducer =  combineReducers({
     postList: getPostReducer,
     postLikes: postLikeyReducer,
     userAll: userGetAllReducer,
+    userDeptDelete: userDelDeptReducer
 });
 
 // send to the extension to view
 const composeEnhance = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 // tạo redux storage bằng cách sử dụng reducer function để lấy state mới và
 // initialState để lấy state rỗng.
-const store = createStore(reducer , initialState, composeEnhance(applyMiddleware(thunk)));
+const store = createStore(reducer, initialState, composeEnhance(applyMiddleware(thunk)));
 
 export default store;

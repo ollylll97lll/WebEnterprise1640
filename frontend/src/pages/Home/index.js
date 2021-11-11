@@ -71,25 +71,26 @@ function HomePage(props) {
     }
 
     let userRole = userInfo.userInfo.role;
-    const [countrySort, setCountrySort] = useState('')
+    const [deptSort, setdeptSort] = useState('')
     const [isEverywhereVisible, setIsEverywhereVisible] = useState(true)
     const [isSelected, setIsSelected] = useState(0)
 
     const handleChange = (e) => {
         console.log(e.target.value)
-        setCountrySort(e.target.value)
+        setdeptSort(e.target.value)
         props.history.push(getFilterURL({ department: e.target.value }))
     }
 
     const handleHotButton = () => {
         setIsEverywhereVisible(true)
-        props.history.push(getFilterURL({ shownby: 'hotest' }))
+        props.history.push(getFilterURL({ shownby: 'hotest', department: 'all' }))
+        setdeptSort('')
         setIsSelected(0)
 
     }
     const handleNewButton = () => {
         setIsEverywhereVisible(false)
-        props.history.push(getFilterURL({ shownby: 'latest' }))
+        props.history.push(getFilterURL({ shownby: 'latest', department: 'all' }))
         setIsSelected(1)
     }
     const handleTopButton = () => {
@@ -127,10 +128,10 @@ function HomePage(props) {
 
                             {isEverywhereVisible && allDept &&
                                 <FormControl sx={{
-                                    minWidth: 160, m: 1,
+                                    minWidth: 200, m: 1,
 
                                 }}>
-                                    <InputLabel sx={{ marginTop: -1, fontWeight: 'bold', color: '#0079d3', borderColor: '#0079d3' }} id="select-label">Country Sort</InputLabel>
+                                    <InputLabel sx={{ marginTop: -1, fontWeight: 'bold', color: '#0079d3', borderColor: '#0079d3' }} id="select-label">Department Sort</InputLabel>
                                     <Select
                                         sx={{
                                             height: 40,
@@ -145,14 +146,14 @@ function HomePage(props) {
                                         variant="outlined"
                                         labelId="select-label"
                                         id="simple-select"
-                                        value={countrySort}
-                                        label="Country Sort"
+                                        value={deptSort}
+                                        label="Department Sort"
                                         onChange={handleChange}
                                     >
                                         {allDept.map((item, index) => {
                                             return (
-                                                <MenuItem value={item._id}
-                                                >{item._id}</MenuItem>
+                                                <MenuItem value={item.name}
+                                                >{item.name}</MenuItem>
                                             )
                                         })}
                                     </Select>

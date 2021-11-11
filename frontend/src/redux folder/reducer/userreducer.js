@@ -1,4 +1,4 @@
-import { USER_GETALL_FAIL, USER_GETALL_REQUEST, USER_GETALL_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_RECOVER_EMAIL_FAIL, USER_RECOVER_EMAIL_REQUEST, USER_RECOVER_EMAIL_SUCCESS, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from "../constants/userconstants";
+import { USER_DELETE_DEPARTMENT_FAIL, USER_DELETE_DEPARTMENT_REQUEST, USER_DELETE_DEPARTMENT_SUCCESS, USER_GETALL_FAIL, USER_GETALL_REQUEST, USER_GETALL_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGOUT, USER_RECOVER_EMAIL_FAIL, USER_RECOVER_EMAIL_REQUEST, USER_RECOVER_EMAIL_SUCCESS, USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from "../constants/userconstants";
 
 export const userLoginReducer = (state = {}, action) => {
     switch (action.type) {
@@ -53,3 +53,16 @@ export const userGetAllReducer = (state = {}, action) => {
             return state;
     }
 }
+export const userDelDeptReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_DELETE_DEPARTMENT_REQUEST:
+            return { loading: true };
+        case USER_DELETE_DEPARTMENT_SUCCESS:
+            return { loading: false, response: action.payload };
+        case USER_DELETE_DEPARTMENT_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+}
+

@@ -85,24 +85,24 @@ router.patch('/edit/:id', isAuth, isManager, async (req, res) => {
 
 //route api/category/deleteCategory
 // Delete Category
-router.delete('/deleteCategory', isAuth, isManager, async(req,res) => {
-    const {CategoryId} =  req.body;
-    if(!CategoryId){
-        return res.status(400).json({success: false, message: 'No data sent'})
+router.delete('/deleteCategory', isAuth, isManager, async (req, res) => {
+    const { CategoryId } = req.body;
+    if (!CategoryId) {
+        return res.status(400).json({ success: false, message: 'No data sent' })
     }
 
-    const result = await Post.find({categoryId: CategoryId});
-    if(result){
-        return res.status(200).json({success: false, message: 'There are Posts under this Tag. Abort Delete request'})
+    const result = await Post.find({ categoryId: CategoryId });
+    if (result.length !== 0) {
+        return res.status(200).json({ success: false, message: 'There are Posts under this Tag. Abort Delete request' })
     }
 
     await Category.findByIdAndDelete(CategoryId).then(data => {
-        if(!data){
-            return    res.status(400).json({success: false, message: 'No Category Found'})
+        if (!data) {
+            return res.status(400).json({ success: false, message: 'No Category Found' })
         }
-        else return res.status(200).json({success: true, message: 'Deleted Successfully'});
+        else return res.status(200).json({ success: true, message: 'Deleted Successfully' });
     }).catch(err => {
-        res.status(500).json({success: false, message: 'Catched Error', err})
+        res.status(500).json({ success: false, message: 'Catched Error', err })
     })
 })
 

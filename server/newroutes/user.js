@@ -168,16 +168,20 @@ router.delete('/deleteUser', isAuth, isAdmin, async (req, res) => {
             .session(session);
         if (result.n === 0 || result.nModified === 0) {
             return res.status(400).json({ success: false, message: 'No User found or some error occur when deleting User', result })
-        } else {
+        }
+        if (!result.departmentId){
+            return res.status(400).json({success: false, message: 'Old User w no DepartmentId'});
+        }
+            // else {
             const decreasedTotalinDep = await Departments.findByIdAndUpdate(result?.departmentId, { $inc: { totalStaff: -1 } })
                 .session(session);
-            if (!decreasedTotalinDep) {
-                return res.status(400).json({ success: false, message: 'Cannot Update Department. Try again' })
-            }
-            await session.commitTransaction();
-            res.status(201).json({ success: true, message: 'Deleted', result })
-            return session.endSession();
+        if (!decreasedTotalinDep) {
+            return res.status(400).json({ success: false, message: 'Cannot Update Department. Try again' })
         }
+        await session.commitTransaction();
+        res.status(201).json({ success: true, message: 'Deleted', result })
+        return session.endSession();
+        // }
     } catch (error) {
         await session.abortTransaction();
         res.status(400).json({ success: false, error: error || 'No user found' })
@@ -214,7 +218,7 @@ router.patch('/updateUser', isAuth, isAdmin, async (req, res) => {
             res.status(200).json({ success: true, message: `User ${userId} updated`, result, dep })
             return session.endSession();
         }
-        
+
         // not same department
         // update department
         else {

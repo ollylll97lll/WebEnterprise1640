@@ -15,7 +15,7 @@ const date = new Date();
 //route api/post/create
 //Create Post for Student role
 router.post('/create', isAuth, async (req, res) => {
-  const { categoryId, title, content, department, files } = req.body
+  const { categoryId, title, content, files } = req.body
 
   // title ad description validation
   if (!title)
@@ -42,7 +42,7 @@ router.post('/create', isAuth, async (req, res) => {
       userId: req.user.userId,
       title: title,
       content: content,
-      department: department,
+      department: req.user.department,
       files: files,
       likes: 0,
       createdAt: moment().tz('Asia/Ho_Chi_Minh').format()
@@ -328,7 +328,7 @@ router.get('/getall', async (req, res) => {
   const department = req.query.department || ''
 
   // return doc per page
-  const pageSize = 2
+  const pageSize = 5
   // current page
   const page = Number(req.query.pageNumber) || 1;
 
@@ -448,17 +448,6 @@ router.delete('/delDepartment', isAuth, isAdmin, async (req, res) => {
 
   } catch (error) {
     res.status(400).json({ success: false, error })
-  }
-})
-
-// route api/get/getCategories
-// Get all department
-router.get('/getCategories', async (req, res) => {
-  try {
-    const result = await Category.find({});
-    res.status(201).json({ message: 'Success', category: result });
-  } catch (error) {
-    res.status(400).send(error || 'Something Wrong')
   }
 })
 

@@ -60,6 +60,7 @@ router.get('/', isAuth, isStatisticRole, async (req, res) => {
 
     res.send(
         {
+            success: true,
             totalDepttUser,
             totalPostToday,
             percentage: {

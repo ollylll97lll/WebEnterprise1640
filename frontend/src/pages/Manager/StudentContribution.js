@@ -159,14 +159,14 @@ function StudentContribution() {
 
     const [search, setSearch] = useState('')
     const onChangeSearch = (e) => {
-        const value = e.target.value
-        setSearch(value)
+        const value = e.target.value.toLowerCase()
+        setSearch(value.toLowerCase())
         if (categoryFiltered == '') {
-            const found = posts.filter((item) => item.title.includes(value))
+            const found = posts.filter((item) => item.title.toLowerCase().includes(value))
             setDataFiltered(found)
             return
         }
-        const found = posts.filter((item) => item.categoryinfo[0]._id == categoryFiltered && item.title.includes(value))
+        const found = posts.filter((item) => item.categoryinfo[0]._id == categoryFiltered && item.title.toLowerCase().includes(value))
         setDataFiltered(found)
     }
 

@@ -9,6 +9,7 @@ const User = require('../newmodels/User')
 const Departments = require('../newmodels/Departments')
 const { isManager, isAuth, isStatisticRole } = require('../middleware/utils')
 const Post = require('../newmodels/Post')
+const Category = require('../newmodels/Category')
 
 
 router.get('/', isAuth, isStatisticRole, async (req, res) => {
@@ -34,7 +35,7 @@ router.get('/', isAuth, isStatisticRole, async (req, res) => {
     ])
     // pie chart:
     // tổng số post của department đó theo tag
-    const PostbyCategories = await Post.aggregate([
+    const PostGrouped = await Post.aggregate([
         {
             $match: {
                 department: req.user.department
@@ -46,9 +47,17 @@ router.get('/', isAuth, isStatisticRole, async (req, res) => {
                 posts: { $sum: 1 }
             }
         },
+        {
+            $lookup: {
+                from: 'categories',
+                localField: '_id',
+                foreignField: '_id',
+                as: 'categorydetails'
+            }
+        }
     ])
 
-    
+
     res.send(
         {
             totalDepttUser,
@@ -59,7 +68,7 @@ router.get('/', isAuth, isStatisticRole, async (req, res) => {
                 percentageDeptPost
             },
             dailyPosts,
-            PostbyCategories
+            PostGrouped
         });
 })
 

@@ -16,116 +16,10 @@ function StudentContribution() {
     const user = useSelector(state => state.userAll)
 
     const dispatch = useDispatch()
-    //Tất cả các faculty được phân loại sau khi chọn selectbox rồi set vào data
-    const [data, setData] = useState([]);
-
-    //để phân loại faculty để lọc ra set lên Data
-    const [faculty, setFaculty] = useState('');
-
-    //lấy tất cả account (mọi role, mọi faculty), initialState khi load trang
-    const [total, setTotal] = useState([
-        {
-            faculty: 'Marketing',
-            submittedAt: '21/07/2021',
-            title: 'Submission 1',
-            type: 'Article',
-            description: 'Bài báo này nói về tình hình dịch Covid - 19',
-            checked: false,
-            document: '/file/covid19.docx',
-        },
-        {
-            faculty: 'Marketing',
-            submittedAt: '22/07/2021',
-            title: 'Submission 2',
-            type: 'Photograph',
-            description: 'Vài hình ảnh về tình hình dịch Covid - 19',
-            checked: false,
-            document: '/file/covid.zip',
-        },
-        {
-            faculty: 'Design',
-            submittedAt: '23/07/2021',
-            title: 'Submission 2',
-            type: 'Article',
-            description: 'Thiết kế công trình nhà ở',
-            checked: false,
-            document: '/file/design.zip',
-        }
-    ]);
-
-    //lấy data từng faculty
-    const [design, setDesign] = useState([
-        {
-            faculty: 'Design',
-            submittedAt: '23/07/2021',
-            title: 'Submission 2',
-            type: 'Article',
-            description: 'Thiết kế công trình nhà ở',
-            checked: false,
-            document: '/file/design.zip',
-        }
-    ]);
-
-    const [marketing, setMarketing] = useState([
-        {
-            faculty: 'Marketing',
-            submittedAt: '21/07/2021',
-            title: 'Submission 1',
-            type: 'Article',
-            description: 'Bài báo này nói về tình hình dịch Covid - 19',
-            checked: false,
-            document: '/file/covid19.docx',
-        },
-        {
-            faculty: 'Marketing',
-            submittedAt: '22/07/2021',
-            title: 'Submission 2',
-            type: 'Photograph',
-            description: 'Vài hình ảnh về tình hình dịch Covid - 19',
-            checked: false,
-            document: '/file/covid.zip',
-        },
-    ])
-
-    const [computing, setComputing] = useState([]);
-    const [business, setBusiness] = useState([]);
-    const [eventManage, setEventManage] = useState([]);
-    const [communication, setCommunication] = useState([]);
-
-    //lấy faculty để phân loại selectbox
-
-
-    //phân loại data theo faculty
-    const dataSelector = () => {
-        switch (faculty) {
-            case '':
-                setData(total);
-                break;
-            case 'Graphic and Digital Design':
-                setData(design);
-                break;
-            case 'Marketing':
-                setData(marketing);
-                break;
-            case 'Computing':
-                setData(computing);
-                break;
-            case 'Business Management':
-                setData(business);
-                break;
-            case 'Event Management':
-                setData(eventManage);
-                break;
-            case 'Public Relations':
-                setData(communication);
-                break;
-            default:
-                return data;
-        }
-    }
     const [posts, setPosts] = useState([])
     const [category, setCategory] = useState([])
     const [dataFiltered, setDataFiltered] = useState([])
+    const [categoryFiltered, setCategoryFiltered] = useState('')
     useEffect(() => {
         getAllPost()
         getCategory()
@@ -158,22 +52,20 @@ function StudentContribution() {
     }
     const handleChange = (e) => {
         const value = e.target.value;
+        setSearch('')
         if (value == '') {
             setDataFiltered(posts)
+            setCategoryFiltered('')
             return
         }
         console.log(value)
         const newList = posts.filter((item) => item.categoryinfo[0]._id == value)
         setDataFiltered(newList)
+        setCategoryFiltered(value)
     }
 
     // console.log('this is cat:', category)
     // console.log('datafilter:  ', dataFiltered)
-
-    //thay đổi data, role theo selectbox
-    useEffect(() => {
-        dataSelector();
-    }, [faculty])
 
     const [modalVisibleAddCategory, setModalVisibleAddCategory] = useState(false)
     const [newCategory, setNewCategory] = useState('')
@@ -265,6 +157,19 @@ function StudentContribution() {
         }
     }
 
+    const [search, setSearch] = useState('')
+    const onChangeSearch = (e) => {
+        const value = e.target.value
+        setSearch(value)
+        if (categoryFiltered == '') {
+            const found = posts.filter((item) => item.title.includes(value))
+            setDataFiltered(found)
+            return
+        }
+        const found = posts.filter((item) => item.categoryinfo[0]._id == categoryFiltered && item.title.includes(value))
+        setDataFiltered(found)
+    }
+
     if (user.loading && arrayIsEmpty(category) && arrayIsEmpty(posts)) {
         return (
             <div className={"container"} style={{
@@ -313,9 +218,13 @@ function StudentContribution() {
 
                 <div className="mt-4 mb-2" style={{ paddingRight: 20, }} >
                     <Button outline color="primary" className="mb-2">Download selected file</Button>
-
                 </div>
 
+            </div>
+            <div>
+                <FormGroup>
+                    <Input type="text" name="search" id="search" placeholder="Search..." value={search} required onChange={(e) => onChangeSearch(e)} />
+                </FormGroup>
             </div>
 
 

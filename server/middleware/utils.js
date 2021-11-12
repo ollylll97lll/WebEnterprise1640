@@ -39,4 +39,11 @@ const isManager = (req, res, next) => {
     else return res.status(401).send({message: 'Invalid Token. U no Manager'})
 }
 
-module.exports = { isAdmin, isAuth, isManager }
+const isStatisticRole = (req, res, next) => {
+    if(req.user && req.user.role === 'coordinator' || req.user && req.user.role === 'manager') {
+        next();
+    }
+    else return res.status(401).send({message: 'Invalid Token. U no Statistic Role'})
+}
+
+module.exports = { isAdmin, isAuth, isManager, isStatisticRole }

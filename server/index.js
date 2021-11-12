@@ -13,6 +13,7 @@ const Seasons = require('./routes/seasons')
 const Category = require('./newroutes/category')
 const User = require('./newroutes/user')
 const UploadFiles = require('./newroutes/uploading');
+const Statistic = require('./newroutes/statistic')
 
 const MONGO_URI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@webenterprise1640.1vlbz.mongodb.net/webenterprise1640?retryWrites=true&w=majority`;
 
@@ -53,6 +54,9 @@ app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.raw({ type: 'application/octet-stream', limit: '100mb' }));
 app.use(bodyParser.json())
 app.use('/api/upload', UploadFiles);
+
+// Statistic Routes
+app.use('/api/statistic', Statistic);
 
 // Old routes
 app.use('/api/article', Article)

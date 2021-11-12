@@ -75,7 +75,7 @@ router.post('/register', async (req, res) => {
 
         await newUser.save()
 
-        const accessToken = jwt.sign({ userId: newUser._id, email, department, role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30m' })
+        const accessToken = jwt.sign({ userId: newUser._id, email, department, departmentId, role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30m' })
 
         res.json({ success: true, message: "User created successfully", accessToken: accessToken, userInfo: newUser })
     } catch (err) {
@@ -107,7 +107,7 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Wrong Password' })
 
         //All good
-        const accessToken = jwt.sign({ userId: user._id, email, department: user.department, role: user.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30m' })
+        const accessToken = jwt.sign({ userId: user._id, email, department: user.department, departmentId: user.departmentId, role: user.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30m' })
 
         res.json({ success: true, message: "Sign In Successfully", accessToken: accessToken, userInfo: user })
     } catch {

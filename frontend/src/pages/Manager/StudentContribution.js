@@ -27,7 +27,10 @@ function StudentContribution() {
 
     const getAllPost = async () => {
         try {
-            const fetch = await axios.get(`http://localhost:5001/api/post/getall?department=${userLogin.userInfo.userInfo.department}`)
+            const fetch = await axios.get(`http://localhost:5001/api/post/getall?department=${userLogin.userInfo.userInfo.department}`,
+            {
+                token: userLogin.userInfo.accessToken
+            })
             console.log(fetch.data)
             if (fetch?.data.posts) {
                 setPosts(fetch.data.posts)

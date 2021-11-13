@@ -3,6 +3,7 @@ import thunk from 'redux-thunk';
 import { addSeasonTopicReducer } from './reducer/articlereducer';
 import { getPostReducer, postLikeyReducer } from './reducer/postreducer';
 import { recoverPassFromEmailReducer } from './reducer/recoverpasswordreducer';
+import { DepartmentStatisticReducer } from './reducer/statisticreducer';
 import { userDelDeptReducer, userGetAllReducer, userLoginReducer, userRecoverReducer, userRegisterReducer } from './reducer/userreducer';
 
 const initialState = {
@@ -23,7 +24,8 @@ const reducer = combineReducers({
     postList: getPostReducer,
     postLikes: postLikeyReducer,
     userAll: userGetAllReducer,
-    userDeptDelete: userDelDeptReducer
+    userDeptDelete: userDelDeptReducer,
+    DepStatistic: DepartmentStatisticReducer,
 });
 
 // send to the extension to view

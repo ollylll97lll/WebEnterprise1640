@@ -13,9 +13,14 @@ const Post = require('../newmodels/Post')
 router.post('/add_category', isAuth, isManager, async (req, res) => {
     const { name, description, startdate, enddate } = req.body
     //if ok
-    const starteddate = moment(startdate, 'DD-MM-YY').add(1, 'd')
-    const endeddate = moment(enddate, 'DD-MM-YY').add(1, 'd')
-    const closeddate = moment(enddate, 'DD-MM-YY').add(8, 'd')
+    const starteddate = new Date(startdate).setDate(new Date(startdate).getDate() + 1)
+    // moment(startdate, 'DD-MM-YY').add(1, 'd')
+    // close post
+    const endeddate = new Date(enddate).setDate(new Date(enddate).getDate() + 1)
+    // moment(enddate, 'DD-MM-YY').add(1, 'd')
+    // close update && comment
+    const closeddate = new Date(enddate).setDate(new Date(enddate).getDate() + 8)
+    // moment(enddate, 'DD-MM-YY').add(8, 'd')
     try {
         const newSeason = new Category({
             name: name,

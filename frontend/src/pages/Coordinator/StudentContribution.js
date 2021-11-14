@@ -61,8 +61,8 @@ function StudentContributionCoordinator() {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((data) => (
-                        <tr>
+                    {data.map((data, index) => (
+                        <tr key={index}>
                             <td className="text-center"><input type="checkbox" /></td>
                             <td>{data.faculty}</td>
                             <td>{data.submittedAt}</td>

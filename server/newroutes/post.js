@@ -389,13 +389,13 @@ router.get('/getall', async (req, res) => {
 router.post('/getpostdetail', async (req, res) => {
   const { postId } = req.body;
   if (!postId) {
-    res.status(404).send('No PostId found to query.')
+    return res.status(404).send('No PostId found to query.')
   }
 
   const result = await Post.findById(postId)
   const catdetail = await Category.findById(result?.categoryId);
   const cmts = await Comment.findOne({ postId: postId });
-  res.status(200).json({
+  return res.status(200).json({
     result, catdetail, cmts: cmts ? [...cmts.comments] : []
   })
 

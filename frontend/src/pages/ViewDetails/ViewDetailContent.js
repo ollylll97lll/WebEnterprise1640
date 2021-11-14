@@ -1,9 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import './index.css'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, Form, Row, Col, FormGroup, Label } from 'reactstrap';
+import axios from 'axios';
+import { useLocation } from 'react-router';
+import { useSelector } from 'react-redux';
 
 function ViewDetailContent() {
+
+    const userLogin = useSelector(state => state.userLogin)
 
     //set Deadline là duedate, biến deadline để check coi có trễ giờ deadline ko, thiếu cái update liên tục
     const [dueDate, setDueDate] = useState(moment('28/07/2021 18:37:00', 'DD/MM/YYYY HH:mm:ss'));
@@ -49,6 +54,43 @@ function ViewDetailContent() {
     const [modal, setModal] = useState(false);
 
     const toggleModalEdit = () => setModal(!modal);
+    const location = useLocation()
+    const [postDetail, setPostDetail] = useState('')
+    console.log(location.state)
+
+    const getPostDetail = async () => {
+        try {
+            const response = await axios.post('http://localhost:5001/api/post/getpostdetail',
+                {
+                    postId: location.state.postId
+                })
+            console.log(response.data)
+            if (response?.data) {
+
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    const getDataUser = async () => {
+        try {
+            const response = await axios.post(`http://localhost:5001/api/user/getone?userId=${location.state.userId}`,
+                {
+                    headers: {
+                        "Authorization": `Bearer ${userLogin.userInfo.accessToken}`
+                    }
+                }
+            )
+            console.log(response)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        getPostDetail()
+        getDataUser()
+    }, [])
 
     return (
         <div style={{ paddingTop: '2%' }} >

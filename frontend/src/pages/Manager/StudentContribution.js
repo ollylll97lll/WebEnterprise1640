@@ -8,6 +8,7 @@ import axios from 'axios';
 import { arrayIsEmpty, objectIsNull } from '../../utils/function';
 import moment from 'moment'
 import DateTimePicker from 'react-datepicker';
+import { useHistory } from 'react-router';
 
 
 
@@ -20,6 +21,8 @@ function StudentContribution() {
     const [category, setCategory] = useState([])
     const [dataFiltered, setDataFiltered] = useState([])
     const [categoryFiltered, setCategoryFiltered] = useState('')
+    const [userDepartment, setUserDepartment] = useState(userLogin.userInfo.userInfo.department)
+
     useEffect(() => {
         getAllPost()
         getCategory()
@@ -28,9 +31,9 @@ function StudentContribution() {
     const getAllPost = async () => {
         try {
             const fetch = await axios.get(`http://localhost:5001/api/post/getall?department=${userLogin.userInfo.userInfo.department}`,
-            {
-                token: userLogin.userInfo.accessToken
-            })
+                {
+                    token: userLogin.userInfo.accessToken
+                })
             console.log(fetch.data)
             if (fetch?.data.posts) {
                 setPosts(fetch.data.posts)
@@ -173,6 +176,16 @@ function StudentContribution() {
         setDataFiltered(found)
     }
 
+    const history = useHistory();
+
+    const viewDetail = (userid, postid) => {
+        history.push({
+            pathname: '/viewdetails',
+            state: { userId: userid, postId: postid, role: userLogin.userInfo.userInfo.role }
+        })
+    }
+    console.log(userLogin.userInfo.userInfo.role)
+
     if (user.loading && arrayIsEmpty(category) && arrayIsEmpty(posts)) {
         return (
             <div className={"container"} style={{
@@ -205,6 +218,9 @@ function StudentContribution() {
 
     return (
         <div style={{ paddingTop: '2%' }} >
+            <div style={{ paddingBottom: 20, }} >
+                <span>Current Department: <span style={{ fontWeight: 'bold' }}>{userDepartment.toUpperCase()}</span></span>
+            </div>
             <FormGroup>
                 <Label for='facultySelect'>Select Category</Label>
                 <CustomInput type="select" id="facultySelect" name='facultySelect' onChange={handleChange}>
@@ -215,19 +231,22 @@ function StudentContribution() {
                 </CustomInput>
             </FormGroup>
 
-            <div style={{ display: 'flex' }}>
-                <div className="mt-4 mb-2" style={{ paddingRight: 20, }} ><Button outline color="primary" onClick={toggleModalAddCategory}>Add Category</Button></div>
-                <div className="mt-4 mb-2" style={{ paddingRight: 20, }} ><Button outline color="primary" onClick={toggleModalVisibleDeleteCat}>Delete Category</Button></div>
+            <div>
+                <FormGroup>
+                    <Input type="text" name="search" id="search" placeholder="Search..." value={search} required onChange={(e) => onChangeSearch(e)} />
+                </FormGroup>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex' }}>
+                    <div className="mt-4 mb-2" style={{ paddingRight: 20, }} ><Button outline color="primary" onClick={toggleModalAddCategory}>Add Category</Button></div>
+                    <div className="mt-4 mb-2" style={{ paddingRight: 20, }} ><Button outline color="primary" onClick={toggleModalVisibleDeleteCat}>Delete Category</Button></div>
+
+                </div>
 
                 <div className="mt-4 mb-2" style={{ paddingRight: 20, }} >
                     <Button outline color="primary" className="mb-2">Download selected file</Button>
                 </div>
 
-            </div>
-            <div>
-                <FormGroup>
-                    <Input type="text" name="search" id="search" placeholder="Search..." value={search} required onChange={(e) => onChangeSearch(e)} />
-                </FormGroup>
             </div>
 
 
@@ -348,18 +367,19 @@ function StudentContribution() {
                         <th>End Time</th>
                         <th>Category</th>
                         <th>Like</th>
-                        <th>Document download</th>
+                        <th style={{ textAlign: 'center' }}>Document Detail</th>
                     </tr>
                 </thead>
                 <tbody>
                     {!arrayIsEmpty(posts) && !arrayIsEmpty(dataFiltered) ? dataFiltered.map((data) => (
-                        <tr>
+                        <tr key={data._id}>
                             <td className="text-center"><input type="checkbox" /></td>
                             <td>{data.title}</td>
                             <td>{moment(data.createdAt).format('L')}</td>
                             <td>{moment(data.categoryinfo[0].enddate).format('L')}</td>
                             <td>{data.categoryinfo[0].name}</td>
                             <td className='cell'>{data.likes}</td>
+                            <td className="text-center"><Button outline color="primary" onClick={() => { viewDetail(data.userId, data._id) }}>View Detail</Button></td>
                         </tr>
                     ))
                         :

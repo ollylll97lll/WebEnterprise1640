@@ -12,13 +12,14 @@ function Statistic() {
     const DepStatistic = useSelector(state => state.DepStatistic)
     const userInfo = useSelector(state => state.userLogin.userInfo.userInfo);
     const { loading, statistic, error } = DepStatistic
+    
     useEffect(() => {
         dispatch(DepartmentStatistic());
     }, [dispatch])
 
-    useEffect(() => {
-        console.log('statistic', statistic);
-    }, [statistic])
+    // useEffect(() => {
+    //     console.log('statistic', statistic);
+    // }, [statistic])
 
     const randomcolor = [
         "#f0e0e0",
@@ -48,9 +49,14 @@ function Statistic() {
                                             (<>
                                                 <ul className="row summary" style={{ listStyleType: 'none' }}>
                                                     {[...statistic.tableinfo].map(tabledata => {
+
+                                                        // RANDOM COLOR
+                                                        // WHY?
+                                                        // FOR FUN BRO
                                                         const index = Math.floor(Math.random() * randomcolor.length)
                                                         const tempcolor = randomcolor[index];
                                                         randomcolor.splice(index,1)
+                                                        
                                                         return (
                                                             <li style={{ border: '0.1rem solid', borderColor: '#c0c0c0', margin: '2rem', borderRadius: '0.5rem', flex: '1 1 20rem' }}>
                                                                 <div style={{ fontSize: '1.5rem', padding: '1rem', backgroundColor: tempcolor }} >

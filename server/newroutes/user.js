@@ -7,7 +7,7 @@ const argon2 = require('argon2')
 const User = require('../newmodels/User')
 const forgotPassMail = require('../middleware/forgotPassMail')
 const verifyUserToken = require('../middleware/userToken')
-const { isAuth, isAdmin } = require('../middleware/utils')
+const { isAuth, isAdmin, isStatisticRole } = require('../middleware/utils')
 const Departments = require('../newmodels/Departments')
 const mongoose = require('mongoose');
 
@@ -77,6 +77,20 @@ router.get('/getall', async (req, res) => {
                     err.message || "Cannot get all users by query."
             });
         });
+})
+
+// route api/user/getone
+// get user data
+router.post('/getone', isAuth, isStatisticRole, async(req,res) => {
+    const {userId} = req.query;
+    if(!userId){
+        return res.status(201).json({success:false, message: 'User not found'})
+    }
+    await User.findById(userId).then(data => {
+        return res.status(200).json({success: true, data})
+    }).catch(err => {
+        return res.status(400).json({success: false, message: err})
+    })
 })
 
 //route api/user/sendemailforgotpassword

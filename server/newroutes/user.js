@@ -87,7 +87,7 @@ router.post('/getone', isAuth, isStatisticRole, async(req,res) => {
         return res.status(201).json({success:false, message: 'User not found'})
     }
     await User.findById(userId).then(data => {
-        return res.status(200).json({success: true, data})
+        return res.status(200).json({success: true, data: {email: data.email, department: data.department, role: data.role}})
     }).catch(err => {
         return res.status(400).json({success: false, message: err})
     })

@@ -56,6 +56,8 @@ function ViewDetailContent() {
     const toggleModalEdit = () => setModal(!modal);
     const location = useLocation()
     const [postDetail, setPostDetail] = useState('')
+
+    const [userDetail, setUserDetail] = useState('')
     console.log(location.state)
 
     const getPostDetail = async () => {
@@ -64,9 +66,9 @@ function ViewDetailContent() {
                 {
                     postId: location.state.postId
                 })
-            console.log(response.data)
+            console.log('post', response.data)
             if (response?.data) {
-
+                setPostDetail(response.data)
             }
         } catch (error) {
             console.log(error)
@@ -74,14 +76,19 @@ function ViewDetailContent() {
     }
     const getDataUser = async () => {
         try {
-            const response = await axios.post(`http://localhost:5001/api/user/getone?userId=${location.state.userId}`,
+            const api = `http://localhost:5001/api/user/getone?userId=${location.state.userId}`
+            const token = userLogin.userInfo.accessToken
+            const response = await axios.post(api, {},
                 {
                     headers: {
-                        "Authorization": `Bearer ${userLogin.userInfo.accessToken}`
+                        Authorization: `Bearer ` + token
                     }
                 }
             )
-            console.log(response)
+            console.log('user', response.data.data)
+            if (response?.data.success) {
+                setUserDetail(response.data.data)
+            }
         } catch (error) {
             console.log(error)
         }
@@ -92,125 +99,136 @@ function ViewDetailContent() {
         getDataUser()
     }, [])
 
+    const onPressEdit = () => {
+
+    }
+
+    if (postDetail == '' || userDetail == '') {
+        return (
+            <div className={"container"} style={{
+                display: 'flex', justifyContent: 'center', alignItems: 'center',
+                flexDirection: 'column',
+                padding: 20,
+            }}>
+                <div class="spinner-border" role="status">
+                </div>
+                <span style={{ padding: 20, }} >Loading...</span>
+            </div>
+        )
+    }
+
     return (
         <div style={{ paddingTop: '2%' }} >
             <div className="col-12">
                 <div className="row row-color">
                     <div className="column-left pt-2 pb-2">Submission Title</div>
-                    <div className="column-right pt-2 pb-2">{data[0].title}</div>
+                    <div className="column-right pt-2 pb-2">{postDetail.result.title}</div>
+                </div>
+                <div className="row">
+                    <div className="column-left pt-2 pb-2">Submission Content</div>
+                    <div className="column-right pt-2 pb-2">{postDetail.result.content}</div>
                 </div>
 
                 <div className="row">
-                    <div className="column-left pt-2 pb-2">Submission Type</div>
-                    <div className="column-right pt-2 pb-2">{data[0].type}</div>
+                    <div className="column-left pt-2 pb-2">Submission Category</div>
+                    <div className="column-right pt-2 pb-2">{postDetail.catdetail.name}</div>
                 </div>
-
-                <div className="row row-color">
-                    <div className="column-left pt-2 pb-2">Submission status</div>
-                    <div className="column-right-color pt-2 pb-2">{data[0].status}</div>
-                </div>
-
                 <div className="row">
-                    <div className="column-left pt-2 pb-2">Due date</div>
-                    <div className="column-right pt-2 pb-2">{data[0].dueDate}</div>
+                    <div className="column-left pt-2 pb-2">Submission User</div>
+                    <div className="column-right pt-2 pb-2">{userDetail.email}</div>
                 </div>
-                <div className="row row-color">
-                    <div className="column-left pt-2 pb-2">Last modified</div>
-                    <div className="column-right-color pt-2 pb-2">{data[0].lastModified}</div>
+                <div className="row">
+                    <div className="column-left pt-2 pb-2">Department User</div>
+                    <div className="column-right pt-2 pb-2">{userDetail.department}</div>
+                </div>
+                <div className="row">
+                    <div className="column-left pt-2 pb-2">Comment</div>
+                    <div className="column-right pt-2 pb-2">{postDetail.cmts.length}</div>
+                </div>
+                <div className="row">
+                    <div className="column-left pt-2 pb-2">Like</div>
+                    <div className="column-right pt-2 pb-2">{postDetail.result.likes}</div>
+                </div>
+
+                {(postDetail.catdetail.enddate < postDetail.result.createdAt) || (postDetail.catdetail.enddate < postDetail.result.updateAt) ?
+                    <div className="row">
+                        <div className="column-left pt-2 pb-2">Submit Date</div>
+                        <div className="column-right bg-danger pt-2 pb-2" style={{ color: '#fff' }} >{postDetail.result.updateAt ? moment(`${postDetail.result.updateAt}`).format('dddd, DD/MM/YYYY, HH:mm') : moment(postDetail.result.createdAt).format('dddd, DD/MM/YYYY, HH:mm')}</div>
+                    </div>
+                    :
+                    <div className="row">
+                        <div className="column-left pt-2 pb-2">Submit Date</div>
+                        <div className="column-right-color pt-2 pb-2">{postDetail.result.updateAt ? moment(`${postDetail.result.updateAt}`).format('dddd, DD/MM/YYYY, HH:mm') : moment(postDetail.result.createdAt).format('dddd, DD/MM/YYYY, HH:mm')}</div>
+                    </div>
+                }
+                {(postDetail.catdetail.enddate < postDetail.result.createdAt) || (postDetail.catdetail.enddate < postDetail.result.updateAt) ?
+                    <div className="row">
+                        <div className="column-left pt-2 pb-2">Last modified</div>
+                        <div className="column-right bg-danger pt-2 pb-2" style={{ color: '#fff' }} >{postDetail.result.updateAt ? moment(`${postDetail.result.updateAt}`).format('dddd, DD/MM/YYYY, HH:mm') : moment(postDetail.result.createdAt).format('dddd, DD/MM/YYYY, HH:mm')}</div>
+                    </div>
+                    :
+                    <div className="row">
+                        <div className="column-left pt-2 pb-2">Last modified</div>
+                        <div className="column-right-color pt-2 pb-2">{postDetail.result.updateAt ? moment(`${postDetail.result.updateAt}`).format('dddd, DD/MM/YYYY, HH:mm') : moment(postDetail.result.createdAt).format('dddd, DD/MM/YYYY, HH:mm')}</div>
+                    </div>
+                }
+                <div className="row">
+                    <div className="column-left pt-2 pb-2">Due Date</div>
+                    <div className="column-right pt-2 pb-2">{moment(`${postDetail.catdetail.enddate}`).format('dddd, DD/MM/YYYY, HH:mm')}</div>
                 </div>
                 <div className="row">
                     <div className="column-left pt-2 pb-2">File submissions</div>
                     <div className="column-right pt-2 pb-2">{data[0].fileSubmission}</div>
                 </div>
-                <div className="row row-color">
-                    <div className="column-left pt-2 pb-2">Submission comments</div>
-                    <div className="column-right pt-2 pb-2">
-                        <p style={{ cursor: 'pointer' }} onClick={toggleComment}>Show comment ({data[0].comments.quantity})</p>
-                        {toggle ? <div>
-                            <div>{conversation.map((conversation) => (
-                                <div>
-                                    <div className="row">
-                                        <div className="col-5" style={{ color: 'red' }}>Coordinator: </div>
-                                        <div className="col-5" style={{ color: 'red' }}>{conversation.coordinator}</div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-5">Student: </div>
-                                        <div className="col-5">{conversation.student}</div>
-                                    </div>
-
-                                </div>
-                            ))}
-                            </div>
-                            <div className="row">
-                                <div className="col-5"></div>
-                                <div className="col-5"><textarea className="w-100" row='3' cols='20' label='Comment'></textarea></div>
-                            </div>
-                            <div className="row">
-                                <div className="col-5"></div>
-                                <div className="col-5">
-                                    <Button className='float-right ml-2' outline color="primary">Cancel</Button>
-                                    <Button className='float-right' outline color="primary">Save comment</Button>
-                                </div>
-                            </div>
-                        </div> : null}
-                    </div>
+            </div>
+            {location.state.role.toLowerCase() === 'staff' &&
+                <div className="text-center mt-4">
+                    {moment(`${postDetail.catdetail.enddate}`).format('dddd, DD/MM/YYYY, HH:mm').includes('ago') ?
+                        <Button disabled outline color="primary mr-2">Edit submission</Button>
+                        :
+                        // Nhớ sửa cái vụ phải check validation rồi mới cho submit
+                        <Button outline color="primary mr-2" onClick={toggleModalEdit}>Edit submission</Button>}
+                    <Modal isOpen={modal} toggle={toggleModalEdit}>
+                        <ModalHeader toggle={toggleModalEdit}>Editing submission</ModalHeader>
+                        <ModalBody>
+                            <Form>
+                                <Row form>
+                                    <Col md={7}>
+                                        <FormGroup>
+                                            <Label for="title">Title <span className='text-danger'>*</span></Label>
+                                            <Input type="text" name="title" id="title" placeholder="Title" required value={postDetail.result.title} />
+                                        </FormGroup>
+                                    </Col>
+                                </Row>
+                                <Row form>
+                                    <Col md={12}>
+                                        <FormGroup>
+                                            <Label for="description">Brief Description</Label>
+                                            <Input type="textarea" style={{ height: '150px' }} name="description" id="description" placeholder="Give a short description" value={postDetail.result.content} />
+                                        </FormGroup>
+                                    </Col>
+                                </Row>
+                                <Row form >
+                                    <Col md={12} >
+                                        <FormGroup >
+                                            <Input type="file" name="upload" id="upload" required />
+                                        </FormGroup>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="primary" onClick={toggleModalEdit}>Edit submission</Button>{' '}
+                            <Button color="secondary" onClick={toggleModalEdit}>Cancel</Button>
+                        </ModalFooter>
+                    </Modal>
+                    {/* {moment(`${postDetail.catdetail.enddate}`).format('dddd, DD/MM/YYYY, HH:mm').includes('ago') ?
+                        <Button disabled outline color="primary mr-2">Remove submission</Button>
+                        :
+                        <Button outline color="primary mr-2" onClick={toggleModalEdit}>Remove submission</Button>} */}
+                    {(postDetail.catdetail.enddate < postDetail.result.createdAt) || (postDetail.catdetail.enddate < postDetail.result.updateAt) ? <div className='text-danger mt-4'>You're late</div> : null}
                 </div>
-            </div>
-            <div className="text-center mt-4">
-                {deadline.includes('ago') ?
-                    <Button disabled outline color="primary mr-2">Edit submission</Button>
-                    :
-                    // Nhớ sửa cái vụ phải check validation rồi mới cho submit
-                    <Button outline color="primary mr-2" onClick={toggleModalEdit}>Edit submission</Button>}
-                <Modal isOpen={modal} toggle={toggleModalEdit}>
-                    <ModalHeader toggle={toggleModalEdit}>Editing submission</ModalHeader>
-                    <ModalBody>
-                        <Form>
-                            <Row form>
-                                <Col md={7}>
-                                    <FormGroup>
-                                        <Label for="title">Title <span className='text-danger'>*</span></Label>
-                                        <Input type="text" name="title" id="title" placeholder="Title" required />
-                                    </FormGroup>
-                                </Col>
-                                <Col md={5}>
-                                    <FormGroup>
-                                        <Label for="type">Contribution Type <span className='text-danger'>*</span></Label>
-                                        <Input type="select" name="type" id="type">
-                                            <option>Articles</option>
-                                            <option>Photographs</option>
-                                        </Input>
-                                    </FormGroup>
-                                </Col>
-                            </Row>
-                            <Row form>
-                                <Col md={12}>
-                                    <FormGroup>
-                                        <Label for="description">Brief Description</Label>
-                                        <Input type="textarea" style={{ height: '150px' }} name="description" id="description" placeholder="Give a short description" />
-                                    </FormGroup>
-                                </Col>
-                            </Row>
-                            <Row form >
-                                <Col md={12} >
-                                    <FormGroup >
-                                        <Input type="file" name="upload" id="upload" required />
-                                    </FormGroup>
-                                </Col>
-                            </Row>
-                        </Form>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button color="primary" onClick={toggleModalEdit}>Edit submission</Button>{' '}
-                        <Button color="secondary" onClick={toggleModalEdit}>Cancel</Button>
-                    </ModalFooter>
-                </Modal>
-                {deadline.includes('ago') ?
-                    <Button disabled outline color="primary mr-2">Remove submission</Button>
-                    :
-                    <Button outline color="primary mr-2" onClick={toggleModalEdit}>Remove submission</Button>}
-                {deadline.includes('ago') ? <div className='text-danger mt-4'>You're late</div> : null}
-            </div>
+            }
         </div>
     )
 }

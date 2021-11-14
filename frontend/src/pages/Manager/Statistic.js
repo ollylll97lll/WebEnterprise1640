@@ -12,7 +12,7 @@ function Statistic() {
     const DepStatistic = useSelector(state => state.DepStatistic)
     const userInfo = useSelector(state => state.userLogin.userInfo.userInfo);
     const { loading, statistic, error } = DepStatistic
-    
+
     useEffect(() => {
         dispatch(DepartmentStatistic());
     }, [dispatch])
@@ -48,17 +48,17 @@ function Statistic() {
                                         statistic.tableinfo ?
                                             (<>
                                                 <ul className="row summary" style={{ listStyleType: 'none' }}>
-                                                    {[...statistic.tableinfo].map(tabledata => {
+                                                    {[...statistic.tableinfo].map((tabledata, i) => {
 
                                                         // RANDOM COLOR
                                                         // WHY?
                                                         // FOR FUN BRO
                                                         const index = Math.floor(Math.random() * randomcolor.length)
                                                         const tempcolor = randomcolor[index];
-                                                        randomcolor.splice(index,1)
-                                                        
+                                                        randomcolor.splice(index, 1)
+
                                                         return (
-                                                            <li style={{ border: '0.1rem solid', borderColor: '#c0c0c0', margin: '2rem', borderRadius: '0.5rem', flex: '1 1 20rem' }}>
+                                                            <li key={i} style={{ border: '0.1rem solid', borderColor: '#c0c0c0', margin: '2rem', borderRadius: '0.5rem', flex: '1 1 20rem' }}>
                                                                 <div style={{ fontSize: '1.5rem', padding: '1rem', backgroundColor: tempcolor }} >
                                                                     <span>{tabledata.title}</span>
                                                                 </div>
@@ -111,8 +111,8 @@ function Statistic() {
                                     }
                                 </div>
                             </>
-    )
-}
+                        )
+            }
 
 
         </div >

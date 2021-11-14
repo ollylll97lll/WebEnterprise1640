@@ -49,7 +49,10 @@ function StudentContribution() {
             const fetch = await axios.get(`http://localhost:5001/api/category/getall`)
             console.log('datafectch: ', fetch.data)
             if (fetch?.data) {
-                setIsLoading(false)
+                if (category.length == fetch.data.length) {
+                    getCategory()
+                    return
+                }
                 setCategory(fetch.data)
             }
         } catch (error) {
@@ -72,6 +75,9 @@ function StudentContribution() {
 
     // console.log('this is cat:', category)
     // console.log('datafilter:  ', dataFiltered)
+    useEffect(() => {
+        if (category) { setIsLoading(false) }
+    }, [category])
 
     const [modalVisibleAddCategory, setModalVisibleAddCategory] = useState(false)
     const [newCategory, setNewCategory] = useState('')
@@ -184,7 +190,6 @@ function StudentContribution() {
             state: { userId: userid, postId: postid, role: userLogin.userInfo.userInfo.role }
         })
     }
-    console.log(userLogin.userInfo.userInfo.role)
 
     if (user.loading && arrayIsEmpty(category) && arrayIsEmpty(posts)) {
         return (
@@ -193,7 +198,7 @@ function StudentContribution() {
                 flexDirection: 'column',
                 padding: 20,
             }}>
-                <div class="spinner-border" role="status">
+                <div className="spinner-border" role="status">
                 </div>
                 <span style={{ padding: 20, }} >Loading...</span>
             </div>
@@ -207,7 +212,7 @@ function StudentContribution() {
                 flexDirection: 'column',
                 padding: 20,
             }}>
-                <div class="spinner-border" role="status">
+                <div className="spinner-border" role="status">
                 </div>
                 <span style={{ padding: 20, }} >Loading...</span>
             </div>
@@ -218,15 +223,14 @@ function StudentContribution() {
 
     return (
         <div style={{ paddingTop: '2%' }} >
-            <div style={{ paddingBottom: 20, }} >
-                <span>Current Department: <span style={{ fontWeight: 'bold' }}>{userDepartment.toUpperCase()}</span></span>
-            </div>
+            <div className="mb-4"><span style={{ textDecorationLine: 'underline' }}>Current Department</span>: <span className='font-weight-bold'>{userDepartment.toUpperCase()}</span></div>
+
             <FormGroup>
                 <Label for='facultySelect'>Select Category</Label>
                 <CustomInput type="select" id="facultySelect" name='facultySelect' onChange={handleChange}>
                     <option value="">All</option>
                     {category.map((item) => {
-                        return <option value={item._id}>{item.name}</option>
+                        return <option key={item._id} value={item._id}>{item.name}</option>
                     })}
                 </CustomInput>
             </FormGroup>
@@ -341,7 +345,7 @@ function StudentContribution() {
                                     <CustomInput type="select" id="facultySelect" name='facultySelect' value={deleteCat} onChange={HandleDeleteCat}>
                                         <option value="">All</option>
                                         {category.map((item) => {
-                                            return <option value={item._id}>{item.name}</option>
+                                            return <option key={item._id} value={item._id}>{item.name}</option>
                                         })}
                                     </CustomInput>
                                 </FormGroup>
@@ -357,36 +361,37 @@ function StudentContribution() {
                     }}>Cancel</Button>
                 </ModalFooter>
             </Modal>
-
-            <Table responsive hover>
-                <thead>
-                    <tr>
-                        <th className="text-center">Select</th>
-                        <th>Title</th>
-                        <th>Upload Time</th>
-                        <th>End Time</th>
-                        <th>Category</th>
-                        <th>Like</th>
-                        <th style={{ textAlign: 'center' }}>Document Detail</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {!arrayIsEmpty(posts) && !arrayIsEmpty(dataFiltered) ? dataFiltered.map((data) => (
-                        <tr key={data._id}>
-                            <td className="text-center"><input type="checkbox" /></td>
-                            <td>{data.title}</td>
-                            <td>{moment(data.createdAt).format('L')}</td>
-                            <td>{moment(data.categoryinfo[0].enddate).format('L')}</td>
-                            <td>{data.categoryinfo[0].name}</td>
-                            <td className='cell'>{data.likes}</td>
-                            <td className="text-center"><Button outline color="primary" onClick={() => { viewDetail(data.userId, data._id) }}>View Detail</Button></td>
+            {!arrayIsEmpty(posts) && !arrayIsEmpty(dataFiltered) ?
+                <Table responsive hover>
+                    <thead>
+                        <tr>
+                            <th className="text-center">Select</th>
+                            <th>Title</th>
+                            <th>Upload Time</th>
+                            <th>End Time</th>
+                            <th>Category</th>
+                            <th>Like</th>
+                            <th style={{ textAlign: 'center' }}>Document Detail</th>
                         </tr>
-                    ))
-                        :
-                        <span> No post exist in this category</span>
-                    }
-                </tbody>
-            </Table>
+                    </thead>
+                    {dataFiltered.map((data) => (
+                        <tbody key={data._id}>
+                            <tr >
+                                <td className="text-center"><input type="checkbox" /></td>
+                                <td>{data.title}</td>
+                                <td>{moment(data.createdAt).format('L')}</td>
+                                <td>{moment(data.categoryinfo[0].enddate).format('L')}</td>
+                                <td>{data.categoryinfo[0].name}</td>
+                                <td className='cell'>{data.likes}</td>
+                                <td className="text-center"><Button outline color="primary" onClick={() => { viewDetail(data.userId, data._id) }}>View Detail</Button></td>
+                            </tr>
+
+                        </tbody>
+                    ))}
+                </Table>
+                :
+                <span> No post exist in this category</span>
+            }
             {/* Lấy total bằng cách lấy data.length, pageSize là lượng data mỗi trang */}
             <Pagination
                 className='text-center mt-4 mb-4'

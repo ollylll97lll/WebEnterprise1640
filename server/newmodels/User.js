@@ -32,7 +32,7 @@ const UserSchema = new Schema({
     },
     // bài user post
     posts: [{
-        postId: {
+        _id: {
             type: Schema.Types.ObjectId,
             ref: 'posts',
         },

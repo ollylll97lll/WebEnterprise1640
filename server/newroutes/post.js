@@ -453,28 +453,36 @@ router.delete('/delDepartment', isAuth, isAdmin, async (req, res) => {
 
 // Statistic APIs (later)
 
-//route api/post/countAll
-//Count All current post
-router.get('/countall', async (req, res) => {
-  const department = req.query.department || ''
-  const categoryId = req.query.categoryId || ''
+//route api/post/edit
+router.patch('/edit', isAuth, async (req, res) => {
+  if (req.user.role !== 'staff') {
+    return res.json({ success: false, message: 'U no Staff' })
+  }
+  const { postId } = req.query;
+  const userId = req.user.userId;
+  const { title, content, files } = req.body;
 
-  const departmentFilter = department ? { department: { $regex: department, $options: 'i' } } : {}
-  const categoryIdFilter = categoryId ? { categoryId: categoryId } : {}
+  const checkpost = await Post.findOne({ _id: postId, userId: userId });
 
-  Post.find(department ? departmentFilter : categoryId ? categoryIdFilter : {}).countDocuments()
-    .then(data => {
-      if (data === 0) {
-        res.json({ success: false, count: data, message: 'No post found to count' })
-      } else res.json({ success: true, count: data })
-    })
-    .catch(err => {
-      res.status(500).send({
-        success: false,
-        message:
-          err.message || `Cannot count the posts by ${categoryId ? `category Id: ${categoryId}` : ''} ${department ? `department ${department}` : ''}. Try again.`
-      });
-    });
+  const checkowner = await User.findOne({ _id: userId, posts: { $elemMatch: { _id: postId } } });
+
+  if (!checkowner) {
+    return res.json({ success: false, message: 'You are not Post Owner.', checkowner, user: req.user })
+  }
+  if (!checkpost) {
+    return res.json({ success: false, message: 'There were no Post found', checkpost, user: req.user })
+  }
+
+  // // remove files
+  // await Post.findById({})
+  // checkowner.files.length = 0;
+  // checkowner.save()
+
+  await Post.findByIdAndUpdate(postId, req.body).then(result => {
+    return res.status(200).json({ success: true, result })
+  }).catch(err => {
+    return res.status(400).json({ success: false, err })
+  })
 })
 
 module.exports = router

@@ -11,27 +11,36 @@ const { isManager, isAuth, isStatisticRole } = require('../middleware/utils')
 const Post = require('../newmodels/Post')
 const Category = require('../newmodels/Category')
 
-
 router.get('/', isAuth, isStatisticRole, async (req, res) => {
+    const today = new Date()
     // chart
     // tổng user dept/ tổng
     const totalDepttUser = await User.find({ departmentId: req.user.departmentId }).countDocuments();
     // tổng post /ngày của dept đó
-    const totalPostToday = await Post.find({ createdAt: { $gt: new Date('11/11/2021'), $lt: new Date('11/11/2021').setHours(23, 59, 59, 000) } }).countDocuments();
+    const totalPostToday = await Post.find({ createdAt: { $gt: today, $lt: today.setHours(23, 59, 59, 000) } }).countDocuments();
     // % tổng post của dept đó trên tổng post
     const totalPosts = await Post.countDocuments();
     const DepartmentPosts = await Post.find({ department: req.user.department }).countDocuments();
     const percentageDeptPost = `${Number((DepartmentPosts / totalPosts) * 100).toFixed(2)}%`
-
     // line chart:
     // sô post của dept đó theo ngày
     const dailyPosts = await Post.aggregate([
         {
+            $match: {
+                createdAt: {
+                    $lt: today,
+                    $gt: moment().subtract(7, 'days')._d
+                }
+            }
+        },
+        {
             $group: {
-                _id: { $dateToString: { format: '%d/%m/%Y', date: '$createdAt' } },
+                _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
                 posts: { $sum: 1 }
             }
-        }
+        },
+        { $sort: { _id: 1 } },
+
     ])
     // pie chart:
     // tổng số post của department đó theo tag
@@ -56,22 +65,35 @@ router.get('/', isAuth, isStatisticRole, async (req, res) => {
             }
         }
     ])
-
-
     res.send(
         {
             success: true,
-            data: {
-                totalDepttUser,
-                totalPostToday,
-                percentage: {
-                    totalPosts,
-                    DepartmentPosts,
-                    percentageDeptPost
-                },
-                dailyPosts,
-                pieChart: PostGrouped
-            }
+            tableinfo:
+                [
+                    {
+                        title: 'User in department',
+                        data: totalDepttUser
+                    },
+                    {
+                        title: 'Total posts today',
+                        data: totalPostToday
+                    },
+                    {
+                        title: 'Total post',
+                        data: totalPosts
+                    },
+                    {
+                        title: 'Total post in department',
+                        data: DepartmentPosts
+                    },
+                    {
+                        title: '%Department post/Total post',
+                        data: percentageDeptPost
+                    }
+                ]
+            ,
+            dailyPosts,
+            PostGrouped
         });
 })
 

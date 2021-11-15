@@ -50,7 +50,7 @@ app.use('/api/category', Category)
 app.use('/api/user', User)
 
 // uploadFilesroute
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static('uploads/*'));
 app.use(bodyParser.raw({ type: 'application/octet-stream', limit: '100mb' }));
 app.use(bodyParser.json())
 app.use('/api/upload', UploadFiles);

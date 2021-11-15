@@ -65,6 +65,7 @@ export default function MultipleUp() {
                 if (isLastChunk) {
                     // return file name = final file name in response
                     file.finalFilename = response.data.finalFilename;
+                    file.filepath = response.data.filepath;
                     // set previous upload file to this current file index
                     setLastUploadedFileIndex(currentFileIndex);
                     // stop uploading chunk by set to null
@@ -125,8 +126,14 @@ export default function MultipleUp() {
                     onDragOver={e => { setDropzoneActive(true); e.preventDefault(); }}
                     onDragLeave={e => { setDropzoneActive(false); e.preventDefault(); }}
                     onDrop={e => handleDrop(e)}
+                    style={{ position: 'relative' }}
                     className={"dropzone" + (dropzoneActive ? " active" : "")}>
                     Drop your files here
+                    <input
+                        type="file"
+                        multiple="true"
+                        max={4 - files.length}
+                        style={{ opacity: '0.0', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%' }} />
                 </div>
 
                 <div className="files">
@@ -135,6 +142,7 @@ export default function MultipleUp() {
                         // file has final name when its completed
                         if (file.finalFilename) {
                             progress = 100;
+                            console.log(file.filepath)
                         } else {
                             // if fileIndex in array equal to 
                             // current file index then its still uploading
@@ -150,7 +158,7 @@ export default function MultipleUp() {
                         }
                         return (
                             <a className="file" target="_blank"
-                                href={'http://localhost:5001/uploads/' + file.finalFilename}>
+                                href={'http://localhost:5001/uploads/' + file.filepath}>
                                 <div className="name">{file.name}</div>
                                 <div className={"progress " + (progress === 100 ? 'done' : '')}
                                     style={{ width: progress + '%' }}>{progress}%</div>

@@ -157,7 +157,7 @@ router.post('/fsupload', (req, res) => {
         // change the temp file to final file
         fs.renameSync(uploadfolderName + '/' + POST_FOLDER_NAME + '/' + tmpFilename, uploadfolderName + '/' + POST_FOLDER_NAME + '/' + finalFilename);
         // send final file name
-        res.json({ finalFilename });
+        res.json({ filepath: `${POST_FOLDER_NAME + '/' + finalFilename}`, finalFilename: finalFilename });
     } else {
         // if still uploading
         res.json('uploading');

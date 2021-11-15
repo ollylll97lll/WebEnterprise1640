@@ -45,11 +45,6 @@ function ViewDetailContent() {
     //Toggle của Comment (Show/Hide)
     const [toggle, setToggle] = useState(false);
 
-    const toggleComment = (e) => {
-        e.preventDefault();
-        setToggle(!toggle);
-    }
-
     //Toggle của Edit Form Modal
     const [modal, setModal] = useState(false);
 
@@ -57,8 +52,8 @@ function ViewDetailContent() {
     const location = useLocation()
     const [postDetail, setPostDetail] = useState('')
 
+
     const [userDetail, setUserDetail] = useState('')
-    console.log(location.state)
 
     const getPostDetail = async () => {
         try {
@@ -103,14 +98,14 @@ function ViewDetailContent() {
 
     }
 
-    if (postDetail == '' || userDetail == '') {
+    if (postDetail === '' || userDetail === '') {
         return (
             <div className={"container"} style={{
                 display: 'flex', justifyContent: 'center', alignItems: 'center',
                 flexDirection: 'column',
                 padding: 20,
             }}>
-                <div class="spinner-border" role="status">
+                <div className="spinner-border" role="status">
                 </div>
                 <span style={{ padding: 20, }} >Loading...</span>
             </div>
@@ -178,10 +173,15 @@ function ViewDetailContent() {
                 </div>
                 <div className="row">
                     <div className="column-left pt-2 pb-2">File submissions</div>
-                    <div className="column-right pt-2 pb-2">{data[0].fileSubmission}</div>
+                    {postDetail.result.docfolder ?
+                        <a className="column-right pt-2 pb-2" href={`http://localhost:5001/api/upload/zipdownload?foldername=${postDetail.result.docfolder}&nameFile=${postDetail.result.title + '_' + userDetail.email + '_' + userDetail.department}`}>{postDetail.result.docfolder != '' ? postDetail.result.docfolder : "No file submitted"}</a>
+                        :
+                        <div className="column-right pt-2 pb-2">No file submitted</div>
+                    }
                 </div>
             </div>
-            {location.state.role.toLowerCase() === 'staff' &&
+            {
+                location.state.role.toLowerCase() === 'staff' &&
                 <div className="text-center mt-4">
                     {moment(`${postDetail.catdetail.enddate}`).format('dddd, DD/MM/YYYY, HH:mm').includes('ago') ?
                         <Button disabled outline color="primary mr-2">Edit submission</Button>
@@ -229,7 +229,7 @@ function ViewDetailContent() {
                     {(postDetail.catdetail.enddate < postDetail.result.createdAt) || (postDetail.catdetail.enddate < postDetail.result.updateAt) ? <div className='text-danger mt-4'>You're late</div> : null}
                 </div>
             }
-        </div>
+        </div >
     )
 }
 

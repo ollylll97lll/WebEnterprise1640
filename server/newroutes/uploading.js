@@ -170,7 +170,7 @@ router.post('/fsupload', (req, res) => {
 
 // download files
 router.get('/zipdownload', async (req, res) => {
-    const { foldername } = req.query;
+    const { foldername, nameFile } = req.query;
     // initiate admz
     const zipper = new admz();
     // post folder name
@@ -186,7 +186,7 @@ router.get('/zipdownload', async (req, res) => {
         zipper.addLocalFile(uploadfolderName + '/' + POST_FOLDER_NAME + '/' + folder2zip[index])
     })
 
-    const zipname = `${POST_FOLDER_NAME}.zip`
+    const zipname = `${nameFile ? nameFile : foldername}.zip`
 
     const data = zipper.toBuffer();
 

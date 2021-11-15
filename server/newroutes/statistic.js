@@ -136,7 +136,7 @@ router.get('/cvsfiledata', isAuth, isStatisticRole, async (req, res) => {
                     category: d.categoryinfo[0].name,
                     content: d.content,
                     likes: d.likes,
-                    files: d.files.length ? 'Yes' : 'No',
+                    files: d.docfolder ? 'Yes' : 'No',
                     createdAt: d.createdAt,
                 }
                 returndata.push(tempdata);

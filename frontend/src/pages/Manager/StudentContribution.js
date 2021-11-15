@@ -38,6 +38,7 @@ function StudentContribution() {
             const fetch = await axios.get(`http://localhost:5001/api/statistic/cvsfiledata`, {
                 headers: { Authorization: `Bearer ${userLogin.userInfo.accessToken}` },
             })
+            console.log('csv', fetch)
             setPostcsv(fetch.data.returndata)
         } catch (error) {
             console.log(error)
@@ -57,7 +58,7 @@ function StudentContribution() {
                 {
                     token: userLogin.userInfo.accessToken
                 })
-            console.log(fetch.data)
+            console.log('fetchdata:', fetch.data)
             if (fetch?.data.posts) {
                 setTotalpage(fetch.data.pages)
                 setPosts(fetch.data.posts)
@@ -69,8 +70,6 @@ function StudentContribution() {
     }
 
     useEffect(() => {
-        console.log('useeefcetrun')
-        console.log(currentPage)
         getAllPost(currentPage)
     }, [currentPage])
 
@@ -97,7 +96,7 @@ function StudentContribution() {
             setCategoryFiltered('')
             return
         }
-        console.log(value)
+        // console.log(value)
         const newList = posts.filter((item) => item.categoryinfo[0]._id == value)
         setDataFiltered(newList)
         setCategoryFiltered(value)
@@ -230,7 +229,6 @@ function StudentContribution() {
         })
         setCsvData(listDown)
     }
-    console.log(posts)
 
     if (user.loading && arrayIsEmpty(category) && arrayIsEmpty(posts)) {
         return (
@@ -291,10 +289,6 @@ function StudentContribution() {
                 <div style={{ display: 'flex' }}>
                     <div className="mt-4 mb-2" style={{ paddingRight: 20, }} >
                         <CSVLink data={csvData} onClick={() => downloadCSVFile()}><Button outline color="primary" className="mb-2" style={{ paddingRight: 20, }} >Download all user</Button></CSVLink>
-                    </div>
-                    <div className="mt-4 mb-2"  >
-                        <Button outline color="primary" className="mb-2" >Download all Document</Button>
-
                     </div>
                 </div>
 
@@ -418,7 +412,7 @@ function StudentContribution() {
                             <th>End Time</th>
                             <th>Category</th>
                             <th>Like</th>
-                            <th style={{ textAlign: 'center' }}>Document Detail</th>
+                            <th style={{ textAlign: 'center' }}></th>
                         </tr>
                     </thead>
                     {dataFiltered.map((data) => (

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import MessageBox from '../../components/Return Boxes/MessageBox';
 import './index.css'
 
 const chunkSize = 10 * 1024; //KB
@@ -12,6 +13,9 @@ export default function MultipleUp() {
     const [currentFileIndex, setCurrentFileIndex] = useState(null);
     const [lastUploadedFileIndex, setLastUploadedFileIndex] = useState(null);
     const [currentChunkIndex, setCurrentChunkIndex] = useState(null);
+    // set Error flag
+    // const [isError, setIsError] = useState(false);
+    let uploadErrors = [];
 
     function handleDrop(e) {
         e.preventDefault();
@@ -20,8 +24,23 @@ export default function MultipleUp() {
             alert('exceeded maxium files to upload. Please delete previous file and try again')
             return
         }
-        // add files to the array
-        setFiles([...files, ...e.dataTransfer.files]);
+
+        // check if files over 25MB
+        const temparrayfile = [];
+
+        [...e.dataTransfer.files].map((file, index) => {
+            if (file.size > 2.5 * chunkSize) {
+                // push err message to log array
+                return uploadErrors.push(`exceeded file size limit at file ${e.dataTransfer.files[index].name || 'unknown'}. Abort`);
+            }
+            temparrayfile.push(e.dataTransfer.files[index]);
+        })
+        // check if there are any logs to show
+        if (uploadErrors.length > 0) {
+            console.log(uploadErrors);
+            // setIsError(true);
+        }
+        setFiles([...files, ...temparrayfile]);
     }
 
     function readAndUploadCurrentChunk() {
@@ -42,7 +61,6 @@ export default function MultipleUp() {
         const file = files[currentFileIndex];
         const data = e.target.result;
         const params = new URLSearchParams();
-
         params.set('name', file.name);
         params.set('size', file.size);
         params.set('currentChunkIndex', currentChunkIndex);
@@ -136,13 +154,22 @@ export default function MultipleUp() {
                         style={{ opacity: '0.0', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%' }} />
                 </div>
 
+                {/* <div className='errors'>
+                    {
+                        isError && uploadErrors.map((error) => {
+                            return (
+                                <MessageBox variant="danger">{error}</MessageBox>
+                            )
+                        })
+                    }
+                </div> */}
+
                 <div className="files">
                     {files.map((file, fileIndex) => {
                         let progress = 0;
                         // file has final name when its completed
                         if (file.finalFilename) {
                             progress = 100;
-                            console.log(file.filepath)
                         } else {
                             // if fileIndex in array equal to 
                             // current file index then its still uploading

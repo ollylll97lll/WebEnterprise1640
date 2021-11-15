@@ -39,7 +39,8 @@ function Statistic() {
                         : (
                             <>
                                 <div >
-                                    <span>Your Department: <span style={{ fontWeight: 'bold' }}>{String(userInfo.department).toUpperCase()}</span></span>
+                                    <div className="mb-4"><span style={{ textDecorationLine: 'underline' }}>Current Department</span>: <span className='font-weight-bold'>{userInfo.department.toUpperCase()}</span></div>
+
                                 </div>
                                 <div className="mb-3" />
 

@@ -70,7 +70,7 @@ export const recover = (email) => async (dispatch) => {
     });
 
     try {
-        const { data } = await Axios.post('http://localhost:5001/api/user/forgotPassword', { email });
+        const { data } = await Axios.post('http://localhost:5001/api/user/sendemailforgotpassword', { email });
         dispatch({ type: USER_RECOVER_EMAIL_SUCCESS, payload: data });
 
     } catch (error) {

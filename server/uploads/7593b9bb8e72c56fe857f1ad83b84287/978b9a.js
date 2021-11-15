@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import { Button, Label } from 'reactstrap';
+import { Button } from 'reactstrap';
 import MessageBox from '../../components/Return Boxes/MessageBox';
 import './index.css'
 
@@ -121,13 +121,9 @@ export default function MultipleUp() {
                     headers: { Authorization: `Bearer ${userLogin.userInfo.accessToken}` },
                 }
             )
-            if (response.data.success) {
-                setMessage({ mess: 'Upload file successfully', type: 'text-success' })
-            }
             console.log(response)
         } catch (error) {
             console.log(error)
-            setMessage({ mess: 'Failed to upload file', type: 'text-danger' })
         }
     }
 
@@ -177,10 +173,9 @@ export default function MultipleUp() {
         <div>
             <div style={{ height: '100vh', backgroundColor: '#113', color: '#ddd', padding: '20px' }}>
                 <div style={{}}>
-                    <Label for="title">Submit your (optional) file for your idea here.</Label>
-                    {message != "" &&
-                        <Label for="title" className={message.type}>{message.mess}</Label>
-                    }
+                    <span>
+                        Submit your (optional) file for your idea here.
+                    </span>
                 </div>
                 <div
                     onDragOver={e => { setDropzoneActive(true); e.preventDefault(); }}

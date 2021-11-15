@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Table } from 'reactstrap';
 import Pagination from 'rc-pagination'
 import "rc-pagination/assets/index.css"
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 function History() {
+    const userLogin = useSelector(state => state.userLogin)
+
     //Student thì chỉ xem bài của bản thân, nên ko có select
+
     const [data, setData] = useState([
         {
             id: 1,
@@ -27,6 +32,19 @@ function History() {
 
     //Đá data qua View Details
     const history = useHistory();
+
+    const getDataPost = async () => {
+        try {
+            const response = await axios.get(`http://localhost:5001/api/post/getall?userId=${userLogin.userInfo.userInfo._id}`)
+            console.log(response)
+        } catch (error) {
+
+        }
+    }
+
+    useEffect(() => {
+        getDataPost()
+    }, [])
 
     const viewDetail = () => {
         history.push({

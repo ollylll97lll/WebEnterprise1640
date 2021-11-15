@@ -51,7 +51,7 @@ router.post('/create', isAuth, async (req, res) => {
     user.posts.push(post._id)
     user.save()
 
-    res.json({ success: true, message: `Post Is Created. Title: ${post.title}` })
+    res.json({ success: true, message: `Post Is Created. Title: ${post.title}`, postId: post._id })
   } catch (err) {
     console.log(err)
     res.status(500).json({ success: false, message: err })
@@ -324,6 +324,7 @@ router.delete('/deletecommentpost', isAuth, async (req, res) => {
 router.get('/getall', async (req, res) => {
   // find by categoryId, title & department
   const categoryId = req.query.categoryId || ''
+  const userId = req.query.userId || ''
   const title = req.query.title || ''
   const department = req.query.department || ''
 
@@ -337,6 +338,8 @@ router.get('/getall', async (req, res) => {
 
   // filters
   const categoryIdFilter = categoryId ? { categoryId: categoryId } : {}
+
+  const userFilter = userId ? { userId: userId } : {}
 
   const titleFilter = title ? { title: { $regex: title, $options: 'i' } } : {}
 
@@ -365,9 +368,9 @@ router.get('/getall', async (req, res) => {
     shownby === 'hotest' ? { likes: -1 }
       : shownby === 'latest' ? { createdAt: -1 }
         : { _id: -1 }
-  const total = await Post.find(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
+  const total = await Post.find(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : userId ? userFilter : {})
 
-  const post = await Post.aggregate([retrieveCategoryname]).match(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
+  const post = await Post.aggregate([retrieveCategoryname]).match(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : userId ? userFilter : {})
     .sort(shownOrder)
     .skip(pageSize * (page - 1)).limit(pageSize)
     .then(data => {

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, CustomInput, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
-import Pagination from 'rc-pagination'
+import { Button, Col, CustomInput, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import "rc-pagination/assets/index.css"
 import { useDispatch, useSelector } from 'react-redux';
 import { getallUser } from '../../redux folder/actions/useractions';
@@ -22,20 +21,30 @@ function StudentContribution() {
     const [dataFiltered, setDataFiltered] = useState([])
     const [categoryFiltered, setCategoryFiltered] = useState('')
     const [userDepartment, setUserDepartment] = useState(userLogin.userInfo.userInfo.department)
+    const [Totalpage, setTotalpage] = useState('')
+    const [currentPage, setCurrentPage] = useState(1)
 
     useEffect(() => {
         getAllPost()
         getCategory()
     }, [])
 
-    const getAllPost = async () => {
+    const getAllPost = async (pageNum = '') => {
         try {
-            const fetch = await axios.get(`http://localhost:5001/api/post/getall?department=${userLogin.userInfo.userInfo.department}`,
+            let page
+            if (pageNum == '') {
+                page = 1
+            }
+            else {
+                page = pageNum
+            }
+            const fetch = await axios.get(`http://localhost:5001/api/post/getall?department=${userLogin.userInfo.userInfo.department}&pageNumber=${page}`,
                 {
                     token: userLogin.userInfo.accessToken
                 })
             console.log(fetch.data)
             if (fetch?.data.posts) {
+                setTotalpage(fetch.data.pages)
                 setPosts(fetch.data.posts)
                 setDataFiltered(fetch.data.posts)
             }
@@ -43,6 +52,10 @@ function StudentContribution() {
             console.log(error)
         }
     }
+
+    useEffect(() => {
+        getAllPost(currentPage)
+    }, [currentPage])
 
     const getCategory = async () => {
         try {
@@ -59,6 +72,9 @@ function StudentContribution() {
             console.log(error)
         }
     }
+
+
+    
     const handleChange = (e) => {
         const value = e.target.value;
         setSearch('')
@@ -129,9 +145,7 @@ function StudentContribution() {
                 </FormGroup>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-
-
-                <div className="mt-4 mb-2" style={{ paddingRight: 20, }} >
+                <div className=" mb-2" style={{ paddingRight: 20, }} >
                     <Button outline color="primary" className="mb-2">Download selected file</Button>
                 </div>
 
@@ -140,7 +154,6 @@ function StudentContribution() {
                 <Table responsive hover>
                     <thead>
                         <tr>
-                            <th className="text-center">Select</th>
                             <th>Title</th>
                             <th>Upload Time</th>
                             <th>End Time</th>
@@ -152,7 +165,6 @@ function StudentContribution() {
                     {dataFiltered.map((data, index) => (
                         <tbody key={data._id}>
                             <tr key={index}>
-                                <td className="text-center"><input type="checkbox" /></td>
                                 <td>{data.title}</td>
                                 <td>{moment(data.createdAt).format('L')}</td>
                                 <td>{moment(data.categoryinfo[0].enddate).format('L')}</td>
@@ -168,12 +180,33 @@ function StudentContribution() {
                 <span> No post exist in this category</span>
             }
             {/* Lấy total bằng cách lấy data.length, pageSize là lượng data mỗi trang */}
-            <Pagination
-                className='text-center mt-4 mb-4'
-                total={100}
-                defaultPageSize={9}
-                pageSize={9}
-            />
+            <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '75px' }}>
+                <Pagination className="text-center">
+                    <PaginationItem disabled={currentPage === 1 ? true : false} >
+                        <PaginationLink first onClick={() => setCurrentPage(1)} />
+                    </PaginationItem>
+                    <PaginationItem disabled={currentPage === 1 ? true : false} >
+                        <PaginationLink previous onClick={() => setCurrentPage(currentPage - 1)} />
+                    </PaginationItem>
+
+                    {
+                        // gen array with size = pages => map and create page nums
+                        [...Array(Totalpage).keys()].map((x) => (
+                            // ARRAY START FROM 0 SO PAGE START AT 0 + 1
+                            <PaginationItem className={(x + 1) === currentPage ? 'active' : ''} key={x + 1} >
+                                <PaginationLink onClick={() => setCurrentPage(x + 1)} >{x + 1}</PaginationLink>
+                            </PaginationItem>
+                        ))
+                    }
+
+                    <PaginationItem disabled={currentPage === Totalpage ? true : false} >
+                        <PaginationLink next onClick={() => setCurrentPage(currentPage + 1)} />
+                    </PaginationItem>
+                    <PaginationItem disabled={currentPage === Totalpage ? true : false} >
+                        <PaginationLink last onClick={() => setCurrentPage(currentPage + 1)} />
+                    </PaginationItem>
+                </Pagination>
+            </div>
         </div>
     )
 }

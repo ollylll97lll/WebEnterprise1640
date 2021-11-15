@@ -100,10 +100,10 @@ router.post('/gul', async (req, res) => {
 // NO MULTER UPLOAD
 
 router.post('/fsupload', (req, res) => {
-    const { name, currentChunkIndex, totalChunks } = req.query;
-    const { userId } = req.query;
+    const { name, currentChunkIndex, totalChunks, } = req.query;
+    const { userId, postId } = req.query;
     // post folder name
-    const POST_FOLDER_NAME = md5(userId + Date()); 
+    const POST_FOLDER_NAME = md5(userId + postId);
 
     // get chunk position is at first chunk ?
     const firstChunk = parseInt(currentChunkIndex) === 0;

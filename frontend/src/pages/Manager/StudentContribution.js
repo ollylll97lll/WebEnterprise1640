@@ -290,6 +290,9 @@ function StudentContribution() {
                     <div className="mt-4 mb-2" style={{ paddingRight: 20, }} >
                         <CSVLink data={csvData} onClick={() => downloadCSVFile()}><Button outline color="primary" className="mb-2" style={{ paddingRight: 20, }} >Download all user</Button></CSVLink>
                     </div>
+                    <div className="mt-4 mb-2" style={{ paddingRight: 20, }} >
+                        <Button outline color="primary" className="mb-2" style={{ paddingRight: 20, }} ><a href={`http://localhost:5001/api/upload/zipdownloadmany?department=${userDepartment}&role=${userLogin.userInfo.userInfo.role}`}>Download all document</a></Button>
+                    </div>
                 </div>
 
 

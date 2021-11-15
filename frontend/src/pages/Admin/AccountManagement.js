@@ -1,9 +1,8 @@
 import axios from 'axios';
-import Pagination from 'rc-pagination';
 import "rc-pagination/assets/index.css";
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Col, CustomInput, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row, Table } from 'reactstrap';
+import { Button, Col, CustomInput, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import LoadingBox from '../../components/Return Boxes/LoadingBox';
 import MessageBox from '../../components/Return Boxes/MessageBox';
 import { deleteDepartment, getallUser, register } from '../../redux folder/actions/useractions';
@@ -13,30 +12,17 @@ function AccountManagement() {
     // dispatch initiation
     const dispatch = useDispatch();
     const userLogin = useSelector(state => state.userLogin)
-
-    const [currentPage, setCurrentPage] = useState(1);
-    const [contentsPerPage, setContentsPerPage] = useState(9);
-
-    const indexOfLastContent = currentPage * contentsPerPage;
-    const indexOfFirstContent = indexOfLastContent - contentsPerPage;
-    const [currentData, setCurrentData] = useState([]);
-    // const hienthicainayne = data.slice(indexOfFirstContent, indexOfLastContent);
-
     const user = useSelector(state => state.userAll)
     const delDeptState = useSelector(state => state.userDeptDelete)
 
-    // console.log(currentPage);
-    // console.log(contentsPerPage);
-    // console.log(indexOfLastContent);
-    // console.log(indexOfFirstContent);
-    // console.log(currentData);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [Totalpage, setTotalpage] = useState('')
+
+
+
     const [dataUser, setDataUser] = useState([])
     const [filteredData, setFilteredData] = useState([])
 
-    const updatePage = p => {
-        setCurrentPage(p);
-        // setCurrentData(hienthicainayne);
-    };
     const getAllDept = async () => {
         try {
             const fetch = await axios.get('http://localhost:5001/api/post/getAllDepartment')
@@ -46,12 +32,24 @@ function AccountManagement() {
             console.log(error)
         }
     }
+
     const [allDept, setAllDept] = useState(null)
     useEffect(() => {
         const action = getallUser({ department: '', role: '', pageNumber: '' })
         dispatch(action)
         getAllDept()
     }, [])
+
+    useEffect(() => {
+        if (user?.allUser) {
+            setTotalpage(user.allUser.pages)
+        }
+    }, [user])
+
+    useEffect(() => {
+        const action = getallUser({ department: '', role: '', pageNumber: `${currentPage}` })
+        dispatch(action)
+    }, [currentPage])
 
     useEffect(() => {
         if (user.allUser?.data) {
@@ -642,13 +640,33 @@ function AccountManagement() {
                 </tbody>
             </Table>
             {/* Lấy total bằng cách lấy data.length, pageSize là lượng data mỗi trang */}
-            <Pagination
-                className='text-center mt-4 mb-4'
-                total={dataUser.length}
-                pageSize={5}
-                onChange={updatePage}
-                current={currentPage}
-            />
+            <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '75px' }}>
+                <Pagination className="text-center">
+                    <PaginationItem disabled={currentPage === 1 ? true : false} >
+                        <PaginationLink first onClick={() => setCurrentPage(1)} />
+                    </PaginationItem>
+                    <PaginationItem disabled={currentPage === 1 ? true : false} >
+                        <PaginationLink previous onClick={() => setCurrentPage(currentPage - 1)} />
+                    </PaginationItem>
+
+                    {
+                        // gen array with size = pages => map and create page nums
+                        [...Array(Totalpage).keys()].map((x) => (
+                            // ARRAY START FROM 0 SO PAGE START AT 0 + 1
+                            <PaginationItem className={(x + 1) === currentPage ? 'active' : ''} key={x + 1} >
+                                <PaginationLink onClick={() => setCurrentPage(x + 1)} >{x + 1}</PaginationLink>
+                            </PaginationItem>
+                        ))
+                    }
+
+                    <PaginationItem disabled={currentPage === Totalpage ? true : false} >
+                        <PaginationLink next onClick={() => setCurrentPage(currentPage + 1)} />
+                    </PaginationItem>
+                    <PaginationItem disabled={currentPage === Totalpage ? true : false} >
+                        <PaginationLink last onClick={() => setCurrentPage(currentPage + 1)} />
+                    </PaginationItem>
+                </Pagination>
+            </div>
         </div >
     )
 }

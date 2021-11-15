@@ -81,15 +81,15 @@ router.get('/getall', async (req, res) => {
 
 // route api/user/getone
 // get user data
-router.post('/getone', isAuth, isStatisticRole, async(req,res) => {
-    const {userId} = req.query;
-    if(!userId){
-        return res.status(201).json({success:false, message: 'User not found'})
+router.post('/getone', isAuth, async (req, res) => {
+    const { userId } = req.query;
+    if (!userId) {
+        return res.status(201).json({ success: false, message: 'User not found' })
     }
     await User.findById(userId).then(data => {
-        return res.status(200).json({success: true, data: {email: data.email, department: data.department, role: data.role}})
+        return res.status(200).json({ success: true, data: { email: data.email, department: data.department, role: data.role } })
     }).catch(err => {
-        return res.status(400).json({success: false, message: err})
+        return res.status(400).json({ success: false, message: err })
     })
 })
 

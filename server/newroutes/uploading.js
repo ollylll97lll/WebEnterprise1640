@@ -285,7 +285,7 @@ router.get('/zipdownloadmany', async (req, res) => {
             zipper.addLocalFolder(uploadfolderName + '/' + d.docfolder, '/' + category.categoryname + '/' + d.docfolder);
         })
     })
-    const zipname = `${department} ${role}.zip`;
+    const zipname = `Total_${department}_${role}.zip`;
 
     // // loop through each category
     // tempfolderarray.forEach(folder => {

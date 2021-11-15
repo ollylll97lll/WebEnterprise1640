@@ -97,7 +97,7 @@ function SubmitForm(props) {
                 setcontent('')
                 setDeadlineTIme('')
                 setMessage({ mess: 'Add successfully', type: 'text-success' })
-                window.open(`http://localhost:3000/mulup?postid=${fetch.data.postId}`, "_blank", "location=yes,height=570,width=520,scrollbars=yes,status=yes")
+                window.open(`http://localhost:3000/mulup?postid=${fetch.data.postId}`, "_blank", "location=yes,height=600,width=520,scrollbars=yes,status=yes")
             }
         } catch (error) {
             console.log(error)

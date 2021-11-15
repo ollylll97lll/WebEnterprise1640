@@ -11,49 +11,22 @@ function ViewDetailContent() {
     const userLogin = useSelector(state => state.userLogin)
 
     //set Deadline là duedate, biến deadline để check coi có trễ giờ deadline ko, thiếu cái update liên tục
-    const [dueDate, setDueDate] = useState(moment('28/07/2021 18:37:00', 'DD/MM/YYYY HH:mm:ss'));
-
-    const deadline = moment(dueDate, 'DD/MM/YYYY HH:mm:ss').fromNow();
-
-    //Lấy data đá từ trang Coordinator (StudentContribution) hoặc History của Student để đá qua đây hiển thị, chưa sửa được chỗ call comments
-    const [data, setData] = useState([
-        {
-            title: 'Submission 1',
-            type: 'Article',
-            status: 'Submitted for grading',
-            dueDate: moment().format('dddd, DD/MM/YYYY, HH:mm'),
-            lastModified: moment().format('dddd, DD/MM/YYYY, HH:mm'),
-            fileSubmission: '/file/docx',
-            comments: {
-                quantity: 4,
-                content: [
-                    {
-                        coordinator: 'Your subbmission should have some brief description',
-                        student: 'I got it',
-                    },
-                    {
-                        coordinator: 'It seems good',
-                        student: 'Thanks',
-                    },
-                ]
-            }
-        }
-    ]);
-
-    const conversation = data[0].comments.content;
 
     //Toggle của Comment (Show/Hide)
-    const [toggle, setToggle] = useState(false);
 
     //Toggle của Edit Form Modal
     const [modal, setModal] = useState(false);
 
-    const toggleModalEdit = () => setModal(!modal);
+    const toggleModalEdit = () => {
+        setModal(!modal)
+        setMessage('')
+    };
     const location = useLocation()
     const [postDetail, setPostDetail] = useState('')
 
 
     const [userDetail, setUserDetail] = useState('')
+    const [isLoading, setisLoading] = useState(true)
 
     const getPostDetail = async () => {
         try {
@@ -63,7 +36,10 @@ function ViewDetailContent() {
                 })
             console.log('post', response.data)
             if (response?.data) {
+                setisLoading(false)
                 setPostDetail(response.data)
+                setContent(response.data.result.content)
+                setTitle(response.data.result.title)
             }
         } catch (error) {
             console.log(error)
@@ -88,17 +64,48 @@ function ViewDetailContent() {
             console.log(error)
         }
     }
+    console.log(location.state)
 
+    const [content, setContent] = useState('')
+    const onChangeContent = (e) => {
+        setContent(e.target.value)
+    }
+
+    const [title, setTitle] = useState('')
+    const [message, setMessage] = useState('')
+    const onChangeTitle = (e) => {
+        setTitle(e.target.value)
+    }
     useEffect(() => {
         getPostDetail()
         getDataUser()
     }, [])
 
-    const onPressEdit = () => {
-
+    const onPressEdit = async () => {
+        try {
+            const postid = postDetail.result._id
+            const response = await axios.patch(`http://localhost:5001/api/post/edit?postId=${postid}`,
+                {
+                    title: title,
+                    content: content,
+                },
+                {
+                    headers: { Authorization: `Bearer ${userLogin.userInfo.accessToken}` },
+                }
+            )
+            console.log(response)
+            if (response?.data.success) {
+                setisLoading(true)
+                getPostDetail()
+                setMessage({ mess: 'Edit successfully', type: 'text-success' })
+            }
+        } catch (error) {
+            console.log(error)
+            setMessage({ mess: 'Edit failed. Please try again', type: 'text-danger' })
+        }
     }
 
-    if (postDetail === '' || userDetail === '') {
+    if (postDetail === '' || userDetail === '' || isLoading === true) {
         return (
             <div className={"container"} style={{
                 display: 'flex', justifyContent: 'center', alignItems: 'center',
@@ -183,7 +190,7 @@ function ViewDetailContent() {
             {
                 location.state.role.toLowerCase() === 'staff' &&
                 <div className="text-center mt-4">
-                    {moment(`${postDetail.catdetail.enddate}`).format('dddd, DD/MM/YYYY, HH:mm').includes('ago') ?
+                    {(postDetail.catdetail.enddate < postDetail.result.createdAt) || (postDetail.catdetail.enddate < postDetail.result.updateAt) ?
                         <Button disabled outline color="primary mr-2">Edit submission</Button>
                         :
                         // Nhớ sửa cái vụ phải check validation rồi mới cho submit
@@ -191,12 +198,15 @@ function ViewDetailContent() {
                     <Modal isOpen={modal} toggle={toggleModalEdit}>
                         <ModalHeader toggle={toggleModalEdit}>Editing submission</ModalHeader>
                         <ModalBody>
+                            {message != '' &&
+                                <Label for="title" className={message.type}>{message.mess}</Label>
+                            }
                             <Form>
                                 <Row form>
-                                    <Col md={7}>
+                                    <Col md={12}>
                                         <FormGroup>
                                             <Label for="title">Title <span className='text-danger'>*</span></Label>
-                                            <Input type="text" name="title" id="title" placeholder="Title" required value={postDetail.result.title} />
+                                            <Input onChange={onChangeTitle} type="text" name="title" id="title" placeholder="Title" required value={title} />
                                         </FormGroup>
                                     </Col>
                                 </Row>
@@ -204,21 +214,21 @@ function ViewDetailContent() {
                                     <Col md={12}>
                                         <FormGroup>
                                             <Label for="description">Brief Description</Label>
-                                            <Input type="textarea" style={{ height: '150px' }} name="description" id="description" placeholder="Give a short description" value={postDetail.result.content} />
+                                            <Input onChange={onChangeContent} type="textarea" style={{ height: '150px' }} name="description" id="description" placeholder="Give a short description" value={content} />
                                         </FormGroup>
                                     </Col>
                                 </Row>
                                 <Row form >
                                     <Col md={12} >
                                         <FormGroup >
-                                            <Input type="file" name="upload" id="upload" required />
+                                            <Button color="primary" onClick={() => { }}>Edit file</Button>{' '}
                                         </FormGroup>
                                     </Col>
                                 </Row>
                             </Form>
                         </ModalBody>
                         <ModalFooter>
-                            <Button color="primary" onClick={toggleModalEdit}>Edit submission</Button>{' '}
+                            <Button color="primary" onClick={() => { onPressEdit() }}>Edit</Button>{' '}
                             <Button color="secondary" onClick={toggleModalEdit}>Cancel</Button>
                         </ModalFooter>
                     </Modal>

@@ -144,12 +144,6 @@ function StudentContribution() {
                     <Input type="text" name="search" id="search" placeholder="Search..." value={search} required onChange={(e) => onChangeSearch(e)} />
                 </FormGroup>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <div className=" mb-2" style={{ paddingRight: 20, }} >
-                    <Button outline color="primary" className="mb-2">Download selected file</Button>
-                </div>
-
-            </div>
             {!arrayIsEmpty(posts) && !arrayIsEmpty(dataFiltered) ?
                 <Table responsive hover>
                     <thead>

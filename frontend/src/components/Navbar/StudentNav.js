@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -27,6 +28,47 @@ const StaffNav = (props) => {
         dispatch(signout());
     }
 
+    const [oldPass, setOldPass] = useState('')
+    const onChangeOldPass = (e) => {
+        setOldPass(e.target.value)
+    }
+
+    const [newPass, setNewPass] = useState('')
+    const onChangeNewPass = (e) => {
+        setNewPass(e.target.value)
+    }
+
+    const [confirmNewPass, setConfirmNewPass] = useState('')
+    const onChangeConfirmNewPass = (e) => {
+        setConfirmNewPass(e.target.value)
+    }
+
+    const [message, setMessage] = useState('')
+
+    const onPressChangePass = async () => {
+        if (newPass != confirmNewPass) {
+            setMessage({ mess: 'Password and confirm password does not match', type: 'text-danger' })
+            return
+        }
+        try {
+            const response = await axios.post(`http://localhost:5001/api/user/changePassword`,
+                {
+                    currentPassword: oldPass, newPassword: newPass
+                },
+                {
+                    headers: { Authorization: `Bearer ${userLogin.userInfo.accessToken}` }
+                }
+            )
+            console.log(response)
+            if (response.data?.success) {
+                setMessage({ mess: response.data.message, type: 'text-success' })
+            }
+        } catch (error) {
+            console.log(error)
+            setMessage({ mess: 'Failed to update your password please try again', type: 'text-danger' })
+        }
+    }
+
     return (
         <Navbar light expand="md">
             <NavbarBrand href="/" >
@@ -50,21 +92,24 @@ const StaffNav = (props) => {
                             <Modal isOpen={modal} toggle={toggleModal}>
                                 <ModalHeader toggle={toggleModal}>Change Password</ModalHeader>
                                 <ModalBody>
+                                    {message != '' &&
+                                        <Label className={message.type}>{message.mess} </Label>
+                                    }
                                     <FormGroup>
                                         <Label for="oldPassword">Old Password <span className="text-danger">*</span></Label>
-                                        <Input type="password" name="oldPassword" id="oldPassword" placeholder="Old Password" required />
+                                        <Input onChange={onChangeOldPass} type="password" name="oldPassword" id="oldPassword" placeholder="Old Password" required />
                                     </FormGroup>
                                     <FormGroup>
                                         <Label for="newPassword">New Password <span className="text-danger">*</span></Label>
-                                        <Input type="password" name="newPassword" id="newPassword" placeholder="New Password" required />
+                                        <Input onChange={onChangeNewPass} type="password" name="newPassword" id="newPassword" placeholder="New Password" required />
                                     </FormGroup>
                                     <FormGroup>
                                         <Label for="confirmPassword">Confirm Password <span className="text-danger">*</span></Label>
-                                        <Input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm New Password" required />
+                                        <Input onChange={onChangeConfirmNewPass} type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm new password" required />
                                     </FormGroup>
                                 </ModalBody>
                                 <ModalFooter>
-                                    <Button color="primary" onClick={toggleModal}>Change Password</Button>{' '}
+                                    <Button color="primary" onClick={() => { onPressChangePass() }}>Change Password</Button>{' '}
                                     <Button color="secondary" onClick={toggleModal}>Cancel</Button>
                                 </ModalFooter>
                             </Modal>

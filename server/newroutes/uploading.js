@@ -7,8 +7,9 @@ const multer = require('multer');
 const File = require('../newmodels/Files');
 const path = require('path');
 const md5 = require('md5');
-const { isAuth } = require('../middleware/utils');
-const admz = require('adm-zip')
+const { isAuth, isStatisticRole } = require('../middleware/utils');
+const admz = require('adm-zip');
+const Post = require('../newmodels/Post');
 
 const uploadfolderName = './uploads'
 
@@ -186,7 +187,7 @@ router.get('/zipdownload', async (req, res) => {
         zipper.addLocalFile(uploadfolderName + '/' + POST_FOLDER_NAME + '/' + folder2zip[index])
     })
 
-    const zipname = `${nameFile ? nameFile : foldername}.zip`
+    const zipname = `${nameFile ? nameFile : POST_FOLDER_NAME}.zip`
 
     const data = zipper.toBuffer();
 
@@ -200,6 +201,86 @@ router.get('/zipdownload', async (req, res) => {
     res.set('Content-Disposition', `attachment; filename=${zipname}`);
     res.set('Content-Length', data.length);
     res.send(data);
+})
+
+// zip download many
+router.get('/zipdownloadmany', async (req, res) => {
+
+    const { department, role } = req.query
+    // find all post by department
+    const result = await Post.aggregate([
+        {
+            $group: {
+                _id: '$categoryId',
+                docfolders: {
+                    $push: {
+                        _id: '$id',
+                        docfolder: '$docfolder'
+                    }
+                }
+            }
+        },
+        {
+            $lookup: {
+                from: 'categories',
+                localField: '_id',
+                foreignField: '_id',
+                as: 'categorydetails'
+            }
+        }
+    ])
+    // Post.find({department: department });
+    // initiate admz
+    const zipper = new admz();
+    // get all document folders
+    const tempfolderarray = [];
+    result.map(post => {
+        tempfolderarray.push({
+            _id: post._id,
+            categoryname: post.categorydetails[0].name,
+            docfolders: post.docfolders
+        })
+    })
+    // res.send(tempfolderarray);
+
+    tempfolderarray.forEach(category => {
+        // read in upload folder
+        const folder2zip = fs.readdirSync(`${uploadfolderName}`);
+        // read & check exists
+        [...category.docfolders].map(d => {
+            if (!d.docfolder || d.docfolder === '') {
+                return
+            }
+            zipper.addLocalFolder(uploadfolderName + '/' + d.docfolder , '/' + category.categoryname + '/' + d.docfolder);
+        })
+    })
+    const zipname = `${department} ${role}.zip`;
+
+    // // loop through each category
+    // tempfolderarray.forEach(folder => {
+    //     const folder2zip = fs.readdirSync(`${uploadfolderName}`);
+    //     // read folder
+    //     // check each doc folder exists
+    //     if (folder.name === '') {
+    //         return
+    //     }
+    //     zipper.addLocalFolder(uploadfolderName + '/' + folder.name, '/' + folder.name);
+    // })
+    // const zipname = `${department} ${role}.zip`;
+
+    const data = zipper.toBuffer();
+
+    // this is the code for downloading!
+    // here we have to specify 3 things:
+    // 1. type of content that we are downloading
+    // 2. name of file to be downloaded
+    // 3. length or size of the downloaded file!
+
+    res.set('Content-Type', 'application/octet-stream');
+    res.set('Content-Disposition', `attachment; filename=${zipname}`);
+    res.set('Content-Length', data.length);
+    res.send(data);
+
 })
 
 

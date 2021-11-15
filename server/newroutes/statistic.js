@@ -13,12 +13,11 @@ const Category = require('../newmodels/Category')
 
 
 router.get('/', isAuth, isStatisticRole, async (req, res) => {
-    const today = new Date()
     // chart
     // tổng user dept/ tổng
     const totalDepttUser = await User.find({ departmentId: req.user.departmentId }).countDocuments();
     // tổng post /ngày của dept đó
-    const totalPostToday = await Post.find({ createdAt: { $gt: today, $lt: today.setHours(23, 59, 59, 000) } }).countDocuments();
+    const totalPostToday = await Post.find({ createdAt: { $gt: new Date('11/11/2021'), $lt: new Date('11/11/2021').setHours(23, 59, 59, 000) } }).countDocuments();
     // % tổng post của dept đó trên tổng post
     const totalPosts = await Post.countDocuments();
     const DepartmentPosts = await Post.find({ department: req.user.department }).countDocuments();
@@ -28,21 +27,11 @@ router.get('/', isAuth, isStatisticRole, async (req, res) => {
     // sô post của dept đó theo ngày
     const dailyPosts = await Post.aggregate([
         {
-            $match: {
-                createdAt: {
-                    $lt: today,
-                    $gt: moment().subtract(7, 'days')._d
-                }
-            }
-        },
-        {
             $group: {
-                _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+                _id: { $dateToString: { format: '%d/%m/%Y', date: '$createdAt' } },
                 posts: { $sum: 1 }
             }
-        },
-        { $sort: { _id: 1 } },
-
+        }
     ])
     // pie chart:
     // tổng số post của department đó theo tag
@@ -72,33 +61,72 @@ router.get('/', isAuth, isStatisticRole, async (req, res) => {
     res.send(
         {
             success: true,
-            tableinfo:
-                [
-                    {
-                        title: 'User in department',
-                        data: totalDepttUser
-                    },
-                    {
-                        title: 'Total posts today',
-                        data: totalPostToday
-                    },
-                    {
-                        title: 'Total post',
-                        data: totalPosts
-                    },
-                    {
-                        title: 'Total post in department',
-                        data: DepartmentPosts
-                    },
-                    {
-                        title: '%Department post/Total post',
-                        data: percentageDeptPost
-                    }
-                ]
-            ,
-            dailyPosts,
-            PostGrouped
+            data: {
+                totalDepttUser,
+                totalPostToday,
+                percentage: {
+                    totalPosts,
+                    DepartmentPosts,
+                    percentageDeptPost
+                },
+                dailyPosts,
+                pieChart: PostGrouped
+            }
         });
+})
+
+// route api/statistic/cvsfiledata
+// generate data for cvs file by department
+router.get('/cvsfiledata', isAuth, isStatisticRole, async (req, res) => {
+    const { department } = req.user;
+
+    // const retrieveCategoryname = {$ref: "category", $db: "categories"}
+    const retrieveCategoryname = {
+        $lookup: {
+            from: 'categories',
+            localField: 'categoryId',
+            foreignField: '_id',
+            as: 'categoryinfo'
+        }
+    }
+    const retrieveUserEmail = {
+        $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'userinfo'
+        }
+    }
+    const matchUserDepartment = {
+        $match: {
+            department: department
+        }
+    }
+
+    await Post.aggregate([retrieveCategoryname, retrieveUserEmail, matchUserDepartment]).then(data => {
+        let returndata = [];
+        try {
+            [...data].map(d => {
+                const tempdata = {
+                    _id: d._id,
+                    email: d.userinfo[0].email,
+                    title: d.title,
+                    category: d.categoryinfo[0].name,
+                    content: d.content,
+                    likes: d.likes,
+                    files: d.files.length ? 'Yes' : 'No',
+                    createdAt: d.createdAt,
+                }
+                returndata.push(tempdata);
+            })
+            res.send({ success: true, returndata });
+        } catch (error) {
+            res.send({ success: false, message: `trycatch ${error}` })
+        }
+    }).catch(err => {
+        res.status(200).send({ success: false, message: `then catch ${err}` })
+    })
+
 })
 
 module.exports = router

@@ -450,9 +450,6 @@ router.delete('/delDepartment', isAuth, isAdmin, async (req, res) => {
     res.status(400).json({ success: false, error })
   }
 })
-
-// Statistic APIs (later)
-
 //route api/post/edit
 router.patch('/edit', isAuth, async (req, res) => {
   if (req.user.role !== 'staff') {

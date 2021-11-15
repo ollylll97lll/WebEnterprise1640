@@ -85,7 +85,7 @@ export default function MultipleUp() {
                     // return file name = final file name in response
                     file.finalFilename = response.data.finalFilename;
                     file.filepath = response.data.filepath;
-                    file.folderPath = response.data.folderPath;
+                    file.foldername = response.data.foldername;
                     // set previous upload file to this current file index
                     setLastUploadedFileIndex(currentFileIndex);
                     // stop uploading chunk by set to null

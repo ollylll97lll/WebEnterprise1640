@@ -103,7 +103,7 @@ router.post('/fsupload', (req, res) => {
     const { name, currentChunkIndex, totalChunks } = req.query;
     const { userId } = req.query;
     // post folder name
-    const POST_FOLDER_NAME = md5(userId); 
+    const POST_FOLDER_NAME = md5(userId + Date()); 
 
     // get chunk position is at first chunk ?
     const firstChunk = parseInt(currentChunkIndex) === 0;
@@ -159,7 +159,7 @@ router.post('/fsupload', (req, res) => {
         // change the temp file to final file
         fs.renameSync(uploadfolderName + '/' + POST_FOLDER_NAME + '/' + tmpFilename, uploadfolderName + '/' + POST_FOLDER_NAME + '/' + finalFilename);
         // send final file name
-        res.json({ filepath: `${POST_FOLDER_NAME + '/' + finalFilename}`, finalFilename: finalFilename, folderPath: POST_FOLDER_NAME });
+        res.json({ filepath: `${POST_FOLDER_NAME + '/' + finalFilename}`, finalFilename: finalFilename, foldername: POST_FOLDER_NAME });
     } else {
         // if still uploading
         res.json('uploading');
@@ -170,11 +170,11 @@ router.post('/fsupload', (req, res) => {
 
 // download files
 router.get('/zipdownload', async (req, res) => {
-    const { userId } = req.query;
+    const { foldername } = req.query;
     // initiate admz
     const zipper = new admz();
     // post folder name
-    const POST_FOLDER_NAME = md5(userId);
+    const POST_FOLDER_NAME = foldername;
 
     const folder2zip = fs.readdirSync(`${uploadfolderName + '/' + POST_FOLDER_NAME}`);
     // read folder

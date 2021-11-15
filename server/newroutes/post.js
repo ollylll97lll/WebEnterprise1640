@@ -10,7 +10,10 @@ const Category = require('../newmodels/Category')
 const { isAuth, isAdmin } = require('../middleware/utils')
 const { findById } = require('../newmodels/Post')
 const Departments = require('../newmodels/Departments')
+const { isValidObjectId } = require('mongoose')
 const date = new Date();
+const Mongoose = require('mongoose');
+const ObjectId = Mongoose.Types.ObjectId;
 
 //route api/post/create
 //Create Post for Student role
@@ -324,7 +327,6 @@ router.delete('/deletecommentpost', isAuth, async (req, res) => {
 router.get('/getall', async (req, res) => {
   // find by categoryId, title & department
   const categoryId = req.query.categoryId || ''
-  const userId = req.query.userId || ''
   const title = req.query.title || ''
   const department = req.query.department || ''
 
@@ -338,8 +340,6 @@ router.get('/getall', async (req, res) => {
 
   // filters
   const categoryIdFilter = categoryId ? { categoryId: categoryId } : {}
-
-  const userFilter = userId ? { userId: userId } : {}
 
   const titleFilter = title ? { title: { $regex: title, $options: 'i' } } : {}
 
@@ -355,22 +355,13 @@ router.get('/getall', async (req, res) => {
       as: 'categoryinfo'
     }
   }
-
-  const retrieveComment = {
-    $lookup: {
-      from: 'comments',
-      localField: '_id',
-      foreignField: 'postId',
-      as: 'comments'
-    }
-  }
   const shownOrder =
     shownby === 'hotest' ? { likes: -1 }
       : shownby === 'latest' ? { createdAt: -1 }
         : { _id: -1 }
-  const total = await Post.find(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : userId ? userFilter : {})
+  const total = await Post.find(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
 
-  const post = await Post.aggregate([retrieveCategoryname]).match(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : userId ? userFilter : {})
+  const post = await Post.aggregate([retrieveCategoryname]).match(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
     .sort(shownOrder)
     .skip(pageSize * (page - 1)).limit(pageSize)
     .then(data => {
@@ -385,6 +376,41 @@ router.get('/getall', async (req, res) => {
           err.message || `Error when filtering : ${categoryId ? categoryId : '' || title ? title : '' || department ? department : ''}.`
       });
     });
+})
+
+// route/api/post/gethistorypost
+router.get('/gethistorypost', isAuth, async (req, res) => {
+
+  // return doc per page
+  const pageSize = 5
+  // current page
+  const page = Number(req.query.pageNumber) || 1;
+
+  const retrieveCategoryname = {
+    $lookup: {
+      from: 'categories',
+      localField: 'categoryId',
+      foreignField: '_id',
+      as: 'categoryinfo'
+    }
+  }
+  const matching = {
+    $match: {
+      userId: new ObjectId(req.user.userId)
+    }
+  }
+
+  try {
+    const result = await Post.aggregate([matching, retrieveCategoryname])
+      .skip(pageSize * (page - 1))
+      .limit(pageSize).then(data => {
+        res.send({ success: true, data })
+      })
+
+  } catch (error) {
+    res.send({ success: false, error: `${error}` })
+  }
+
 })
 
 // route/api/post/getpostdetail

@@ -166,8 +166,39 @@ router.post('/fsupload', (req, res) => {
         res.json('uploading');
     }
 });
+// getall files
+router.post('/allfiles', async (req, res) => {
+    const { postId } = req.body;
+    let dat = [];
 
+    await Post.findById(postId).then(data => {
+        const foldername = data.docfolder;
+        const folder2zip = fs.readdirSync(`${uploadfolderName + '/' + foldername}`);
+        folder2zip.map(file => {
+            dat.push(file)
+        })
+    })
+    return res.send(dat)
+})
 // remove files
+router.delete('/delfile', isAuth, async (req, res) => {
+    const { postId, filename } = req.body;
+    await Post.findById(postId).then(data => {
+        const foldername = data.docfolder;
+        const folder2zip = fs.readdirSync(`${uploadfolderName + '/' + foldername}`);
+        folder2zip.map(file => {
+            if (file === filename) {
+                try {
+                    fs.unlinkSync(uploadfolderName + '/' + foldername + '/' + filename);
+                } catch (error) {
+                    return res.status(200).json({ success: false, message: `${error}` })
+                }
+            }
+            return;
+        })
+    })
+    return res.status(200).json({ success: true, message: `deleted file ${filename} in post ${postId}` })
+})
 
 // download files
 router.get('/zipdownload', async (req, res) => {
@@ -251,7 +282,7 @@ router.get('/zipdownloadmany', async (req, res) => {
             if (!d.docfolder || d.docfolder === '') {
                 return
             }
-            zipper.addLocalFolder(uploadfolderName + '/' + d.docfolder , '/' + category.categoryname + '/' + d.docfolder);
+            zipper.addLocalFolder(uploadfolderName + '/' + d.docfolder, '/' + category.categoryname + '/' + d.docfolder);
         })
     })
     const zipname = `${department} ${role}.zip`;

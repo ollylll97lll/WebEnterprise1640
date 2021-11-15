@@ -7,6 +7,8 @@ const multer = require('multer');
 const File = require('../newmodels/Files');
 const path = require('path');
 const md5 = require('md5');
+const { isAuth } = require('../middleware/utils');
+const admz = require('adm-zip')
 
 const uploadfolderName = './uploads'
 
@@ -99,9 +101,9 @@ router.post('/gul', async (req, res) => {
 
 router.post('/fsupload', (req, res) => {
     const { name, currentChunkIndex, totalChunks } = req.query;
-    const { userId, postId } = req.query;
+    const { userId } = req.query;
     // post folder name
-    const POST_FOLDER_NAME = md5(userId, postId);
+    const POST_FOLDER_NAME = md5(userId); 
 
     // get chunk position is at first chunk ?
     const firstChunk = parseInt(currentChunkIndex) === 0;
@@ -110,7 +112,7 @@ router.post('/fsupload', (req, res) => {
 
     // get file ext name
     const ext = name.split('.').pop();
-    // data e.x: [34, 24, 52] (array buffer sent into small parts)
+    // data e.x: [34, 24, 52] (array buffer sent into small parts) 
     const data = req.body.toString().split(',')[1];
     // convert data to buffer 
     const buffer = Buffer.from(data, 'base64')
@@ -157,12 +159,49 @@ router.post('/fsupload', (req, res) => {
         // change the temp file to final file
         fs.renameSync(uploadfolderName + '/' + POST_FOLDER_NAME + '/' + tmpFilename, uploadfolderName + '/' + POST_FOLDER_NAME + '/' + finalFilename);
         // send final file name
-        res.json({ filepath: `${POST_FOLDER_NAME + '/' + finalFilename}`, finalFilename: finalFilename });
+        res.json({ filepath: `${POST_FOLDER_NAME + '/' + finalFilename}`, finalFilename: finalFilename, folderPath: POST_FOLDER_NAME });
     } else {
         // if still uploading
         res.json('uploading');
     }
 });
+
+// remove files
+
+// download files
+router.get('/zipdownload', async (req, res) => {
+    const { userId } = req.query;
+    // initiate admz
+    const zipper = new admz();
+    // post folder name
+    const POST_FOLDER_NAME = md5(userId);
+
+    const folder2zip = fs.readdirSync(`${uploadfolderName + '/' + POST_FOLDER_NAME}`);
+    // read folder
+    if (!fs.existsSync(uploadfolderName + '/' + POST_FOLDER_NAME) || folder2zip.length === 0) {
+        return res.send({ success: false, message: 'This Post do not have any document with it' })
+    }
+
+    folder2zip.map((files, index) => {
+        zipper.addLocalFile(uploadfolderName + '/' + POST_FOLDER_NAME + '/' + folder2zip[index])
+    })
+
+    const zipname = `${POST_FOLDER_NAME}.zip`
+
+    const data = zipper.toBuffer();
+
+    // this is the code for downloading!
+    // here we have to specify 3 things:
+    // 1. type of content that we are downloading
+    // 2. name of file to be downloaded
+    // 3. length or size of the downloaded file!
+
+    res.set('Content-Type', 'application/octet-stream');
+    res.set('Content-Disposition', `attachment; filename=${zipname}`);
+    res.set('Content-Length', data.length);
+    res.send(data);
+})
+
 
 
 module.exports = router

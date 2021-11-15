@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import MessageBox from '../../components/Return Boxes/MessageBox';
 import './index.css'
 
-const chunkSize = 10 * 1024; //KB
+const chunkSize = 10 * 1024; //1 KB
 export default function MultipleUp() {
 
     const [dropzoneActive, setDropzoneActive] = useState(false);
@@ -29,9 +29,10 @@ export default function MultipleUp() {
         const temparrayfile = [];
 
         [...e.dataTransfer.files].map((file, index) => {
-            if (file.size > 2.5 * chunkSize) {
+            // 25MB
+            if (file.size > 25000 * chunkSize) {
                 // push err message to log array
-                return uploadErrors.push(`exceeded file size limit at file ${e.dataTransfer.files[index].name || 'unknown'}. Abort`);
+                return uploadErrors.push(`exceeded file size limit (25MB) at file ${e.dataTransfer.files[index].name || 'unknown'}. Abort`);
             }
             temparrayfile.push(e.dataTransfer.files[index]);
         })
@@ -84,6 +85,7 @@ export default function MultipleUp() {
                     // return file name = final file name in response
                     file.finalFilename = response.data.finalFilename;
                     file.filepath = response.data.filepath;
+                    file.folderPath = response.data.folderPath;
                     // set previous upload file to this current file index
                     setLastUploadedFileIndex(currentFileIndex);
                     // stop uploading chunk by set to null

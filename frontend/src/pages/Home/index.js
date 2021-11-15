@@ -201,7 +201,7 @@ function HomePage(props) {
                                                             category={post.categoryinfo[0].name}
                                                             title={post.title}
                                                             content={post.content}
-                                                            files={post.files}
+                                                            // files={post.files}
                                                             likes={post.likes}
                                                             createdAt={post.createdAt}
                                                             postId={post._id}

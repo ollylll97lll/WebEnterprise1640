@@ -15,7 +15,7 @@ const date = new Date();
 //route api/post/create
 //Create Post for Student role
 router.post('/create', isAuth, async (req, res) => {
-  const { categoryId, title, content, files } = req.body
+  const { categoryId, title, content, docfolder } = req.body
 
   // title ad description validation
   if (!title)
@@ -43,7 +43,7 @@ router.post('/create', isAuth, async (req, res) => {
       title: title,
       content: content,
       department: req.user.department,
-      files: files,
+      docfolder: docfolder,
       likes: 0,
       createdAt: moment().tz('Asia/Ho_Chi_Minh').format()
     })
@@ -457,7 +457,7 @@ router.patch('/edit', isAuth, async (req, res) => {
   }
   const { postId } = req.query;
   const userId = req.user.userId;
-  const { title, content, files } = req.body;
+  const { title, content, docfolder } = req.body;
 
   const checkpost = await Post.findOne({ _id: postId, userId: userId });
 
@@ -470,10 +470,6 @@ router.patch('/edit', isAuth, async (req, res) => {
     return res.json({ success: false, message: 'There were no Post found', checkpost, user: req.user })
   }
 
-  // // remove files
-  // await Post.findById({})
-  // checkowner.files.length = 0;
-  // checkowner.save()
 
   await Post.findByIdAndUpdate(postId, req.body).then(result => {
     return res.status(200).json({ success: true, result })

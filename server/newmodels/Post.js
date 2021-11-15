@@ -25,14 +25,9 @@ const PostSchema = new Schema({
     department: {
         type: String,
     },
-    files: [{
-        filename:{
-            type: String,
-        },
-        filepath: {
-            type: String,
-        }
-    }],
+    docfolder: {
+        type: String
+    },
     likes: {
         type: Number,
         required: true

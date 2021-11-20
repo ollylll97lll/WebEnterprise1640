@@ -5,11 +5,11 @@ const cors = require('cors')
 
 const bodyParser = require('body-parser')
 
-const UserAuth = require('./routes/auth')
+// const UserAuth = require('./routes/auth')
 const newUserAuth = require('./newroutes/auth')
-const Article = require('./routes/article')
+// const Article = require('./routes/article')
 const Post = require('./newroutes/post')
-const Seasons = require('./routes/seasons')
+// const Seasons = require('./routes/seasons')
 const Category = require('./newroutes/category')
 const User = require('./newroutes/user')
 const UploadFiles = require('./newroutes/uploading');
@@ -59,8 +59,8 @@ app.use('/api/upload', UploadFiles);
 app.use('/api/statistic', Statistic);
 
 // Old routes
-app.use('/api/article', Article)
-app.use('/api/season', Seasons)
+// app.use('/api/article', Article)
+// app.use('/api/season', Seasons)
 // 
 app.get('/', (req, res) => res.send("Hello"))
 

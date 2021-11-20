@@ -2,8 +2,6 @@ require('dotenv').config()
 const express = require('express')
 const router = express.Router()
 const moment = require('moment-timezone')
-
-const SeasonTopic = require('../models/SeasonTopic')
 const Category = require('../newmodels/Category')
 const { isAuth, isAdmin, isManager } = require('../middleware/utils')
 const Post = require('../newmodels/Post')

@@ -3,8 +3,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap';
-import { arrayIsEmpty, objectIsNull } from '../../utils/function';
-import MultipleUp from '../MultipleUploadPage/MultipleUp';
+import { arrayIsEmpty } from '../../utils/function';
 
 function SubmitForm(props) {
     const {
@@ -158,9 +157,6 @@ function SubmitForm(props) {
                         </FormGroup>
                     </Col>
                 </Row>
-
-                <MultipleUp />
-
                 <Row form>
                     <Col md={12} className="text-center">
                         <FormGroup check >

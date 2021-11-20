@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import StudentNav from '../../components/Navbar/StudentNav';
 import Timer from '../../components/Timer';
-import StudentTab from './StaffTab';
-import './index.css'
-import { useDispatch, useSelector } from 'react-redux';
+import './index.css';
 import StaffTab from './StaffTab';
 
 

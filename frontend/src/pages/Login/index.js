@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useEffect } from 'react';
+import { Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingBox from '../../components/Return Boxes/LoadingBox';
 import MessageBox from '../../components/Return Boxes/MessageBox';
@@ -76,7 +77,7 @@ function LoginPage(props) {
                                             <input type="checkbox" className="custom-control-input" id="rememberMe" checked={checkbox} onClick={(e) => rememberMe(e)} />
                                             <label className="custom-control-label" htmlFor="rememberMe" >Remember password</label>
                                         </div>
-                                        <button className="btn btn-lg btn-signin btn-block btn-login text-uppercase font-weight-bold mb-2" type="submit">Sign in</button>
+                                        <Button className="btn btn-lg btn-signin btn-block btn-login text-uppercase font-weight-bold mb-2" type="submit">Sign in</Button>
                                         {
                                             loading && <LoadingBox />
                                         }

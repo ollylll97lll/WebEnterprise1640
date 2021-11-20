@@ -6,8 +6,8 @@ import MessageBox from '../../components/Return Boxes/MessageBox';
 import './index.css'
 
 const chunkSize = 10 * 1024; //1 KB
-export default function MultipleUp(props) {
-    // get token
+export default function EditMulUp() {
+
     const userLogin = useSelector(state => state.userLogin)
     // console.log(userLogin)
     const urlParams = new URLSearchParams(window.location.search);
@@ -20,7 +20,6 @@ export default function MultipleUp(props) {
     const [currentFileIndex, setCurrentFileIndex] = useState(null);
     const [lastUploadedFileIndex, setLastUploadedFileIndex] = useState(null);
     const [currentChunkIndex, setCurrentChunkIndex] = useState(null);
-    const [fetchDataFlag, setFetchDataFlag] = useState(true);
     // set Error flag
     // const [isError, setIsError] = useState(false);
     let uploadErrors = [];
@@ -29,15 +28,14 @@ export default function MultipleUp(props) {
         e.preventDefault();
         setDropzoneActive(false)
         if (files.length == 4) {
-            return alert('exceeded maxium files to upload. Please delete previous file and try again')
+            alert('exceeded maxium files to upload. Please delete previous file and try again')
+            return
         }
-
 
         // check if files over 25MB
         const temparrayfile = [];
 
         [...e.dataTransfer.files].map((file, index) => {
-            console.log(file.size)
             // 25MB
             if (file.size > 25000 * chunkSize) {
                 // push err message to log array
@@ -50,7 +48,6 @@ export default function MultipleUp(props) {
             console.log(uploadErrors);
             // setIsError(true);
         }
-        setFetchDataFlag(false);
         setFiles([...files, ...temparrayfile]);
     }
 
@@ -84,28 +81,28 @@ export default function MultipleUp(props) {
         const headers = { 'Content-Type': 'application/octet-stream' };
 
         const url = `http://localhost:5001/api/upload/fsupload?${params.toString()}`
-        // await axios.post(url, data, { headers })
-        //     .then(response => {
-        //         const file = files[currentFileIndex];
-        //         const filesize = files[currentFileIndex].size;
-        //         // total [chunks - 1] (index of last chunk)
-        //         const chunks = Math.ceil(filesize / chunkSize) - 1;
-        //         const isLastChunk = currentChunkIndex === chunks;
-        //         if (isLastChunk) {
-        //             // return file name = final file name in response
-        //             file.finalFilename = response.data.finalFilename;
-        //             file.filepath = response.data.filepath;
-        //             file.foldername = response.data.foldername;
-        //             setFolderName(response.data.foldername)
-        //             // set previous upload file to this current file index
-        //             setLastUploadedFileIndex(currentFileIndex);
-        //             // stop uploading chunk by set to null
-        //             setCurrentChunkIndex(null);
-        //         } else {
-        //             // continue upload next chunk to temp file
-        //             setCurrentChunkIndex(currentChunkIndex + 1);
-        //         }
-        //     });
+        await axios.post(url, data, { headers })
+            .then(response => {
+                const file = files[currentFileIndex];
+                const filesize = files[currentFileIndex].size;
+                // total [chunks - 1] (index of last chunk)
+                const chunks = Math.ceil(filesize / chunkSize) - 1;
+                const isLastChunk = currentChunkIndex === chunks;
+                if (isLastChunk) {
+                    // return file name = final file name in response
+                    file.finalFilename = response.data.finalFilename;
+                    file.filepath = response.data.filepath;
+                    file.foldername = response.data.foldername;
+                    setFolderName(response.data.foldername)
+                    // set previous upload file to this current file index
+                    setLastUploadedFileIndex(currentFileIndex);
+                    // stop uploading chunk by set to null
+                    setCurrentChunkIndex(null);
+                } else {
+                    // continue upload next chunk to temp file
+                    setCurrentChunkIndex(currentChunkIndex + 1);
+                }
+            });
     }
     const [folderName, setFolderName] = useState('')
     const [message, setMessage] = useState('')
@@ -150,12 +147,8 @@ export default function MultipleUp(props) {
 
     }, [lastUploadedFileIndex]);
 
-    // check file length thay đổi thì bắt đầu up
     useEffect(() => {
         if (files.length > 0) {
-            if(fetchDataFlag){
-                return
-            }
             if (currentFileIndex === null) {
                 setCurrentFileIndex(
                     lastUploadedFileIndex === null ? 0 : lastUploadedFileIndex + 1
@@ -180,7 +173,6 @@ export default function MultipleUp(props) {
             readAndUploadCurrentChunk();
         }
     }, [currentChunkIndex])
-
     return (
         <div>
             <div style={{ height: '100vh', backgroundColor: '#113', color: '#ddd', padding: '20px' }}>
@@ -196,7 +188,7 @@ export default function MultipleUp(props) {
                     onDrop={e => handleDrop(e)}
                     style={{ position: 'relative' }}
                     className={"dropzone" + (dropzoneActive ? " active" : "")}>
-                    Drop or Click to upload your files.
+                    Drop your option files here
                     <input
                         type="file"
                         multiple="true"
@@ -234,9 +226,9 @@ export default function MultipleUp(props) {
                     })}
                 </div>
             </div>
-            {/* <div style={{ position: 'absolute', bottom: 20, display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <div style={{ position: 'absolute', bottom: 20, display: 'flex', justifyContent: 'center', width: '100%' }}>
                 <Button outline color="primary" onClick={() => { onSubmitPress() }}>Submit File</Button>
-            </div> */}
+            </div>
         </div>
-    );
+    )
 }

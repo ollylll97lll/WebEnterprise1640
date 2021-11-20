@@ -59,8 +59,8 @@ function Statistic() {
                                                         randomcolor.splice(index, 1)
 
                                                         return (
-                                                            <li key={i} style={{ border: '0.1rem solid', borderColor: '#c0c0c0', margin: '2rem', borderRadius: '0.5rem', flex: '1 1 20rem' }}>
-                                                                <div style={{ fontSize: '1.5rem', padding: '1rem', backgroundColor: tempcolor }} >
+                                                            <li key={i} style={{ border: '0.1rem solid', borderColor: '#c0c0c0', margin: '2rem', borderRadius: '0.5rem', flex: '1 1 20rem', padding:'0' }}>
+                                                                <div style={{ fontSize: '1.5rem', padding: '1rem', backgroundColor: tempcolor, borderTopRightRadius:'0.5rem', borderTopLeftRadius:'0.5rem', width:'100%' }} >
                                                                     <span>{tabledata.title}</span>
                                                                 </div>
                                                                 <div style={{ fontSize: '3rem', padding: '1rem', textAlign: 'center' }}>

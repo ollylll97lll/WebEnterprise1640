@@ -10,6 +10,7 @@ const md5 = require('md5');
 const { isAuth, isStatisticRole } = require('../middleware/utils');
 const admz = require('adm-zip');
 const Post = require('../newmodels/Post');
+const { firebaserules } = require('googleapis/build/src/apis/firebaserules');
 
 const uploadfolderName = './uploads'
 
@@ -100,7 +101,7 @@ router.post('/gul', async (req, res) => {
 
 // NO MULTER UPLOAD
 
-router.post('/fsupload', (req, res) => {
+router.post('/fsupload', async (req, res) => {
     const { name, currentChunkIndex, totalChunks, } = req.query;
     const { userId, postId } = req.query;
     // post folder name
@@ -118,7 +119,7 @@ router.post('/fsupload', (req, res) => {
     // convert data to buffer 
     const buffer = Buffer.from(data, 'base64')
     // new Buffer(data, 'base64');
-    // temporary file name
+    // temporary file name  
     const tmpFilename = 'tmp_' + md5(name + req.ip) + '.' + ext;
 
     // check uploads folder exist
@@ -159,8 +160,11 @@ router.post('/fsupload', (req, res) => {
         const finalFilename = md5(Date.now()).substr(0, 6) + '.' + ext;
         // change the temp file to final file
         fs.renameSync(uploadfolderName + '/' + POST_FOLDER_NAME + '/' + tmpFilename, uploadfolderName + '/' + POST_FOLDER_NAME + '/' + finalFilename);
+
+        // update folder name to Post document
+        await Post.findByIdAndUpdate(postId, { docfolder: POST_FOLDER_NAME }).catch(err => { return res.send({ success: false, message: `cannot update to the post ${postId}` }) })
         // send final file name
-        res.json({ filepath: `${POST_FOLDER_NAME + '/' + finalFilename}`, finalFilename: finalFilename, foldername: POST_FOLDER_NAME });
+        res.json({ filepath: `${POST_FOLDER_NAME + '/' + finalFilename}`, finalFilename: finalFilename, foldername: POST_FOLDER_NAME, success: true });
     } else {
         // if still uploading
         res.json('uploading');
@@ -173,9 +177,9 @@ router.post('/allfiles', async (req, res) => {
 
     await Post.findById(postId).then(data => {
         const foldername = data.docfolder;
-        const folder2zip = fs.readdirSync(`${uploadfolderName + '/' + foldername}`);
-        folder2zip.map(file => {
-            dat.push(file)
+        const folder2read = fs.readdirSync(`${uploadfolderName + '/' + foldername}`);
+        folder2read.map(file => {
+            dat.push({ filepath: `/${foldername}/${file}`, filename: `${file}`, finalFilename: `${file}` })
         })
     })
     return res.send(dat)
@@ -185,8 +189,8 @@ router.delete('/delfile', isAuth, async (req, res) => {
     const { postId, filename } = req.body;
     await Post.findById(postId).then(data => {
         const foldername = data.docfolder;
-        const folder2zip = fs.readdirSync(`${uploadfolderName + '/' + foldername}`);
-        folder2zip.map(file => {
+        const folder2del = fs.readdirSync(`${uploadfolderName + '/' + foldername}`);
+        folder2del.map(file => {
             if (file === filename) {
                 try {
                     fs.unlinkSync(uploadfolderName + '/' + foldername + '/' + filename);

@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import StudentNav from '../../components/Navbar/StudentNav';
 import Timer from '../../components/Timer';
-import StudentTab from './StudentTab';
+import StudentTab from './StaffTab';
 import './index.css'
 import { useDispatch, useSelector } from 'react-redux';
+import StaffTab from './StaffTab';
 
 
 function StaffPage(props) {
@@ -31,7 +32,7 @@ function StaffPage(props) {
                 </div>
                 <h4 className="text-center">Staff Page</h4>
                 <div className="col-12">
-                    <StudentTab />
+                    <StaffTab />
                 </div>
             </div>
         </div>

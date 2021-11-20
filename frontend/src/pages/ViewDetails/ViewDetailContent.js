@@ -5,6 +5,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, Form, Row, C
 import axios from 'axios';
 import { useLocation } from 'react-router';
 import { useSelector } from 'react-redux';
+import { Container } from 'react-bootstrap';
 
 function ViewDetailContent() {
 
@@ -121,72 +122,72 @@ function ViewDetailContent() {
 
     return (
         <div style={{ paddingTop: '2%' }} >
-            <div className="col-12">
-                <div className="row row-color">
-                    <div className="column-left pt-2 pb-2">Submission Title</div>
-                    <div className="column-right pt-2 pb-2">{postDetail.result.title}</div>
-                </div>
-                <div className="row">
-                    <div className="column-left pt-2 pb-2">Submission Content</div>
-                    <div className="column-right pt-2 pb-2">{postDetail.result.content}</div>
-                </div>
+            <Col xs='12'>
+                <Row className="row row-color">
+                    <Col className="column-left pt-2 pb-2">Submission Title</Col>
+                    <Col className="column-right pt-2 pb-2">{postDetail.result.title}</Col>
+                </Row>
+                <Row className="row">
+                    <Col className="column-left pt-2 pb-2">Submission Content</Col>
+                    <Col className="column-right pt-2 pb-2">{postDetail.result.content}</Col>
+                </Row>
 
-                <div className="row">
-                    <div className="column-left pt-2 pb-2">Submission Category</div>
-                    <div className="column-right pt-2 pb-2">{postDetail.catdetail.name}</div>
-                </div>
-                <div className="row">
-                    <div className="column-left pt-2 pb-2">Submission User</div>
-                    <div className="column-right pt-2 pb-2">{userDetail.email}</div>
-                </div>
-                <div className="row">
-                    <div className="column-left pt-2 pb-2">Department User</div>
-                    <div className="column-right pt-2 pb-2">{userDetail.department}</div>
-                </div>
-                <div className="row">
-                    <div className="column-left pt-2 pb-2">Comment</div>
-                    <div className="column-right pt-2 pb-2">{postDetail.cmts.length}</div>
-                </div>
-                <div className="row">
-                    <div className="column-left pt-2 pb-2">Like</div>
-                    <div className="column-right pt-2 pb-2">{postDetail.result.likes}</div>
-                </div>
+                <Row className="row">
+                    <Col className="column-left pt-2 pb-2">Submission Category</Col>
+                    <Col className="column-right pt-2 pb-2">{postDetail.catdetail.name}</Col>
+                </Row>
+                <Row className="row">
+                    <Col className="column-left pt-2 pb-2">Submission User</Col>
+                    <Col className="column-right pt-2 pb-2">{userDetail.email}</Col>
+                </Row>
+                <Row className="row">
+                    <Col className="column-left pt-2 pb-2">Department User</Col>
+                    <Col className="column-right pt-2 pb-2">{userDetail.department}</Col>
+                </Row>
+                <Row className="row">
+                    <Col className="column-left pt-2 pb-2">Comment</Col>
+                    <Col className="column-right pt-2 pb-2">{postDetail.cmts.length}</Col>
+                </Row>
+                <Row className="row">
+                    <Col className="column-left pt-2 pb-2">Like</Col>
+                    <Col className="column-right pt-2 pb-2">{postDetail.result.likes}</Col>
+                </Row>
 
                 {(postDetail.catdetail.enddate < postDetail.result.createdAt) || (postDetail.catdetail.enddate < postDetail.result.updateAt) ?
-                    <div className="row">
-                        <div className="column-left pt-2 pb-2">Submit Date</div>
-                        <div className="column-right bg-danger pt-2 pb-2" style={{ color: '#fff' }} >{postDetail.result.updateAt ? moment(`${postDetail.result.updateAt}`).format('dddd, DD/MM/YYYY, HH:mm') : moment(postDetail.result.createdAt).format('dddd, DD/MM/YYYY, HH:mm')}</div>
-                    </div>
+                    <Row className="row">
+                        <Col className="column-left pt-2 pb-2">Submit Date</Col>
+                        <Col className="column-right bg-danger pt-2 pb-2" style={{ color: '#fff' }} >{postDetail.result.updateAt ? moment(`${postDetail.result.updateAt}`).format('dddd, DD/MM/YYYY, HH:mm') : moment(postDetail.result.createdAt).format('dddd, DD/MM/YYYY, HH:mm')}</Col>
+                    </Row>
                     :
-                    <div className="row">
-                        <div className="column-left pt-2 pb-2">Submit Date</div>
-                        <div className="column-right-color pt-2 pb-2">{postDetail.result.updateAt ? moment(`${postDetail.result.updateAt}`).format('dddd, DD/MM/YYYY, HH:mm') : moment(postDetail.result.createdAt).format('dddd, DD/MM/YYYY, HH:mm')}</div>
-                    </div>
+                    <Row className="row">
+                        <Col className="column-left pt-2 pb-2">Submit Date</Col>
+                        <Col className="column-right-color pt-2 pb-2">{postDetail.result.updateAt ? moment(`${postDetail.result.updateAt}`).format('dddd, DD/MM/YYYY, HH:mm') : moment(postDetail.result.createdAt).format('dddd, DD/MM/YYYY, HH:mm')}</Col>
+                    </Row>
                 }
                 {(postDetail.catdetail.enddate < postDetail.result.createdAt) || (postDetail.catdetail.enddate < postDetail.result.updateAt) ?
-                    <div className="row">
-                        <div className="column-left pt-2 pb-2">Last modified</div>
-                        <div className="column-right bg-danger pt-2 pb-2" style={{ color: '#fff' }} >{postDetail.result.updateAt ? moment(`${postDetail.result.updateAt}`).format('dddd, DD/MM/YYYY, HH:mm') : moment(postDetail.result.createdAt).format('dddd, DD/MM/YYYY, HH:mm')}</div>
-                    </div>
+                    <Row className="row">
+                        <Col className="column-left pt-2 pb-2">Last modified</Col>
+                        <Col className="column-right bg-danger pt-2 pb-2" style={{ color: '#fff' }} >{postDetail.result.updateAt ? moment(`${postDetail.result.updateAt}`).format('dddd, DD/MM/YYYY, HH:mm') : moment(postDetail.result.createdAt).format('dddd, DD/MM/YYYY, HH:mm')}</Col>
+                    </Row>
                     :
-                    <div className="row">
-                        <div className="column-left pt-2 pb-2">Last modified</div>
-                        <div className="column-right-color pt-2 pb-2">{postDetail.result.updateAt ? moment(`${postDetail.result.updateAt}`).format('dddd, DD/MM/YYYY, HH:mm') : moment(postDetail.result.createdAt).format('dddd, DD/MM/YYYY, HH:mm')}</div>
-                    </div>
+                    <Row className="row">
+                        <Col className="column-left pt-2 pb-2">Last modified</Col>
+                        <Col className="column-right-color pt-2 pb-2">{postDetail.result.updateAt ? moment(`${postDetail.result.updateAt}`).format('dddd, DD/MM/YYYY, HH:mm') : moment(postDetail.result.createdAt).format('dddd, DD/MM/YYYY, HH:mm')}</Col>
+                    </Row>
                 }
-                <div className="row">
-                    <div className="column-left pt-2 pb-2">Due Date</div>
-                    <div className="column-right pt-2 pb-2">{moment(`${postDetail.catdetail.enddate}`).format('dddd, DD/MM/YYYY, HH:mm')}</div>
-                </div>
-                <div className="row">
-                    <div className="column-left pt-2 pb-2">File submissions</div>
+                <Row className="row">
+                    <Col className="column-left pt-2 pb-2">Due Date</Col>
+                    <Col className="column-right pt-2 pb-2">{moment(`${postDetail.catdetail.enddate}`).format('dddd, DD/MM/YYYY, HH:mm')}</Col>
+                </Row>
+                <Row className="row">
+                    <Col className="column-left pt-2 pb-2">File submissions</Col>
                     {postDetail.result.docfolder ?
                         <a className="column-right pt-2 pb-2" href={`http://localhost:5001/api/upload/zipdownload?foldername=${postDetail.result.docfolder}&nameFile=${postDetail.result.title + '_' + userDetail.email + '_' + userDetail.department}`}>{postDetail.result.docfolder != '' ? postDetail.result.docfolder : "No file submitted"}</a>
                         :
-                        <div className="column-right pt-2 pb-2">No file submitted</div>
+                        <Col className="column-right pt-2 pb-2">No file submitted</Col>
                     }
-                </div>
-            </div>
+                </Row>
+            </Col>
             {
                 location.state.role.toLowerCase() === 'staff' &&
                 <div className="text-center mt-4">
@@ -215,13 +216,6 @@ function ViewDetailContent() {
                                         <FormGroup>
                                             <Label for="description">Brief Description</Label>
                                             <Input onChange={onChangeContent} type="textarea" style={{ height: '150px' }} name="description" id="description" placeholder="Give a short description" value={content} />
-                                        </FormGroup>
-                                    </Col>
-                                </Row>
-                                <Row form >
-                                    <Col md={12} >
-                                        <FormGroup >
-                                            <Button color="primary" onClick={() => { }}>Edit file</Button>{' '}
                                         </FormGroup>
                                     </Col>
                                 </Row>

@@ -17,7 +17,7 @@ router.get('/', isAuth, isStatisticRole, async (req, res) => {
     // tổng user dept/ tổng
     const totalDepttUser = await User.find({ departmentId: req.user.departmentId }).countDocuments();
     // tổng post /ngày của dept đó
-    const totalPostToday = await Post.find({ createdAt: { $gt: today, $lt: today.setHours(23, 59, 59, 000) } }).countDocuments();
+    const totalPostToday = await Post.find({ createdAt: { $gte: today.setHours(0, 0, 0, 000), $lte: today.setHours(23, 59, 59, 000) } }).countDocuments();
     // % tổng post của dept đó trên tổng post
     const totalPosts = await Post.countDocuments();
     const DepartmentPosts = await Post.find({ department: req.user.department }).countDocuments();

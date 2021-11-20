@@ -132,7 +132,7 @@ export default function RedditCards(props) {
                     <div name='comment'>
                         <a style={{ padding: '8px' }}>
                             <i class="bi bi-chat" />
-                            <span> {props.comment ? props.comment : 999} comment(s)</span>
+                            <span> {props.cmts || 0} comment(s)</span>
                         </a>
                     </div>
                 </Col>

@@ -170,7 +170,7 @@ function HomePage(props) {
                                     New
                                 </span>
                             </Button>
-                            <Button variant='outlined' sx={{ height: 40, m: 1, marginRight: 1, borderColor: isSelected == 2 ? '#0079d3' : '#878a8c' }}
+                            {/* <Button variant='outlined' sx={{ height: 40, m: 1, marginRight: 1, borderColor: isSelected == 2 ? '#0079d3' : '#878a8c' }}
                                 onClick={() => { handleTopButton() }}
                             >
                                 <i class="bi bi-sort-down" style={{ fontSize: 20, marginBottom: 10, fontWeight: 'bold', paddingRight: 10, color: isSelected == 2 ? '#0079d3' : '#878a8c' }}></i>
@@ -178,7 +178,7 @@ function HomePage(props) {
                                     Top
                                 </span>
 
-                            </Button>
+                            </Button> */}
 
 
                         </div>
@@ -206,6 +206,7 @@ function HomePage(props) {
                                                             createdAt={post.createdAt}
                                                             postId={post._id}
                                                             closuredate={post.closuredate}
+                                                            cmts={post.totalcmts}
                                                         />
                                                     </Container>
                                                 )

@@ -1,3 +1,4 @@
+const uploadfolderName = './uploads'
 require('dotenv').config()
 const express = require('express')
 const router = express.Router()
@@ -11,6 +12,7 @@ const { isAuth, isAdmin } = require('../middleware/utils')
 const { findById } = require('../newmodels/Post')
 const Departments = require('../newmodels/Departments')
 const { isValidObjectId } = require('mongoose')
+const fs = require('fs');
 const date = new Date();
 const Mongoose = require('mongoose');
 const ObjectId = Mongoose.Types.ObjectId;
@@ -25,6 +27,8 @@ router.post('/create', isAuth, async (req, res) => {
     return res.status(500).json({ success: false, message: 'Fill the tittle' })
   if (!content)
     return res.status(500).json({ success: false, message: 'Fill the content' })
+  if (!categoryId)
+    return res.status(500).json({ success: false, message: 'Fill the categoryId' })
 
   //If good
   try {
@@ -61,6 +65,36 @@ router.post('/create', isAuth, async (req, res) => {
   }
 })
 
+// route api/post/delete
+router.delete('/delete', isAuth, async (req, res) => {
+  const { postId } = req.body;
+  if (!postId) {
+    return res.send({ success: false, message: 'No PostId' });
+  }
+  try {
+    const result = await Post.findOneAndDelete({ _id: postId, userId: req.user.userId })
+    if (result) {
+      // Delete The Folder W files
+      const foldername = result.docfolder;
+      const folder2del = `${uploadfolderName + '/' + foldername}`;
+      if (!foldername || foldername == '') {
+        return res.send({ success: true, result, message: 'Deleted successfully. Post do not have folder' })
+      }
+      else {
+        try {
+          fs.rmdirSync(folder2del, { recursive: true })
+          return res.send({ success: true, result, message: 'Delete and remove folder successfully' })
+        } catch (error) {
+          return res.send({ success: false, error })
+        }
+      }
+    }
+    else return res.send({ success: false, message: 'no post found to delete' })
+
+  } catch (error) {
+    return res.send({ success: false, error })
+  }
+})
 
 // count total like || dislike
 function tl(islike, isdislike, react) {
@@ -288,7 +322,7 @@ router.post('/comment', isAuth, async (req, res) => {
     res.status(500).json({ success: false, message: err })
   }
 })
-
+// delete single cmt of the post
 router.delete('/deletecommentpost', isAuth, async (req, res) => {
   const { postId, commentId } = req.body;
   if (!postId) {
@@ -355,19 +389,35 @@ router.get('/getall', async (req, res) => {
       as: 'categoryinfo'
     }
   }
+  const retrieveCmts = {
+    $lookup: {
+      from: 'comments',
+      localField: '_id',
+      foreignField: 'postId',
+      as: 'cmtinfo'
+    }
+  }
   const shownOrder =
     shownby === 'hotest' ? { likes: -1 }
       : shownby === 'latest' ? { createdAt: -1 }
         : { _id: -1 }
   const total = await Post.find(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
 
-  const post = await Post.aggregate([retrieveCategoryname]).match(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
+  const post = await Post.aggregate([retrieveCategoryname, retrieveCmts]).match(categoryId ? categoryIdFilter : title ? titleFilter : department ? departmentFilter : {})
     .sort(shownOrder)
     .skip(pageSize * (page - 1)).limit(pageSize)
-    .then(data => {
+    .then(async (data) => {
+      // get total cmts
+      data.map(d => {
+        const totalcmts = d.cmtinfo[0]?.comments.length || 0;
+        delete d.cmtinfo;
+        d.totalcmts = totalcmts;
+      })
+
       // posts la thong tin cac bai tra ve
       // page la trang dang o
       // pages la tong so trang = tong so bai / so luong bai moi trang (lam tron len)
+
       res.send({ posts: data, page, pages: Math.ceil(total.length / pageSize) });
     })
     .catch(err => {
@@ -379,8 +429,9 @@ router.get('/getall', async (req, res) => {
 })
 
 // route/api/post/gethistorypost
+// get post list for history page
 router.get('/gethistorypost', isAuth, async (req, res) => {
-
+  const { categoryId } = req.query;
   // return doc per page
   const pageSize = 5
   // current page
@@ -394,14 +445,20 @@ router.get('/gethistorypost', isAuth, async (req, res) => {
       as: 'categoryinfo'
     }
   }
-  const matching = {
+
+  const usermatching = {
     $match: {
       userId: new ObjectId(req.user.userId)
     }
   }
+  const catmatching = {
+    $match: {
+      categoryId: new ObjectId(categoryId)
+    }
+  }
 
   try {
-    const result = await Post.aggregate([matching, retrieveCategoryname])
+    const result = await Post.aggregate([usermatching, catmatching, retrieveCategoryname])
       .skip(pageSize * (page - 1))
       .limit(pageSize).then(data => {
         res.send({ success: true, data })
@@ -414,7 +471,7 @@ router.get('/gethistorypost', isAuth, async (req, res) => {
 })
 
 // route/api/post/getpostdetail
-// get one post
+// get one post details
 router.post('/getpostdetail', async (req, res) => {
   const { postId } = req.body;
   if (!postId) {
@@ -486,7 +543,7 @@ router.patch('/edit', isAuth, async (req, res) => {
   }
   const { postId } = req.query;
   const userId = req.user.userId;
-  const { title, content, docfolder } = req.body;
+  const { title, content } = req.body;
 
   const checkpost = await Post.findOne({ _id: postId, userId: userId });
 
@@ -501,7 +558,7 @@ router.patch('/edit', isAuth, async (req, res) => {
 
 
   await Post.findByIdAndUpdate(postId, req.body).then(result => {
-    return res.status(200).json({ success: true, result })
+    return res.status(200).json({ success: true, result, message:'Edited successfully' })
   }).catch(err => {
     return res.status(400).json({ success: false, err })
   })

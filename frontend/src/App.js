@@ -12,8 +12,9 @@ import ForgotPassword from './pages/Login/ForgotPass';
 import ManagerPage from './pages/Manager';
 import PostDetails from './pages/PostDetail';
 import MultipleUp from './pages/MultipleUploadPage/MultipleUp';
-import StaffPage from './pages/Student';
+import StaffPage from './pages/Staff';
 import ViewDetails from './pages/ViewDetails';
+import EditMulUp from './pages/EditFileUploadPage/EditMulUp';
 
 function App() {
   return (
@@ -35,7 +36,9 @@ function App() {
 
       <Route path='/error' component={Error} />
       <Route path='/redirect' component={RedirectPage} />
+
       <Route path='/mulup' component={MultipleUp}/>
+      <Route path='/muledit' component={EditMulUp}/>
     </Switch >
   );
 }

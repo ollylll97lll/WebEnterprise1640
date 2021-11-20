@@ -7,6 +7,7 @@ const SeasonTopic = require('../models/SeasonTopic')
 const Category = require('../newmodels/Category')
 const { isAuth, isAdmin, isManager } = require('../middleware/utils')
 const Post = require('../newmodels/Post')
+const { route } = require('./uploading')
 
 //route api/category/add_category
 //Add new category using  Model
@@ -108,6 +109,42 @@ router.delete('/deleteCategory', isAuth, isManager, async (req, res) => {
         else return res.status(200).json({ success: true, message: 'Deleted Successfully' });
     }).catch(err => {
         res.status(500).json({ success: false, message: 'Catched Error', err })
+    })
+})
+
+// route api/category/getuserpostcategory
+// group all user post by their categories 
+// and returns only the categories which post is still ongoing
+router.get('/getuserpostcategory', isAuth, async (req, res) => {
+    const { userId } = req.query;
+    if (!userId) {
+        return res.status(401).send('No userId');
+    }
+
+    const groupbyCategories = {
+        $group: {
+            _id: '$categoryId'
+        }
+    }
+    const lookupcategories = {
+        $lookup: {
+            from: 'categories',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'category_info'
+        }
+    }
+    await Post.aggregate([groupbyCategories, lookupcategories]).then(data => {
+        // res.send(data);
+        const resdata = []
+        data.map(category => {
+            const closuredate = category.category_info[0].closuredate;
+            // if (moment(closuredate).isBefore(new Date())) {
+            if (moment(new Date()).isSameOrBefore(closuredate)) {
+                resdata.push(category.category_info[0])
+            }
+        })
+        res.send(resdata)
     })
 })
 

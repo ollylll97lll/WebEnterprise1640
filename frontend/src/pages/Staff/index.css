@@ -1,0 +1,119 @@
+.textarea {
+    min-width: 100%;
+    resize: vertical;
+}
+
+.cell {
+    display: table-cell;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.modal-fullscreen {
+    width: 100vw;
+    max-width: none;
+    height: 100%;
+    margin: 0;
+}
+
+.modal-background {
+    background-color: #ddd;
+    color: #113;
+    border-color: #113;
+}
+
+.form-input {
+    background-color: transparent !important;
+    color: #113 !important;
+    border-color: #113 !important;
+}
+
+option {
+    color: black;
+    font-weight: bold;
+}
+
+.image-cards {
+    background-color: black !important;
+    opacity: 0.5 !important;
+}
+
+div.dropzone {
+    border: 2px dashed rgb(0, 0, 0);
+    border-radius: 10px;
+    padding: 50px 0;
+    text-align: center;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+input:hover {
+    cursor: pointer;
+}
+
+div.dropzone.active {
+    border-color: rgba(0, 0, 0, 0.6);
+}
+
+select.form-select:disabled {
+    cursor: not-allowed;
+}
+
+.file {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.8);
+    display: block;
+    background-color: #41415d;
+    border-radius: 10px;
+    margin-top: 20px;
+    padding: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.optiondisabled {
+    color: lightgray;
+    font-weight: normal;
+}
+
+.file a {
+    text-decoration: none;
+    color: #ddd;
+}
+
+.xbtn:hover {
+    cursor: pointer;
+    color: red;
+}
+
+.xbtn {
+    position: absolute;
+    right: 30px;
+    height: 0;
+    color: #113;
+}
+
+.file .progress {
+    background-color: rgba(80, 80, 120, .8);
+    position: absolute;
+    inset: 0;
+    width: 0;
+    padding-top: 10px;
+    text-align: center;
+}
+
+.file .progress.done {
+    top: 100px;
+}
+
+.title-selection {
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.title-selection:hover {
+    cursor: pointer;
+    color: darkolivegreen;
+}

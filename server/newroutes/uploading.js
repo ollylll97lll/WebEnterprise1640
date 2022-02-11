@@ -10,7 +10,6 @@ const md5 = require('md5');
 const { isAuth, isStatisticRole } = require('../middleware/utils');
 const admz = require('adm-zip');
 const Post = require('../newmodels/Post');
-const { firebaserules } = require('googleapis/build/src/apis/firebaserules');
 
 const uploadfolderName = './uploads'
 

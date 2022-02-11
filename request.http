@@ -1,0 +1,189 @@
+GET http://localhost:5001/api/auth/register
+
+################################
+
+//Get all Article. get specific one with query ?creator=(insert email), ?session=(insert session), ?userId=(insert user ID) and ?topic=(insert topic)
+GET http://localhost:5001/api/article/getAll_Article
+
+################################
+
+//Get all Session
+GET http://localhost:5001/api/session/getAll_Session
+
+################################
+
+//Count All Article
+GET http://localhost:5001/api/article/countAll
+
+################################
+
+//Count All Article with faculty with query api?faculty=(insert faculty)
+GET http://localhost:5001/api/article/countWith_faculty?faculty=IT
+
+################################
+
+//Count All User submitted Article
+GET http://localhost:5001/api/user/userWithArticle
+
+################################
+
+//Count All User submitted Article of an Faculty
+GET http://localhost:5001/api/user/count_userFaculty_haveArticle?faculty=Marketing
+
+################################
+
+//Get All User sort with faculty and role using ?name=(insert) or search same with ?name=(insert)&name=(insert)
+GET http://localhost:5001/api/user/getAll_user?faculty=&role=manager
+
+################################
+
+//Update article status with article ID
+PUT http://localhost:5001/api/article/status/6118d4012ec0a91ca0121a34
+Content-Type: application/json
+
+{
+    "status": true
+}
+
+################################
+
+//Update session information with ID
+PUT http://localhost:5001/api/session/edit/611769f3abda6b0f648b9ec5
+Content-Type: application/json
+
+{
+    "topic": "Qwerty",
+    "startedDate" : "10/20/2021"
+}
+
+################################
+
+//register a new user for admin
+POST http://localhost:5001/api/auth/register
+Content-Type: application/json
+
+{
+    "email" : "coordinator@coordinator.com",
+    "password" : "coordinator",
+    "department": "IT",
+    "role" : "coordinator"
+}
+
+################################
+
+//User Login
+POST http://localhost:5001/api/auth/login
+Content-Type: application/json
+
+{
+    "email" : "longnh20072002@gmail.com",
+    "password" : "Longdeptrai123"
+}
+
+################################
+
+// Create Article
+POST http://localhost:5001/api/article/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTE0Y2M4YTg5NGQ4NTUxMTAwNDFkNzQiLCJlbWFpbCI6Imx0di45YTIuMjFAZ21haWwuY29tIiwiZmFjdWx0eSI6IklUIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjI5MDE3MDcyLCJleHAiOjE2MjkwMTg4NzJ9.PN06B5hZ44HVs6dfwG5BAKEtrktLJ7bf4I9Q8-m9ibw
+
+{
+    "title" : "This is a Test about session",
+    "description" : "Add Session automatically from Session model",
+    "type" : "Testing API Article"
+}
+
+################################
+
+################################
+
+// Create Article
+POST http://localhost:5001/api/post/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTRjOTNmNDgzY2IzMmI3YjgwZjA2ODEiLCJlbWFpbCI6InN0YWZmQHN0YWZmLmNvbSIsImRlcGFydG1lbnQiOiJJVCIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTYzMjc2MzA3MSwiZXhwIjoxNjMyNzY0ODcxfQ.Lt4ROb3nGgWHjArMa4epFEr8tIYzXJqN_cwPGHHBqb8
+
+{
+    "categoryId" : "6151ce318f44c40cb19d295b",
+    "userId" : "614c93f483cb32b7b80f0681",
+    "title" : "This is a Test about session 5",
+    "content" : "Add Session automatically from Session model",
+    "department" : "Testing API Article"
+}
+
+################################
+
+//Add comment in Article
+POST http://localhost:5001/api/article/add_comment
+Content-Type: application/json
+
+{
+    "articleId" : "6114d5f6c7e3375c7892f2a2",
+    "email" : "longnh20072000@gmail.com",
+    "text" : "Sủa"
+}
+
+################################
+
+//Add comment in post
+POST http://localhost:5001/api/post/comment
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTRjOTNmNDgzY2IzMmI3YjgwZjA2ODEiLCJlbWFpbCI6InN0YWZmQHN0YWZmLmNvbSIsImRlcGFydG1lbnQiOiJJVCIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTYzMjc2NTQ3OCwiZXhwIjoxNjMyNzY3Mjc4fQ.N22NuBQHCmwFLakOisdh-cP7OQfKjW9vqEeUxrWjfOc
+
+{
+    "postId" : "6151fd6bb85e9b07652b2479",
+    "comment" : "3rd cmt"
+}
+
+################################
+
+//Create new Session with Token have admin role
+POST http://localhost:5001/api/session/add_session
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTE0Y2M4YTg5NGQ4NTUxMTAwNDFkNzQiLCJlbWFpbCI6Imx0di45YTIuMjFAZ21haWwuY29tIiwiZmFjdWx0eSI6IklUIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjI4OTI2MjA5LCJleHAiOjE2Mjg5MjgwMDl9.eGvKeOjsFgdyjePnevALDfSjLiuhrzC_R6m_JYFKhsA
+
+{
+    "session" : "Winter 2021",
+    "startedDate" : "10/1/2021",
+    "endedDate" : "12/1/2021",
+    "topic" : "Life"
+}
+
+################################
+
+################################
+
+//Create new Category with Token have admin role
+POST http://localhost:5001/api/category/add_category
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTRjOTNjNDgzY2IzMmI3YjgwZjA2N2QiLCJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTYzMjc1MTEzNiwiZXhwIjoxNjMyNzUyOTM2fQ.Tcgd8RdnGZmsiiZjR1ZN6zOVoO-TiHICSC7FyLP5Xtg
+
+{
+    "name" : "Mr.International",
+    "description": "Mr.305",
+    "startdate" : "1/10/2021",
+    "enddate" : "10/10/2021"
+}
+
+################################
+
+//Send mail forgot password
+POST http://localhost:5001/api/user/forgotPassword
+Content-Type: application/json
+
+{
+    "email" : "ltv.9a2.21@gmail.com"
+}
+
+################################
+
+// Change current user password
+POST http://localhost:5001/api/user/changePassword
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTE0Y2M4YTg5NGQ4NTUxMTAwNDFkNzQiLCJlbWFpbCI6Imx0di45YTIuMjFAZ21haWwuY29tIiwiZmFjdWx0eSI6IklUIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjI5MTg2NjcyLCJleHAiOjE2MjkxODg0NzJ9.y3MBqMDrepyXIILjVxlliyqCmEX06BDiPogjeuD5xCM
+
+{
+    "currentPassword" : "Longdeptrai123",
+    "newPassword" : "123456789"
+}
+
+################################
